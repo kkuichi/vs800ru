@@ -17,27 +17,28 @@
     identity_hate: 0.94
   };
 
-  function clamp01(x) {
+  function clamp01(x) 
+  {
     const n = Number(x);
     if (Number.isNaN(n)) return 0;
     return Math.min(1, Math.max(0, n));
   }
 
-  function isLabel(x) {
+  function isLabel(x) 
+  {
     return LABELS.includes(x);
   }
 
-  function normalizeRequest(req) {
+  function normalizeRequest(req) 
+  {
     const text = String(req?.text ?? "").trim();
     const strictness = clamp01(req?.settings?.strictness ?? 0.5);
-
     const enabledRaw = Array.isArray(req?.settings?.enabledLabels)
       ? req.settings.enabledLabels
       : [...LABELS];
 
     const enabledLabels = enabledRaw.map(String).filter(isLabel);
     const finalEnabled = enabledLabels.length ? enabledLabels : [...LABELS];
-
     return {
       ...req,
       text,
@@ -48,32 +49,36 @@
     };
   }
 
-  function normalizeScores(raw) {
+  function normalizeScores(raw) 
+  {
     const out = {};
-    for (const label of LABELS) {
+    for (const label of LABELS)
+    {
       out[label] = clamp01(raw?.[label]);
     }
     return out;
   }
 
-  // Higher strictness/sensitivity = lower threshold = easier to trigger.
-  function applyStrictness(base, strictness, k = 0.25) {
+  function applyStrictness(base, strictness, k = 0.25) 
+  {
     const s = clamp01(strictness);
     const shift = (s - 0.5) * k;
-
     const out = {};
-    for (const label of LABELS) {
+    for (const label of LABELS) 
+    {
       out[label] = clamp01(base[label] - shift);
     }
 
     return out;
   }
 
-  function computeVerdict(scores, thresholds, enabledLabels) {
+  function computeVerdict(scores, thresholds, enabledLabels) 
+  {
     const triggered = [];
-
-    for (const label of enabledLabels) {
-      if (scores[label] >= thresholds[label]) {
+    for (const label of enabledLabels) 
+    {
+      if (scores[label] >= thresholds[label]) 
+      {
         triggered.push(label);
       }
     }
@@ -96,7 +101,6 @@
     const req = normalizeRequest(request);
     const scores = normalizeScores(rawScores);
     const thresholds = applyStrictness(baseThresholds, req.settings.strictness);
-
     const { verdict, triggered } = computeVerdict(
       scores,
       thresholds,
@@ -104,7 +108,6 @@
     );
 
     const latency_ms = Math.max(0, (finishedAtMs ?? 0) - (startedAtMs ?? 0));
-
     return {
       mode,
       model,

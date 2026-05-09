@@ -18,7 +18,8 @@ const markLeft = (p) => {
   return `calc(${p}% + ${offset}px)`;
 };
 
-function SettingsLayout({ onBack }) {
+function SettingsLayout({ onBack }) 
+{
   const {
     settings,
     setSensitivity,
@@ -31,11 +32,8 @@ function SettingsLayout({ onBack }) {
   } = useSettings();
 
   const [domainInput, setDomainInput] = useState("");
-
-  // Remote token UI (stored separately, used by background.js)
   const [remoteToken, setRemoteToken] = useState("");
   const [tokenSaved, setTokenSaved] = useState(true);
-
   useEffect(() => {
     if (!chrome?.storage?.sync) return;
 
@@ -48,16 +46,16 @@ function SettingsLayout({ onBack }) {
 
   const pingRescan = () => {
     if (!chrome?.runtime?.sendMessage) return;
-
     chrome.runtime.sendMessage({ type: "TTD_RESCAN_ACTIVE_TAB" }, (resp) => {
       const err = chrome.runtime.lastError;
-
-      if (err) {
+      if (err) 
+      {
         console.warn("[TTD] rescan message failed:", err.message);
         return;
       }
 
-      if (!resp?.ok) {
+      if (!resp?.ok)
+      {
         console.warn("[TTD] rescan failed:", resp?.error);
       }
     });
@@ -82,10 +80,12 @@ function SettingsLayout({ onBack }) {
   const resetToDefaults = () => {
     const ok = confirm("Reset all settings to defaults?");
     if (!ok) return;
-
-    if (chrome?.storage?.sync) {
+    if (chrome?.storage?.sync) 
+    {
       chrome.storage.sync.remove(["ttd_settings", TOKEN_KEY], () => location.reload());
-    } else {
+    } 
+    else 
+    {
       location.reload();
     }
   };
@@ -104,23 +104,26 @@ function SettingsLayout({ onBack }) {
 
   const importSettings = async (file) => {
     if (!file) return;
-
-    try {
+    try 
+    {
       const text = await file.text();
       const parsed = JSON.parse(text);
-
-      if (chrome?.storage?.sync) {
+      if (chrome?.storage?.sync) 
+      {
         chrome.storage.sync.set({ ttd_settings: parsed }, () => location.reload());
-      } else {
+      } 
+      else 
+      {
         alert("chrome.storage.sync is not available.");
       }
-    } catch {
+    } 
+    catch 
+    {
       alert("Invalid JSON file.");
     }
   };
 
   const isRemote = settings.inferenceMode === "remote";
-
   return (
     <div className="settings-screen">
       {onBack && (
@@ -145,14 +148,12 @@ function SettingsLayout({ onBack }) {
           </div>
 
           <div className="section">
-            {/* --- Sensitivity header + mode toggle row --- */}
             <div className="section__header" style={{ alignItems: "flex-start" }}>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 <div className="section__title">Sensitivity level</div>
                 <div className="section__value">{settings.sensitivity}%</div>
               </div>
 
-              {/* NEW: mode toggle right next to the slider block */}
               <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-end" }}>
                 <div className="section__title" style={{ opacity: 0.8 }}>Inference</div>
 
@@ -208,7 +209,6 @@ function SettingsLayout({ onBack }) {
               </div>
             </div>
 
-            {/* Remote token appears directly under slider (only when remote) */}
             {isRemote && (
               <div className="section section--spaced">
                 <div className="section__title">Remote API token</div>

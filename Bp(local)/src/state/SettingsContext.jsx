@@ -1,9 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-
 const SettingsContext = createContext(null);
-
 const STORAGE_KEY = "ttd_settings";
-
 const DEFAULT_SETTINGS = {
   enabled: true,
   sensitivity: 100,
@@ -21,19 +18,22 @@ const DEFAULT_SETTINGS = {
   whitelist: []
 };
 
-function normalizeDomain(value) {
+function normalizeDomain(value) 
+{
   const v = String(value || "").trim().toLowerCase();
   if (!v) return "";
   const noProto = v.replace(/^https?:\/\//, "");
   const noPath = noProto.split("/")[0].split("?")[0].split("#")[0];
   return noPath.replace(/^www\./, "");
 }
-export function SettingsProvider({ children }) {
+export function SettingsProvider({ children }) 
+{
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (!globalThis.chrome?.storage?.sync) {
+    if (!globalThis.chrome?.storage?.sync) 
+    {
       setReady(true);
       return;
     }
@@ -61,12 +61,10 @@ export function SettingsProvider({ children }) {
 
   const api = useMemo(() => {
     const toggleEnabled = () => setSettings((s) => ({ ...s, enabled: !s.enabled }));
-
     const setSensitivity = (value) =>
       setSettings((s) => ({ ...s, sensitivity: Math.max(0, Math.min(100, Number(value))) }));
 
     const toggleAutoBlur = () => setSettings((s) => ({ ...s, autoBlur: !s.autoBlur }));
-
     const toggleShowConfidence = () =>
       setSettings((s) => ({ ...s, showConfidence: !s.showConfidence }));
 
@@ -85,7 +83,6 @@ export function SettingsProvider({ children }) {
     const addWhitelist = (domainRaw) => {
       const domain = normalizeDomain(domainRaw);
       if (!domain) return;
-
       setSettings((s) => {
         if (s.whitelist.includes(domain)) return s;
         return { ...s, whitelist: [...s.whitelist, domain] };
@@ -94,7 +91,6 @@ export function SettingsProvider({ children }) {
 
     const removeWhitelist = (domainRaw) => {
       const domain = normalizeDomain(domainRaw);
-
       setSettings((s) => ({
         ...s,
         whitelist: s.whitelist.filter((d) => d !== domain)
@@ -118,7 +114,8 @@ export function SettingsProvider({ children }) {
   return <SettingsContext.Provider value={api}>{children}</SettingsContext.Provider>;
 }
 
-export function useSettings() {
+export function useSettings() 
+{
   const ctx = useContext(SettingsContext);
   if (!ctx) throw new Error("useSettings must be used inside SettingsProvider");
   return ctx;

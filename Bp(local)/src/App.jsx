@@ -8,18 +8,15 @@ import exampleComments from "./features/examples/exampleComments.js";
 
 const DEMO_DOMAIN = "example.com";
 
-function App() {
+function App() 
+{
   const { settings } = useSettings();
-
   const [popupOpen, setPopupOpen] = useState(false);
   const [view, setView] = useState("examples");
   const [protectionEnabled, setProtectionEnabled] = useState(true);
-
   const isSettingsView = view === "settings";
-
   const openPopup = useCallback(() => setPopupOpen(true), []);
   const closePopup = useCallback(() => setPopupOpen(false), []);
-
   const goToSettings = useCallback(() => {
     setView("settings");
     setPopupOpen(false);
@@ -40,7 +37,6 @@ function App() {
   }, [settings?.whitelist]);
 
   const effectiveProtection = protectionEnabled && !isWhitelisted;
-
   const activeCategoryCount = useMemo(() => {
     const cats = settings?.categories;
     if (!cats || typeof cats !== "object") return 0;
@@ -49,7 +45,6 @@ function App() {
 
   const detectedCount = useMemo(() => {
     if (!effectiveProtection) return 0;
-
     const cats = settings?.categories || {};
     return exampleComments.filter(
       (c) => c.category && (cats?.[c.category] ?? true)

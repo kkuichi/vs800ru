@@ -11,9 +11,7 @@ import "./features/popup/popup.css";
 function PopupRoot() {
   const { settings, toggleEnabled } = useSettings();
   const { stats } = useTabStats(700);
-
   const activeCategoryCount = Object.values(settings.categories || {}).filter(Boolean).length;
-
   return (
     <ExtensionPopup
       floating={false}        

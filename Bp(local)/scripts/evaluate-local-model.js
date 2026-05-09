@@ -1,13 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { performance } from "node:perf_hooks";
-
 import * as tf from "@tensorflow/tfjs-core";
 import { loadGraphModel } from "@tensorflow/tfjs-converter";
 import "@tensorflow/tfjs-backend-wasm";
 import "@tensorflow/tfjs-backend-cpu";
 import { setWasmPaths } from "@tensorflow/tfjs-backend-wasm";
-
 import { parse } from "csv-parse/sync";
 
 const LABELS = [
@@ -21,16 +19,15 @@ const LABELS = [
 
 const CHAR_MAX_LEN = 256;
 const MODEL_DIR = path.resolve("public/local_char_model");
-
 const csvPath = process.argv[2];
 const limit = Number(process.argv[3] || 0);
 const batchSizeArg = Number(process.argv[4] || 64);
 const backendArg = String(process.argv[5] || "wasm").toLowerCase();
-
 const BATCH_SIZE =
   Number.isFinite(batchSizeArg) && batchSizeArg > 0 ? batchSizeArg : 64;
 
-if (!csvPath) {
+if (!csvPath) 
+{
   console.error("Usage:");
   console.error(
     "node scripts/evaluate-local-model.js <csvPath> [limit] [batchSize] [wasm|cpu]"
@@ -42,23 +39,23 @@ if (!csvPath) {
   process.exit(1);
 }
 
-// ---------------- timing helpers ----------------
-
-function nowMs() {
+function nowMs() 
+{
   return performance.now();
 }
 
-function roundMs(value) {
+function roundMs(value) 
+{
   return Number(value.toFixed(2));
 }
 
-function roundNumber(value) {
+function roundNumber(value) 
+{
   return Number(value.toFixed(4));
 }
 
-// ---------------- text preprocessing ----------------
-
-function normalizeForCharModel(text) {
+function normalizeForCharModel(text) 
+{
   return String(text || "")
     .toLowerCase()
     .replace(/https?:\/\/\S+|www\.\S+/g, "<url>")
@@ -67,20 +64,19 @@ function normalizeForCharModel(text) {
     .trim();
 }
 
-function tokenizeBatch(texts, vocab) {
+function tokenizeBatch(texts, vocab) 
+{
   const batchSize = texts.length;
   const out = new Int32Array(batchSize * CHAR_MAX_LEN);
-
-  for (let i = 0; i < batchSize; i++) {
+  for (let i = 0; i < batchSize; i++) 
+  {
     const norm = normalizeForCharModel(texts[i]);
     const base = i * CHAR_MAX_LEN;
-
-    for (let j = 0; j < CHAR_MAX_LEN; j++) {
+    for (let j = 0; j < CHAR_MAX_LEN; j++) 
+    {
       if (j >= norm.length) break;
-
       const ch = norm[j];
       const id = vocab[ch];
-
       out[base + j] = id === undefined ? 1 : id;
     }
   }
@@ -88,16 +84,16 @@ function tokenizeBatch(texts, vocab) {
   return out;
 }
 
-// ---------------- tensor helpers ----------------
-
-function firstTensor(x) {
+function firstTensor(x) 
+{
   if (!x) return null;
-
-  if (Array.isArray(x)) {
+  if (Array.isArray(x)) 
+  {
     return x[0] || null;
   }
 
-  if (typeof x === "object" && x.dataSync == null) {
+  if (typeof x === "object" && x.dataSync == null) 
+  {
     const keys = Object.keys(x);
     if (keys.length) return x[keys[0]] || null;
   }
@@ -105,15 +101,17 @@ function firstTensor(x) {
   return x;
 }
 
-function disposeModelOutput(x) {
+function disposeModelOutput(x) 
+{
   if (!x) return;
-
-  if (Array.isArray(x)) {
+  if (Array.isArray(x)) 
+  {
     for (const item of x) item?.dispose?.();
     return;
   }
 
-  if (typeof x === "object" && x.dataSync == null) {
+  if (typeof x === "object" && x.dataSync == null) 
+  {
     for (const key of Object.keys(x)) x[key]?.dispose?.();
     return;
   }
@@ -121,21 +119,20 @@ function disposeModelOutput(x) {
   x?.dispose?.();
 }
 
-function bufferToArrayBuffer(buffer) {
+function bufferToArrayBuffer(buffer)
+{
   return buffer.buffer.slice(
     buffer.byteOffset,
     buffer.byteOffset + buffer.byteLength
   );
 }
 
-// ---------------- backend/model loading ----------------
-
-async function setupBackend(backendName) {
+async function setupBackend(backendName) 
+{
   const start = nowMs();
-
   console.log("Setting backend...");
-
-  if (backendName === "wasm") {
+  if (backendName === "wasm") 
+  {
     const wasmDir = path.resolve(
       "node_modules",
       "@tensorflow",
@@ -144,21 +141,21 @@ async function setupBackend(backendName) {
     );
 
     setWasmPaths(`file://${wasmDir.replace(/\\/g, "/")}/`);
-
     await tf.setBackend("wasm");
-  } else if (backendName === "cpu") {
+  } 
+  else if (backendName === "cpu") 
+  {
     await tf.setBackend("cpu");
-  } else {
+  } 
+  else 
+  {
     throw new Error(`Unsupported backend: ${backendName}. Use "wasm" or "cpu".`);
   }
 
   await tf.ready();
-
   const end = nowMs();
-
   console.log("Backend:", tf.getBackend());
   console.log("TFJS version:", tf.version_core);
-
   return {
     requested_backend: backendName,
     actual_backend: tf.getBackend(),
@@ -167,26 +164,24 @@ async function setupBackend(backendName) {
   };
 }
 
-async function loadGraphModelFromLocalDir(modelDir) {
+async function loadGraphModelFromLocalDir(modelDir) 
+{
   const start = nowMs();
-
   const modelJsonPath = path.join(modelDir, "model.json");
   const modelJson = JSON.parse(fs.readFileSync(modelJsonPath, "utf8"));
-
   const weightSpecs = [];
   const weightBuffers = [];
-
-  for (const group of modelJson.weightsManifest || []) {
+  for (const group of modelJson.weightsManifest || []) 
+  {
     weightSpecs.push(...group.weights);
-
-    for (const fileName of group.paths) {
+    for (const fileName of group.paths) 
+    {
       const filePath = path.join(modelDir, fileName);
       weightBuffers.push(fs.readFileSync(filePath));
     }
   }
 
   const weightData = bufferToArrayBuffer(Buffer.concat(weightBuffers));
-
   const ioHandler = {
     load: async () => ({
       modelTopology: modelJson.modelTopology,
@@ -199,9 +194,7 @@ async function loadGraphModelFromLocalDir(modelDir) {
   };
 
   const model = await loadGraphModel(ioHandler);
-
   const end = nowMs();
-
   return {
     model,
     timing: {
@@ -212,58 +205,57 @@ async function loadGraphModelFromLocalDir(modelDir) {
   };
 }
 
-async function warmUpModel(model, vocab) {
+async function warmUpModel(model, vocab) 
+{
   const inputName = model.inputs?.[0]?.name;
-
-  if (!inputName) {
+  if (!inputName) 
+  {
     throw new Error("Model input name not found during warm-up.");
   }
 
   const start = nowMs();
-
   const sampleTexts = [
     "This is a short warm up sentence for the local toxicity model."
   ];
 
   const idsFlat = tokenizeBatch(sampleTexts, vocab);
   const x = tf.tensor2d(idsFlat, [sampleTexts.length, CHAR_MAX_LEN], "int32");
-
   let y;
-
-  try {
+  try 
+  {
     y = model.execute({ [inputName]: x });
     const outTensor = firstTensor(y);
-
-    if (outTensor) {
+    if (outTensor)
+    {
       await outTensor.data();
     }
-  } finally {
+  } 
+  finally 
+  {
     disposeModelOutput(y);
     x.dispose();
   }
 
   const end = nowMs();
-
   return {
     warmup_ms: roundMs(end - start)
   };
 }
 
-// ---------------- CSV helpers ----------------
 
-function detectDelimiter(raw) {
+function detectDelimiter(raw) 
+{
   const firstLine = raw.split(/\r?\n/)[0] || "";
-
   const commaCount = (firstLine.match(/,/g) || []).length;
   const semicolonCount = (firstLine.match(/;/g) || []).length;
-
   return semicolonCount > commaCount ? ";" : ",";
 }
 
-function normalizeRowKeys(row) {
+function normalizeRowKeys(row) 
+{
   const out = {};
-
-  for (const [key, value] of Object.entries(row)) {
+  for (const [key, value] of Object.entries(row)) 
+  {
     const cleanKey = String(key)
       .replace(/^\uFEFF/, "")
       .trim();
@@ -274,12 +266,11 @@ function normalizeRowKeys(row) {
   return out;
 }
 
-function readCsvRows(filePath) {
+function readCsvRows(filePath) 
+{
   const raw = fs.readFileSync(filePath, "utf8");
   const delimiter = detectDelimiter(raw);
-
   console.log("CSV delimiter:", delimiter);
-
   const rows = parse(raw, {
     columns: true,
     skip_empty_lines: true,
@@ -291,18 +282,19 @@ function readCsvRows(filePath) {
   return rows.map(normalizeRowKeys);
 }
 
-function getTextFromRow(row) {
+function getTextFromRow(row) 
+{
   return row.comment_text ?? row.text ?? row.comment ?? "";
 }
 
-function toBinaryLabel(value) {
+function toBinaryLabel(value) 
+{
   const n = Number(value);
   return Number.isFinite(n) && n >= 0.5 ? 1 : 0;
 }
 
-// ---------------- metrics ----------------
-
-function computeMetrics(yTrue, yScore, threshold) {
+function computeMetrics(yTrue, yScore, threshold) 
+{
   let tp = 0;
   let fp = 0;
   let tn = 0;
@@ -311,7 +303,6 @@ function computeMetrics(yTrue, yScore, threshold) {
   for (let i = 0; i < yTrue.length; i++) {
     const actual = yTrue[i] === 1;
     const predicted = yScore[i] >= threshold;
-
     if (actual && predicted) tp++;
     else if (!actual && predicted) fp++;
     else if (!actual && !predicted) tn++;
@@ -320,14 +311,12 @@ function computeMetrics(yTrue, yScore, threshold) {
 
   const precision = tp + fp === 0 ? 0 : tp / (tp + fp);
   const recall = tp + fn === 0 ? 0 : tp / (tp + fn);
-
   const f1 =
     precision + recall === 0
       ? 0
       : (2 * precision * recall) / (precision + recall);
 
   const accuracy = (tp + tn) / Math.max(1, tp + fp + tn + fn);
-
   return {
     tp,
     fp,
@@ -340,7 +329,8 @@ function computeMetrics(yTrue, yScore, threshold) {
   };
 }
 
-function findBestThreshold(yTrue, yScore) {
+function findBestThreshold(yTrue, yScore) 
+{
   let best = {
     threshold: 0.5,
     f1: -1,
@@ -353,11 +343,12 @@ function findBestThreshold(yTrue, yScore) {
     fn: 0
   };
 
-  for (let t = 0.05; t <= 0.95; t += 0.01) {
+  for (let t = 0.05; t <= 0.95; t += 0.01) 
+  {
     const threshold = Number(t.toFixed(2));
     const metrics = computeMetrics(yTrue, yScore, threshold);
-
-    if (metrics.f1 > best.f1) {
+    if (metrics.f1 > best.f1) 
+    {
       best = {
         threshold,
         ...metrics
@@ -368,57 +359,46 @@ function findBestThreshold(yTrue, yScore) {
   return best;
 }
 
-// ---------------- prediction ----------------
-
-async function predictAll(model, vocab, rows, batchSize = 64) {
+async function predictAll(model, vocab, rows, batchSize = 64) 
+{
   const inputName = model.inputs?.[0]?.name;
-
-  if (!inputName) {
+  if (!inputName) 
+  {
     throw new Error("Model input name not found.");
   }
 
   const allScores = [];
-
   const predictionStart = nowMs();
-
   let totalTokenizationMs = 0;
   let totalInferenceMs = 0;
   let totalBatchMs = 0;
-
   const batchTimes = [];
-
-  for (let offset = 0; offset < rows.length; offset += batchSize) {
+  for (let offset = 0; offset < rows.length; offset += batchSize) 
+  {
     const batchStart = nowMs();
-
     const batch = rows.slice(offset, offset + batchSize);
     const texts = batch.map((r) => r.comment_text);
-
     const tokenizeStart = nowMs();
     const idsFlat = tokenizeBatch(texts, vocab);
     const tokenizeEnd = nowMs();
-
     totalTokenizationMs += tokenizeEnd - tokenizeStart;
-
     const inferenceStart = nowMs();
-
     const x = tf.tensor2d(idsFlat, [texts.length, CHAR_MAX_LEN], "int32");
-
     let y;
 
-    try {
+    try 
+    {
       y = model.execute({ [inputName]: x });
-
       const outTensor = firstTensor(y);
-
-      if (!outTensor) {
+      if (!outTensor)
+      {
         throw new Error("Model output tensor missing.");
       }
 
       const data = await outTensor.data();
-
-      for (let i = 0; i < texts.length; i++) {
+      for (let i = 0; i < texts.length; i++) 
+      {
         const o = i * 6;
-
         allScores.push({
           toxic: Number(data[o + 0] ?? 0),
           severe_toxic: Number(data[o + 1] ?? 0),
@@ -428,17 +408,17 @@ async function predictAll(model, vocab, rows, batchSize = 64) {
           identity_hate: Number(data[o + 5] ?? 0)
         });
       }
-    } finally {
+    } 
+    finally 
+    {
       disposeModelOutput(y);
       x.dispose();
     }
 
     const inferenceEnd = nowMs();
     totalInferenceMs += inferenceEnd - inferenceStart;
-
     const batchEnd = nowMs();
     const batchMs = batchEnd - batchStart;
-
     totalBatchMs += batchMs;
     batchTimes.push(batchMs);
 
@@ -450,7 +430,6 @@ async function predictAll(model, vocab, rows, batchSize = 64) {
 
   const predictionEnd = nowMs();
   const predictionTotalMs = predictionEnd - predictionStart;
-
   const avgBatchMs =
     batchTimes.length > 0
       ? batchTimes.reduce((a, b) => a + b, 0) / batchTimes.length
@@ -458,7 +437,6 @@ async function predictAll(model, vocab, rows, batchSize = 64) {
 
   const minBatchMs = batchTimes.length > 0 ? Math.min(...batchTimes) : 0;
   const maxBatchMs = batchTimes.length > 0 ? Math.max(...batchTimes) : 0;
-
   return {
     scores: allScores,
     timing: {
@@ -483,11 +461,9 @@ async function predictAll(model, vocab, rows, batchSize = 64) {
   };
 }
 
-// ---------------- main ----------------
-
-async function main() {
+async function main() 
+{
   const totalStart = nowMs();
-
   const timing = {
     run_started_at: new Date().toISOString(),
     csv_path: path.resolve(csvPath),
@@ -499,41 +475,29 @@ async function main() {
 
   const backendTiming = await setupBackend(backendArg);
   Object.assign(timing, backendTiming);
-
   console.log("Loading model from:", MODEL_DIR);
-
   const { model, timing: modelTiming } = await loadGraphModelFromLocalDir(
     MODEL_DIR
   );
 
   Object.assign(timing, modelTiming);
-
   console.log("Model loaded.");
   console.log("Input:", model.inputs?.[0]?.name);
   console.log("Output:", model.outputs?.[0]?.name);
-
   const vocabLoadStart = nowMs();
-
   const vocab = JSON.parse(
     fs.readFileSync(path.join(MODEL_DIR, "char_vocab.json"), "utf8")
   );
 
   timing.vocab_load_ms = roundMs(nowMs() - vocabLoadStart);
-
   const warmupTiming = await warmUpModel(model, vocab);
   Object.assign(timing, warmupTiming);
-
   const csvReadStart = nowMs();
-
   const rawRows = readCsvRows(csvPath);
-
   timing.csv_read_ms = roundMs(nowMs() - csvReadStart);
   timing.raw_rows = rawRows.length;
-
   const preprocessStart = nowMs();
-
   const limitedRawRows = limit > 0 ? rawRows.slice(0, limit) : rawRows;
-
   const rows = limitedRawRows
     .filter((r) => {
       const text = getTextFromRow(r);
@@ -552,11 +516,10 @@ async function main() {
 
   timing.preprocess_ms = roundMs(nowMs() - preprocessStart);
   timing.rows_used = rows.length;
-
   console.log("Raw rows:", rawRows.length);
   console.log("Rows:", rows.length);
-
-  if (!rows.length) {
+  if (!rows.length)
+  {
     throw new Error("No valid rows found. Check CSV path and columns.");
   }
 
@@ -568,18 +531,14 @@ async function main() {
   );
 
   Object.assign(timing, predictionTiming);
-
   const suggestedThresholds = {};
   const report = {};
-
-  for (const label of LABELS) {
+  for (const label of LABELS) 
+  {
     const yTrue = rows.map((r) => r.labels[label]);
     const yScore = scores.map((s) => s[label]);
-
     const best = findBestThreshold(yTrue, yScore);
-
     suggestedThresholds[label] = best.threshold;
-
     report[label] = {
       positives: yTrue.filter((x) => x === 1).length,
       best_threshold: best.threshold,
@@ -603,7 +562,6 @@ async function main() {
   );
 
   const overallBest = findBestThreshold(overallTrue, overallScore);
-
   const overallReport = {
     positives: overallTrue.filter((x) => x === 1).length,
     best_threshold: overallBest.threshold,
@@ -619,10 +577,8 @@ async function main() {
 
   timing.total_script_ms = roundMs(nowMs() - totalStart);
   timing.run_finished_at = new Date().toISOString();
-
   console.log("\nPer-label report:");
   console.table(report);
-
   console.log("\nOverall toxic/non-toxic report:");
   console.table({
     overall: overallReport
@@ -630,7 +586,6 @@ async function main() {
 
   console.log("\nSuggested thresholds:");
   console.log(JSON.stringify(suggestedThresholds, null, 2));
-
   console.log("\nTiming report:");
   console.table({
     backend: timing.actual_backend,
