@@ -1,0 +1,231 @@
+.ttd-popup,
+.ttd-popup body,
+.ttd-popup #root {
+  margin: 0;
+  padding: 0;
+
+  border-radius: 18px;
+  overflow: hidden;
+
+  background: #ffffff;
+}
+
+/* No extra wrapper spacing */
+.popup-root {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.popup-section {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.popup-section__title {
+  display: none;
+}
+
+/* ===== Card ===== */
+.popup-card {
+  width: 260px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 14px 16px 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  margin: 0; 
+}
+
+.popup-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.popup-card__header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.popup-card__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  border: 1px solid #d6f5e5;
+  display: block;
+  object-fit: cover;
+  background: transparent;
+}
+
+.popup-card__icon--off {
+  border-color: #d0d4e2;
+}
+
+.popup-card__title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.popup-card__subtitle {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #7a7a7a;
+}
+
+.popup-card__subtitle--on {
+  color: #3b8151;
+}
+
+.popup-card__subtitle--off {
+  color: #a33b3b;
+}
+
+/* ===== Toggle ===== */
+.popup-toggle {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border-radius: 999px;
+  border: none;
+  background: #d7c9ff;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.15s ease-out;
+}
+
+.popup-toggle--on {
+  background: #6b46ff;
+}
+
+.popup-toggle__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  transition: transform 0.18s ease-out;
+}
+
+.popup-toggle--on .popup-toggle__thumb {
+  transform: translateX(14px);
+}
+
+/* ===== Status ===== */
+.popup-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #e4ffe8;
+  border-radius: 12px;
+  padding: 8px 10px;
+  margin-bottom: 14px;
+}
+
+.popup-status__icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: 1px solid #7acb86;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #2f7f3e;
+}
+
+.popup-status__text {
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-status__title {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.popup-status__subtitle {
+  font-size: 11px;
+  color: #3b8151;
+}
+
+/* OFF status variant */
+.popup-status--off {
+  background: #f3f4f8;
+}
+
+.popup-status--off .popup-status__icon {
+  border-color: #c2c9dd;
+  color: #7b7f8b;
+}
+
+.popup-status--off .popup-status__subtitle {
+  color: #7b7f8b;
+}
+
+/* ===== Activity ===== */
+.popup-activity {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.popup-activity__item {
+  flex: 1;
+  border-radius: 12px;
+  border: 1px solid #dddddd;
+  padding: 6px 10px 8px;
+}
+
+.popup-activity__label {
+  font-size: 11px;
+  color: #888888;
+  margin-bottom: 4px;
+}
+
+.popup-activity__value {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ===== Settings Button ===== */
+.popup-settings-btn {
+  display: flex;
+  justify-content: center;
+  margin: 8px auto 0;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 18px;
+  border-radius: 999px;
+  border: 1px solid #111111;
+  background: #ffffff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.popup-settings-btn__icon {
+  font-size: 14px;
+}
+
+.popup-floating-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 40px 40px 0 0;
+  z-index: 45;
+}
+
+.popup-floating-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

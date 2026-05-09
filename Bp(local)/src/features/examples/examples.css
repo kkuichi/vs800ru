@@ -1,0 +1,204 @@
+.examples 
+{
+  display: flex;
+  gap: 32px;
+}
+
+.examples__column 
+{
+  flex: 1;
+}
+
+.examples__title 
+{
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+.examples__column-header 
+{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.examples__popup-trigger 
+{
+  border-radius: 999px;
+  border: 1px solid #111111;
+  background: #ffffff;
+  padding: 4px 10px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.comment-card 
+{
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #cdcdcd;
+  padding: 12px 18px 10px;
+  margin-bottom: 10px;
+}
+
+.comment-card__top 
+{
+  display: flex;
+  gap: 10px;
+}
+
+.comment-card__avatar 
+{
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e3e3e3;
+}
+
+.comment-card__main 
+{
+  flex: 1;
+}
+
+.comment-card__header-row 
+{
+  display: flex;
+  align-items: flex-start;
+}
+
+.comment-card__user-meta 
+{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  font-size: 10px;
+  color: #b3b3b3;
+}
+
+.comment-card__user 
+{
+  font-size: 13px;
+  font-weight: 500;
+  color: #222222;
+}
+
+.comment-card__controls
+{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.comment-card__body 
+{
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #444444;
+}
+
+.comment-card__body--blurred 
+{
+  color: transparent;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  filter: blur(3px);
+}
+
+.comment-card__footer 
+{
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.comment-card__chip 
+{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f2f2f2;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.comment-card__chip-label 
+{
+  font-weight: 500;
+}
+
+.comment-card__chip-score 
+{
+  font-size: 10px;
+  color: #777;
+}
+
+.comment-card__chip-info
+{
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 1px solid #c0c0c0;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  cursor: pointer;
+  padding: 0;
+}
+
+.comment-card__action 
+{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #555555;
+}
+
+.comment-card__action-icon 
+{
+  width: 14px;
+  height: 9px;
+  border-radius: 999px;
+  border: 1.5px solid #555555;
+  position: relative;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.comment-card__action-icon::after 
+{
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #555555;
+  transform: translate(-50%, -50%);
+}
+
+.comment-card__action-icon--hidden::before 
+{
+  content: "";
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 50%;
+  border-top: 1.5px solid #555555;
+  transform: rotate(-30deg);
+}
