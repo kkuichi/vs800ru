@@ -100,8 +100,7 @@ function domainMatches(host, domain)
 function domainIsWhitelisted() 
 {
   const host = normalizeDomain(location.hostname || "");
-  return
-  (
+  return(
     Array.isArray(settings.whitelist) &&
     settings.whitelist.some((domain) => domainMatches(host, domain))
   );
@@ -206,8 +205,7 @@ function buildContractSettingsFromUI()
     Math.min(1, Number(settings.sensitivity ?? 50) / 100)
   );
 
-  return 
-  {
+  return{
     enabledLabels,
     strictness
   };
@@ -216,8 +214,7 @@ function buildContractSettingsFromUI()
 function getDetectionCachePrefix() 
 {
   const { enabledLabels, strictness } = buildContractSettingsFromUI();
-  return 
-  [
+  return [
     settings.inferenceMode,
     strictness.toFixed(2),
     [...enabledLabels].sort().join(",")
@@ -507,8 +504,7 @@ async function loadCharAssets()
     ]);
 
     const thresholds = thrJson.thresholds || thrJson;
-    return 
-    {
+    return {
       vocab,
       thresholds
     };

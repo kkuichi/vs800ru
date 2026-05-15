@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Toxic Text Detector (Hybrid: Local + Remote)",
-  "version": "0.3.4",
+  "version": "1.0.0",
   "description": "Detect and blur toxic text using local TFJS or a remote API (opt-in).",
 
   "permissions": ["storage", "tabs", "activeTab"],
