@@ -149,18 +149,100 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     return true;
   }
   
+if (msg?.type === "TTD_GET_STATS") 
+  {
+  (async () => {
+    try 
+    {
+      const [activeTab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true
+      });
+
+      const isWebTab =
+        activeTab?.id &&
+        typeof activeTab.url === "string" &&
+        /^https?:\/\//.test(activeTab.url);
+
+      if (!isWebTab) 
+      {
+        sendResponse({
+          ok: true,
+          payload: {
+            detectedCount: 0,
+            blockedCount: 0,
+            activeCategoryCount: 0
+          },
+          error: "Active tab is not a normal web page."
+        });
+        return;
+      }
+
+      chrome.tabs.sendMessage(
+        activeTab.id,
+        { type: "TTD_GET_PAGE_STATS" },
+        (resp) => {
+          const err = chrome.runtime.lastError;
+
+          if (err) 
+            {
+            sendResponse({
+              ok: true,
+              payload: {
+                detectedCount: 0,
+                blockedCount: 0,
+                activeCategoryCount: 0
+              },
+              error: err.message
+            });
+            return;
+          }
+
+          sendResponse(
+            resp?.ok
+              ? resp
+              : {
+                  ok: true,
+                  payload: {
+                    detectedCount: 0,
+                    blockedCount: 0,
+                    activeCategoryCount: 0
+                  }
+                }
+          );
+        }
+      );
+    } 
+    catch (e) 
+    {
+      sendResponse({
+        ok: true,
+        payload: {
+          detectedCount: 0,
+          blockedCount: 0,
+          activeCategoryCount: 0
+        },
+        error: String(e?.message || e)
+      });
+    }
+  })();
+
+  return true;
+}
+
   if (msg?.type === "TTD_REMOTE_PREDICT_BATCH") {
     (async () => {
-      try {
+      try 
+      {
         const { texts, strictness } = msg.payload || {};
         if (!Array.isArray(texts)) 
-          {
+        {
           sendResponse({ ok: false, error: "Bad payload: texts must be an array." });
           return;
         }
 
         if (typeof strictness !== "number") 
-          {
+        {
           sendResponse({ ok: false, error: "Bad payload: strictness must be a number." });
           return;
         }
@@ -174,7 +256,9 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         );
 
         sendResponse({ ok: true, results });
-      } catch (e) {
+      } 
+      catch (e)
+      {
         sendResponse({
           ok: false,
           error: String(e?.message || e)

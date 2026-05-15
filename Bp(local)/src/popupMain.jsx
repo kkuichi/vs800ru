@@ -10,7 +10,7 @@ import "./features/popup/popup.css";
 
 function PopupRoot() {
   const { settings, toggleEnabled } = useSettings();
-  const { stats } = useTabStats(700);
+  const { stats, refresh } = useTabStats(700);
   const activeCategoryCount = Object.values(settings.categories || {}).filter(Boolean).length;
   return (
     <ExtensionPopup
@@ -19,7 +19,9 @@ function PopupRoot() {
       protectionEnabled={!!settings.enabled}
       onToggleProtection={() => {
         toggleEnabled();
-        chrome.runtime.sendMessage({ type: "TTD_RESCAN_ACTIVE_TAB" });
+        chrome.runtime.sendMessage({ type: "TTD_RESCAN_ACTIVE_TAB" }, () => {
+          setTimeout(refresh, 500);
+        });
       }}
       onOpenSettings={() => chrome.runtime.openOptionsPage()}
       activeCategoryCount={activeCategoryCount}
