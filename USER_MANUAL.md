@@ -21,7 +21,31 @@ For normal Local mode use, the backend API is not required.
 
 ## 2. Installation
 
-If the built extension is already available in the `dist` folder, install it as follows:
+The extension can be installed in two ways:
+
+- from the Chrome Web Store using the private project link,
+- manually from the prepared `dist` folder.
+
+### 2.1 Installation from Chrome Web Store link
+
+The extension is published in the Chrome Web Store, but it is not publicly searchable. It is distributed for this project through a direct private/unlisted link:
+
+```text
+https://chromewebstore.google.com/detail/toxic-text-detector-hybri/jankcpfaihpjhecegklglapdokjljkfn?authuser=0&hl=en
+```
+
+To install the extension:
+
+1. Open the provided Chrome Web Store link.
+2. Click **Add to Chrome**.
+3. Confirm the installation.
+4. Pin the extension to the browser toolbar if needed.
+
+This is the recommended installation method for normal users and project evaluation.
+
+### 2.2 Manual installation from ready build
+
+If the extension is not installed from the Chrome Web Store link, it can be loaded manually from the prepared `dist` folder.
 
 1. Open Google Chrome.
 2. Open the extensions page:
@@ -41,7 +65,7 @@ frontend/dist/
 6. The extension will appear in the list of installed extensions.
 7. Pin the extension to the browser toolbar if needed.
 
-After installation, the extension icon should be visible in the Chrome toolbar.
+Manual installation is mainly intended for testing, demonstration, or development.
 
 ---
 
