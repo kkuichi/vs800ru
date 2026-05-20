@@ -1,15 +1,19 @@
 # Toxic Text Detector
 
-Toxic Text Detector is a bachelor thesis project focused on the development of a browser extension for detecting toxic text content using NLP models. The system is designed as a Chrome Manifest V3 extension with two inference modes:
+Toxic Text Detector is a bachelor thesis project focused on the design, implementation, and evaluation of a browser extension for detecting potentially toxic text on web pages.
+
+The system is implemented as a Chrome Manifest V3 extension and supports two inference modes:
 
 - local inference directly in the browser,
 - remote inference through a backend API.
 
-The goal of the project is to provide a practical browser-based tool that can detect potentially toxic text, visually mark or blur it, and allow the user to configure detection categories and sensitivity. The project also evaluates the trade-off between privacy-preserving local inference and more flexible remote inference.
+The goal of the project is to provide a practical browser-based tool that can detect potentially toxic text, visually mark or blur it, and allow the user to configure sensitivity, toxicity categories, processing mode, confidence score display, and whitelist domains.
+
+The project also evaluates the practical trade-off between privacy-preserving local inference and more precise or more easily replaceable remote inference.
+
+---
 
 ## Project structure
-
-The repository is divided into two main parts:
 
 ```text
 toxic-text-detector/
@@ -22,9 +26,13 @@ toxic-text-detector/
 The `frontend` folder contains the Chrome extension.  
 The `backend` folder contains the optional API server for remote toxicity inference.
 
+The generated `dist` folder is not source code. It is created after building the frontend and can be loaded into Chrome as an unpacked extension.
+
+---
+
 ## Frontend – Chrome extension
 
-The frontend part is implemented as a Chrome Manifest V3 extension using Vite, React, and TensorFlow.js.
+The frontend is implemented using Vite, React, Chrome Manifest V3, and TensorFlow.js.
 
 Main frontend structure:
 
@@ -58,19 +66,21 @@ frontend/
 
 ### Important frontend files
 
-- `public/manifest.json` – defines the Chrome Manifest V3 extension configuration.
-- `public/background.js` – implements the service worker and communication with the active tab and remote API.
-- `public/contentScript.js` – scans page text, runs local or remote classification, and marks or blurs detected toxic content.
-- `public/toxicityContract.global.js` – normalizes model outputs, thresholds, labels, and final verdicts.
-- `public/local_char_model/` – contains the local TensorFlow.js model and files required for browser inference.
+- `public/manifest.json` – Chrome Manifest V3 configuration.
+- `public/background.js` – service worker, central extension actions, communication with the active tab, and remote API handling.
+- `public/contentScript.js` – scans page text, runs classification, and marks or blurs detected toxic content.
+- `public/toxicityContract.global.js` – normalizes model outputs, labels, thresholds, strictness settings, and final verdicts.
+- `public/local_char_model/` – local TensorFlow.js model files required for browser inference.
 - `src/state/SettingsContext.jsx` – manages extension settings and stores them in Chrome storage.
 - `src/popupMain.jsx` – entry point for the extension popup.
 - `src/optionsMain.jsx` – entry point for the settings page.
-- `scripts/evaluate-local-model.js` – script used for evaluating the local TensorFlow.js model.
+- `scripts/evaluate-local-model.js` – script for evaluating the optimized local TensorFlow.js model.
+
+---
 
 ## Backend – remote inference API
 
-The backend part provides an optional API for remote inference. It is used when the extension is switched to remote mode.
+The backend provides an optional API for remote inference. It is used when the extension is switched to Remote mode.
 
 Main backend structure:
 
@@ -96,11 +106,13 @@ backend/
 
 - `api/app.py` – main FastAPI application.
 - `api/thresholds_product_v2_1.json` – product threshold configuration used by the API.
-- `train/` – scripts used for dataset preparation, training, evaluation, and threshold tuning.
+- `train/` – scripts for dataset preparation, remote model training, evaluation, and threshold tuning.
 - `reports/` – selected experiment outputs and model evaluation results.
-- `models/xlmr-toxic-v2_1/` – final trained XLM-R model used by the remote API.
+- `models/xlmr-toxic-v2_1/` – trained XLM-R model used by the configured remote API.
 - `requirements.txt` – Python dependencies required to run the backend.
 - `Dockerfile` – optional container configuration for deployment.
+
+---
 
 ## Used technologies
 
@@ -126,13 +138,18 @@ backend/
 - NumPy
 - Pandas
 
+---
+
 ## Models
 
-The project uses two model-related parts.
+The project uses two model-related parts:
+
+1. a local browser model,
+2. a remote backend model.
 
 ### Local browser model
 
-The local browser model is stored in:
+The local browser model is expected in:
 
 ```text
 frontend/public/local_char_model/
@@ -140,11 +157,13 @@ frontend/public/local_char_model/
 
 This model is used directly by the Chrome extension. It allows the extension to classify text locally without sending it to a server.
 
-The local model is included in the repository because it is required for local inference in the extension.
+The local model is intended as a privacy-preserving and fast browser-side variant. However, it may be less accurate than the backend model in more difficult or less represented toxicity categories.
+
+The local model files must be present before building or running the extension with local inference.
 
 ### Remote backend model
 
-The remote backend model is stored in:
+The remote backend model is expected in:
 
 ```text
 backend/models/xlmr-toxic-v2_1/
@@ -152,9 +171,7 @@ backend/models/xlmr-toxic-v2_1/
 
 This model is used by the backend API for remote inference.
 
-The backend model is tracked using Git LFS because it contains large model files.
-
-After cloning the repository, make sure Git LFS is installed and run:
+The backend model can contain large files and may be tracked using Git LFS. After cloning the repository, make sure Git LFS is installed and run:
 
 ```bash
 git lfs pull
@@ -172,9 +189,11 @@ backend/models/xlmr-toxic-v2_1/
 └── training_meta.json
 ```
 
+---
+
 ## Installing Git LFS
 
-Git LFS is required for downloading the backend model files.
+Git LFS is required if the backend model files are stored using Git LFS.
 
 Install and initialize Git LFS:
 
@@ -187,6 +206,8 @@ After cloning the repository, download LFS files:
 ```bash
 git lfs pull
 ```
+
+---
 
 ## Frontend installation and build
 
@@ -202,7 +223,7 @@ Install dependencies:
 npm install
 ```
 
-Create production build:
+Create the production build:
 
 ```bash
 npm run build
@@ -216,6 +237,8 @@ frontend/dist/
 
 The `dist` folder can be loaded into Chrome as an unpacked extension.
 
+---
+
 ## Loading the extension in Chrome
 
 1. Open Google Chrome.
@@ -226,14 +249,17 @@ chrome://extensions/
 ```
 
 3. Enable Developer mode.
-4. Click Load unpacked.
-5. Select the generated folder:
+4. Click **Load unpacked**.
+5. Select:
 
 ```text
 frontend/dist/
 ```
 
 6. The extension will appear in the list of installed extensions.
+7. Pin the extension to the toolbar if needed.
+
+---
 
 ## Running the backend API locally
 
@@ -273,26 +299,30 @@ If the API exposes interactive documentation, it can be opened at:
 http://127.0.0.1:8000/docs
 ```
 
-## Meaning of backend environment variables
+---
+
+## Backend environment variables
 
 | Variable | Meaning |
 |---|---|
-| HF_MODEL_PATH | Path to the local trained XLM-R model |
-| THRESHOLDS_PATH | Path to the threshold configuration |
-| MODEL_ID | Identifier of the model used by the API |
-| THRESHOLD_SET | Name of the threshold set used by the API |
-| MAX_TOKENS | Maximum number of tokens processed by the model |
-| MAX_BATCH | Maximum batch size accepted by the API |
-| ENABLE_INT8 | Enables INT8 optimization if supported |
-| TORCH_THREADS | Number of Torch CPU threads |
-| OMP_NUM_THREADS | Number of OpenMP threads |
-| MKL_NUM_THREADS | Number of MKL threads |
+| `HF_MODEL_PATH` | Path to the local trained XLM-R model |
+| `THRESHOLDS_PATH` | Path to the threshold configuration |
+| `MODEL_ID` | Identifier of the model used by the API |
+| `THRESHOLD_SET` | Name of the threshold set used by the API |
+| `MAX_TOKENS` | Maximum number of tokens processed by the model |
+| `MAX_BATCH` | Maximum batch size accepted by the API |
+| `ENABLE_INT8` | Enables INT8 optimization if supported |
+| `TORCH_THREADS` | Number of Torch CPU threads |
+| `OMP_NUM_THREADS` | Number of OpenMP threads |
+| `MKL_NUM_THREADS` | Number of MKL threads |
 
-## Switching the extension between cloud and local API
+---
 
-The extension can use the default cloud API or a locally running API. These commands are intended for developer testing and should be executed in the browser console from an extension context, for example from the extension options page.
+## Switching between cloud API and local API
 
-### Change to default cloud server API
+The extension can use a configured cloud API or a locally running API. These commands are intended for development and testing. They should be executed in the browser console from an extension context, for example from the extension options page.
+
+### Change to configured cloud API
 
 ```javascript
 chrome.runtime.sendMessage(
@@ -307,7 +337,7 @@ chrome.runtime.sendMessage(
 );
 ```
 
-### Change to backup/local API
+### Change to local API
 
 ```javascript
 chrome.runtime.sendMessage(
@@ -322,7 +352,7 @@ chrome.runtime.sendMessage(
 );
 ```
 
-### Reset back to default cloud API
+### Reset to default API configuration
 
 ```javascript
 chrome.runtime.sendMessage(
@@ -331,7 +361,7 @@ chrome.runtime.sendMessage(
 );
 ```
 
-### Check which API is currently configured
+### Check current API configuration
 
 ```javascript
 chrome.runtime.sendMessage(
@@ -358,11 +388,13 @@ chrome.runtime.sendMessage(
 );
 ```
 
-These commands are mainly used during development and testing. A normal user does not need to run them manually.
+A normal user does not need to run these commands manually.
+
+---
 
 ## Evaluation scripts
 
-The local model can be evaluated using:
+The optimized local browser model can be evaluated using:
 
 ```bash
 node scripts/evaluate-local-model.js
@@ -374,19 +406,25 @@ The backend training and evaluation scripts are located in:
 backend/train/
 ```
 
-These scripts were used for dataset preparation, model training, evaluation, and threshold tuning.
+These scripts were used for dataset preparation, remote model training, evaluation, and threshold tuning.
+
+The evaluation was not designed as one identical benchmark for every model. The remote model was evaluated more extensively from the perspective of classification quality, class imbalance, and decision thresholds. The original local TF.js model was tested as an initial baseline, while the optimized local TensorFlow.js model was evaluated separately as the practical browser-side solution.
+
+---
 
 ## Notes about datasets
 
 The original Jigsaw datasets and large raw archives are not part of the repository. They were used during training and evaluation, but they are not required for normal use of the extension.
 
-The repository contains source code, model configuration, selected reports, the local browser model, and the final backend model required for API startup.
+The repository contains source code, model configuration, selected reports, the local browser model or its expected location, and the backend model or its expected location required for API startup.
+
+---
 
 ## Main functionality
 
 The implemented system supports:
 
-- detection of toxic text on web pages,
+- detection of potentially toxic text on web pages,
 - local browser-based inference,
 - optional remote API inference,
 - automatic blurring of detected toxic text,
@@ -395,9 +433,30 @@ The implemented system supports:
 - changing sensitivity level,
 - domain whitelist,
 - popup statistics,
-- export of extension settings,
-- backend API testing.
+- export and import of extension settings if enabled in the settings page,
+- developer API testing commands for remote inference configuration.
+
+User feedback for incorrect classifications was considered during UX prototyping, but it is not part of the final implemented extension functionality.
+
+---
+
+## Scope and limitations
+
+Toxic Text Detector is an assistive tool based on automated model predictions. It can help detect and visually reduce exposure to potentially toxic text, but it does not replace human judgement or moderation.
+
+Known limitations include:
+
+- possible false positives, where harmless text is marked as toxic,
+- possible false negatives, where toxic text is not detected,
+- weaker performance in rare or difficult toxicity categories,
+- limited reliability for implicit, sarcastic, contextual, or multilingual toxicity,
+- possible performance impact on very large pages with many text elements,
+- differences between local and remote inference caused by model architecture, deployment environment, and threshold settings.
+
+Local inference is privacy-preserving and fast because text is processed directly in the browser. Remote inference can provide more precise results depending on the backend model, but it requires sending analyzed text to an API server.
+
+---
 
 ## Repository purpose
 
-This repository serves as the system manual for the bachelor thesis project. It contains the source code of the frontend and backend parts, technical description of the project structure, installation steps, startup commands, model information, and notes required for further development.
+This repository serves as the system manual for the bachelor thesis project. It contains the source code of the frontend and backend parts, technical description of the project structure, installation steps, startup commands, model information, developer API configuration commands, evaluation notes, and information required for further development.
