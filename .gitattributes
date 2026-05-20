@@ -1,0 +1,2 @@
+backend/models/xlmr-toxic-v2_1/*.safetensors filter=lfs diff=lfs merge=lfs -text
+backend/models/xlmr-toxic-v2_1/*.bin filter=lfs diff=lfs merge=lfs -text

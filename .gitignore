@@ -30,17 +30,21 @@ backend/**/*.pyc
 backend/.venv/
 backend/venv/
 
-backend/data/*
-!backend/data/README.md
-!backend/data/.gitkeep
-
+backend/data/
 backend/jig/
 backend/archive.zip
 backend/*.zip
 
 backend/models/*
-!backend/models/README.md
-!backend/models/.gitkeep
+
+!backend/models/
+!backend/models/xlmr-toxic-v2_1/
+!backend/models/xlmr-toxic-v2_1/config.json
+!backend/models/xlmr-toxic-v2_1/model.safetensors
+!backend/models/xlmr-toxic-v2_1/tokenizer.json
+!backend/models/xlmr-toxic-v2_1/tokenizer_config.json
+!backend/models/xlmr-toxic-v2_1/training_args.bin
+!backend/models/xlmr-toxic-v2_1/training_meta.json
 
 backend/models/**/checkpoint-*/
 backend/models/**/optimizer.pt
