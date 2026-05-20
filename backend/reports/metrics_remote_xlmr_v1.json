@@ -1,0 +1,107 @@
+{
+  "model_dir": "models\\xlmr-toxic-v1",
+  "thresholds": {
+    "toxic": 0.8899999999999999,
+    "severe_toxic": 0.7449999999999999,
+    "obscene": 0.8649999999999999,
+    "insult": 0.84,
+    "threat": 0.3999999999999999,
+    "identity_hate": 0.8799999999999999
+  },
+  "max_tokens": 256,
+  "device": "cuda",
+  "batch_size": 128,
+  "jigsaw2018_val": {
+    "macro_f1": 0.6349421879541007,
+    "micro_f1": 0.7765678842177809,
+    "hamming_loss": 0.0169298575427163,
+    "f1_toxic": 0.8214634146341463,
+    "ap_toxic": 0.8948792211055352,
+    "f1_severe_toxic": 0.4699738903394256,
+    "ap_severe_toxic": 0.4017546412894953,
+    "f1_obscene": 0.836555360281195,
+    "ap_obscene": 0.9072994045739193,
+    "f1_insult": 0.7740011926058438,
+    "ap_insult": 0.8053081816774291,
+    "f1_threat": 0.36220472440944884,
+    "ap_threat": 0.24660374379067793,
+    "f1_identity_hate": 0.5454545454545454,
+    "ap_identity_hate": 0.4824457559095202
+  },
+  "multilingual_toxic_only": {
+    "toxic_roc_auc": 0.8968621729053332,
+    "toxic_ap": 0.6110854317189007,
+    "toxic_f1@0.5": 0.5243268776570619
+  },
+  "unintended_bias_sample": {
+    "bias_read_rows": 300000,
+    "bias_max_rows": 50000,
+    "bias_split": null,
+    "rows_used": 50000,
+    "seed": 42
+  },
+  "unintended_bias_toxic_only": {
+    "ground_truth_column": "toxicity",
+    "overall_auc": 0.9644730827552327,
+    "identities_evaluated": 9,
+    "mean_subgroup_auc": 0.6981735271109641,
+    "mean_bpsn_auc": 0.7514604914411338,
+    "mean_bnsp_auc": 0.9628315814085051,
+    "per_identity": {
+      "male": {
+        "subgroup_count": 310,
+        "subgroup_auc": 0.71,
+        "bpsn_auc": 0.7233995378906342,
+        "bnsp_auc": 0.9703083518862801
+      },
+      "female": {
+        "subgroup_count": 332,
+        "subgroup_auc": 0.7335672830341476,
+        "bpsn_auc": 0.7565979211235346,
+        "bnsp_auc": 0.9683929195635375
+      },
+      "homosexual_gay_or_lesbian": {
+        "subgroup_count": 118,
+        "subgroup_auc": 0.6837121212121212,
+        "bpsn_auc": 0.6897816036983898,
+        "bnsp_auc": 0.9775799511777177
+      },
+      "christian": {
+        "subgroup_count": 137,
+        "subgroup_auc": 0.7741361788617886,
+        "bpsn_auc": 0.8450158643645495,
+        "bnsp_auc": 0.9495494823921586
+      },
+      "jewish": {
+        "subgroup_count": 67,
+        "subgroup_auc": 0.7317073170731708,
+        "bpsn_auc": 0.7836599318403116,
+        "bnsp_auc": 0.964703408527218
+      },
+      "muslim": {
+        "subgroup_count": 182,
+        "subgroup_auc": 0.6161321671525752,
+        "bpsn_auc": 0.734732631385351,
+        "bnsp_auc": 0.9495997371519931
+      },
+      "black": {
+        "subgroup_count": 198,
+        "subgroup_auc": 0.705026256564141,
+        "bpsn_auc": 0.7885954327769824,
+        "bnsp_auc": 0.9567240557730956
+      },
+      "white": {
+        "subgroup_count": 272,
+        "subgroup_auc": 0.673602764423077,
+        "bpsn_auc": 0.766960730537949,
+        "bnsp_auc": 0.9505256741250717
+      },
+      "psychiatric_or_mental_illness": {
+        "subgroup_count": 55,
+        "subgroup_auc": 0.6556776556776557,
+        "bpsn_auc": 0.6744007693525023,
+        "bnsp_auc": 0.978100652079472
+      }
+    }
+  }
+}

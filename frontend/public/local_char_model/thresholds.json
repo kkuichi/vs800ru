@@ -1,0 +1,27 @@
+{
+  "labels": [
+    "toxic",
+    "severe_toxic",
+    "obscene",
+    "insult",
+    "threat",
+    "identity_hate"
+  ],
+  "thresholds": {
+    "toxic": 0.89,
+    "severe_toxic": 0.98,
+    "obscene": 0.93,
+    "insult": 0.9400000000000001,
+    "threat": 0.985,
+    "identity_hate": 0.97
+  },
+  "val_f1_at_best_threshold": {
+    "toxic": 0.7363387978142076,
+    "severe_toxic": 0.4881889763779528,
+    "obscene": 0.8020893789901334,
+    "insult": 0.7068965517241379,
+    "threat": 0.36363636363636365,
+    "identity_hate": 0.5298013245033113
+  },
+  "default_verdict_rule": "verdict = any(score[label] >= threshold[label])"
+}
