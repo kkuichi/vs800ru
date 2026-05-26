@@ -1,0 +1,41 @@
+{
+  "run_id": "run-2026-05-26T20-09-23-109Z",
+  "dataset": {
+    "csv_path": "C:\\Study\\Bpcode\\Bp(tester)\\evaluation\\tfjs-toxicity-node-tester\\data\\val.csv",
+    "text_column": "text",
+    "rows_requested": 50000,
+    "rows_used": 15958
+  },
+  "model": {
+    "name": "@tensorflow-models/toxicity",
+    "toxicity_package_version": "1.2.2",
+    "tfjs_version": "1.7.4",
+    "labels_requested_from_model": [
+      "toxicity",
+      "severe_toxicity",
+      "obscene",
+      "insult",
+      "threat",
+      "identity_attack"
+    ],
+    "label_mapping": {
+      "toxic": "toxicity",
+      "severe_toxic": "severe_toxicity",
+      "obscene": "obscene",
+      "insult": "insult",
+      "threat": "threat",
+      "identity_hate": "identity_attack"
+    }
+  },
+  "inference": {
+    "backend_requested": "cpu",
+    "backend_actual": "cpu",
+    "threshold": 0.85,
+    "batch_size": 16
+  },
+  "timing_ms": {
+    "model_load_ms": 4756.54,
+    "evaluation_ms": 11652349.65,
+    "total_ms": 11657220.6
+  }
+}

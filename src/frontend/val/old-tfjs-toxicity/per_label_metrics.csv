@@ -1,0 +1,7 @@
+label,model_label,support,predicted_positive,tp,fp,fn,tn,precision,recall,f1,accuracy
+toxic,toxicity,1525,888,826,62,699,14371,0.93018,0.541639,0.684625,0.952312
+severe_toxic,severe_toxicity,143,0,0,0,143,15815,0,0,0,0.991039
+obscene,obscene,826,211,200,11,626,15121,0.947867,0.242131,0.385728,0.960083
+insult,insult,778,518,391,127,387,15053,0.754826,0.502571,0.603395,0.96779
+threat,threat,42,0,0,0,42,15916,0,0,0,0.997368
+identity_hate,identity_attack,132,0,0,0,132,15826,0,0,0,0.991728

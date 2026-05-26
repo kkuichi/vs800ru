@@ -1,0 +1,58 @@
+{
+  "run_id": "run-2026-05-26T20-09-23-109Z",
+  "dataset": {
+    "csv_path": "C:\\Study\\Bpcode\\Bp(tester)\\evaluation\\tfjs-toxicity-node-tester\\data\\val.csv",
+    "text_column": "text",
+    "rows_requested": 50000,
+    "rows_used": 15958
+  },
+  "model": {
+    "name": "@tensorflow-models/toxicity",
+    "toxicity_package_version": "1.2.2",
+    "tfjs_version": "1.7.4",
+    "labels_requested_from_model": [
+      "toxicity",
+      "severe_toxicity",
+      "obscene",
+      "insult",
+      "threat",
+      "identity_attack"
+    ],
+    "label_mapping": {
+      "toxic": "toxicity",
+      "severe_toxic": "severe_toxicity",
+      "obscene": "obscene",
+      "insult": "insult",
+      "threat": "threat",
+      "identity_hate": "identity_attack"
+    }
+  },
+  "inference": {
+    "backend_requested": "cpu",
+    "backend_actual": "cpu",
+    "threshold": 0.85,
+    "batch_size": 16
+  },
+  "timing_ms": {
+    "model_load_ms": 4756.54,
+    "evaluation_ms": 11652349.65,
+    "total_ms": 11657220.6
+  },
+  "metrics": {
+    "rows_used": 15958,
+    "labels_count": 6,
+    "macro_precision": 0.438812,
+    "macro_recall": 0.21439,
+    "macro_f1": 0.278958,
+    "micro_precision": 0.876314,
+    "micro_recall": 0.411201,
+    "micro_f1": 0.559747,
+    "hamming_loss": 0.02328,
+    "label_accuracy": 0.97672,
+    "total_tp": 1417,
+    "total_fp": 200,
+    "total_fn": 2029,
+    "total_tn": 92102,
+    "exact_match_accuracy": 0.908259
+  }
+}

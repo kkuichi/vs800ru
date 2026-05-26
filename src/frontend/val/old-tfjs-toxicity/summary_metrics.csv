@@ -1,0 +1,2 @@
+run_id,csv_path,rows_used,backend,tfjs_version,toxicity_package_version,threshold,batch_size,model_load_ms,evaluation_ms,total_ms,macro_precision,macro_recall,macro_f1,micro_precision,micro_recall,micro_f1,hamming_loss,label_accuracy,exact_match_accuracy,total_tp,total_fp,total_fn,total_tn
+run-2026-05-26T20-09-23-109Z,C:\Study\Bpcode\Bp(tester)\evaluation\tfjs-toxicity-node-tester\data\val.csv,15958,cpu,1.7.4,1.2.2,0.85,16,4756.54,11652349.65,11657220.6,0.438812,0.21439,0.278958,0.876314,0.411201,0.559747,0.02328,0.97672,0.908259,1417,200,2029,92102

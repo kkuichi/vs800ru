@@ -123,14 +123,15 @@ Keďže ide o multi-label úlohu, nepostačuje jeden globálny prah. Preto boli 
 
 \textbf{Interpretácia.} Výsledky ukazujú, že rozhodovanie modelu je pri menšinových a bezpečnostne citlivých triedach výrazne závislé od nastavenia prahov. Z tohto dôvodu je vhodné oddeľovať prahy optimalizované na validačných dátach od prahov určených pre produktové správanie systému, kde sa okrem klasickej presnosti zohľadňuje aj používateľský dopad falošných pozitív a falošných negatív.
 
-\section{Experimentálne vyhodnotenie lokálneho TF.js modelu}
+\section{Vyhodnotenie predtrénovaného TF.js toxicity modelu}
 
-Lokálny TF.js model bol vyhodnotený ako prvý orientačný variant inferencie priamo v prehliadači. Cieľom tejto časti je zistiť, do akej miery je predtrénovaný model použiteľný ako základ pre režim orientovaný na súkromie používateľa. Vyhodnotenie sa sústreďuje na základné metriky viacštítkovej klasifikácie, správanie jednotlivých kategórií toxicity a obmedzenia vyplývajúce z použitia jedného globálneho rozhodovacieho prahu.
+Pred návrhom vlastného optimalizovaného lokálneho modelu bol orientačne vyhodnotený aj predtrénovaný model \emph{@tensorflow-models/toxicity}. Tento experiment slúžil ako lokálny baseline a jeho cieľom bolo overiť, či je hotový TF.js model použiteľný pre režim orientovaný na súkromie používateľa. Model nebol použitý ako finálny lokálny režim riešenia, ale poskytol užitočné porovnanie z hľadiska kvality detekcie a výpočtovej náročnosti.
 
 \subsection{Nastavenie experimentu}
-Pre lokálny režim bol otestovaný predtrénovaný model \emph{@tensorflow-models/toxicity} spúšťaný priamo v prehliadači. Cieľom testu bolo získať orientačný obraz o kvalite detekcie v režime \emph{privacy-by-default}, teda bez odosielania textu mimo klienta. Keďže lokálne nasadenie je limitované výkonom a kompatibilitou backendov, meranie bolo vykonané s backendom \emph{CPU} a so zjednodušeným rozhodovaním pomocou jedného globálneho prahu $\tau=0{,}85$.
 
-Vyhodnotenie prebehlo na podmnožine \emph{val.csv}, z ktorej bolo použitých 5\,000 riadkov. Reportované sú štandardné multi-label metriky, konkrétne macro-F1, micro-F1, Hammingova strata a F1 pre jednotlivé štítky.
+Vyhodnotenie bolo vykonané pomocou samostatného Node.js testera, ktorý načítal validačný súbor \emph{val.csv}, spustil predikciu modelu a uložil výsledky do súborov \emph{summary\_metrics.csv}, \emph{per\_label\_metrics.csv}, \emph{predictions.csv}, \emph{config.json} a \emph{run\_log.txt}. Použitá bola verzia \emph{@tensorflow-models/toxicity} 1.2.2 spolu s kompatibilnou verziou TensorFlow.js 1.7.4. Model bol testovaný s backendom \emph{CPU}, globálnym rozhodovacím prahom $\tau = 0{,}85$ a veľkosťou dávky 16.
+
+Keďže praktické lokálne nasadenie rozšírenia nepočítalo so spoľahlivým využitím GPU/WebGL akcelerácie, dôležité bolo najmä správanie modelu v lokálnom režime bez GPU. Toto nastavenie zároveň ukázalo, do akej miery je predtrénovaný TF.js model vhodný pre priebežné spracovanie väčšieho počtu komentárov.
 
 \FloatBarrier
 \begin{table*}[!htbp]
@@ -138,65 +139,78 @@ Vyhodnotenie prebehlo na podmnožine \emph{val.csv}, z ktorej bolo použitých 5
   \small
   \renewcommand{\arraystretch}{1.15}
   \setlength{\tabcolsep}{4pt}
-  \label{tab:tfjs_eval_summary}
-  \begin{tabularx}{\textwidth}{|P{3.6cm}|Y|Y|Y|Y|Y|}
+  \begin{tabularx}{\textwidth}{|P{3.4cm}|Y|Y|Y|Y|Y|}
     \hline
-    \textbf{Konfigurácia} &
+    \textbf{Model} &
     \textbf{Backend} &
     \textbf{TF.js ver.} &
     \textbf{Riadky} &
     \textbf{Prahovanie} &
     \textbf{Batch size} \\
     \hline
-    Lokálny TF.js test &
-    cpu &
-    4.22.0 &
-    5\,000 &
-    $\tau=0{,}85$ (globálne) &
+    @tensorflow-models/toxicity 1.2.2 &
+    CPU &
+    1.7.4 &
+    15\,958 &
+    $\tau=0{,}85$ &
     16 \\
     \hline
     \multicolumn{6}{|P{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{%
-      \textbf{Metriky:} macro-F1 = 0{,}283;\quad micro-F1 = 0{,}568;\quad Hamming loss = 0{,}0236.
+      \textbf{Metriky:} macro-F1 = 0{,}279;\quad micro-F1 = 0{,}560;\quad Hamming loss = 0{,}0233;\quad exact match accuracy = 0{,}908.
+    } \\
+    \hline
+    \multicolumn{6}{|P{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{%
+      \textbf{Čas:} načítanie modelu = 4{,}76 s;\quad vyhodnotenie = 11\,652{,}35 s;\quad celkový čas = 11\,657{,}22 s; priemerne približne 730 ms na jeden komentár.
     } \\
     \hline
   \end{tabularx}
-  \caption[Vyhodnotenie lokálneho TF.js modelu]{Súhrn vyhodnotenia lokálneho TF.js modelu (\emph{@tensorflow-models/toxicity}) na podmnožine validačných dát.}
+  \caption[Vyhodnotenie predtrénovaného TF.js toxicity modelu]{Súhrn vyhodnotenia predtrénovaného TF.js toxicity modelu na validačnej množine Jigsaw2018.}
+  \label{tab:tfjs_eval_summary}
 \end{table*}
 \FloatBarrier
 
 \subsection{Výsledky a interpretácia}
-Výsledky naznačujú, že lokálny model dosahuje použiteľnú výkonnosť najmä pre častejšie triedy, napríklad \emph{toxic} a \emph{insult}, avšak pri menšinových kategóriách, ako sú \emph{threat}, \emph{severe\_toxic} a \emph{identity\_hate}, pri zvolenom globálnom prahu nedosahuje pozitívny F1. Tento jav je v súlade s očakávaniami z analytickej časti: menšinové triedy sú náročné na citlivé prahovanie a lokálny model je primárne vhodný ako \emph{privacy-friendly baseline} alebo ako režim s nižšími nárokmi na presnosť.
 
-Z praktického pohľadu to podporuje architektúru s dvomi režimami inferencie, kde lokálny režim poskytuje okamžitú ochranu súkromia a vzdialený režim môže slúžiť ako presnejší opt-in doplnok.
+Výsledky ukazujú, že model dosahoval najlepšie výsledky pri častejších kategóriách \emph{toxic} a \emph{insult}. Pri štítku \emph{toxic} dosiahol F1 hodnotu 0{,}685 a pri štítku \emph{insult} hodnotu 0{,}603. Pri kategórii \emph{obscene} bola presnosť vysoká, ale návratnosť nízka, čo znamená, že model označoval túto kategóriu opatrne a veľkú časť pozitívnych príkladov neidentifikoval.
+
+Pri zriedkavejších triedach \emph{severe\_toxic}, \emph{threat} a \emph{identity\_hate} model pri zvolenom globálnom prahu neoznačil žiadny pozitívny príklad. Z toho dôvodu bola hodnota F1 pre tieto triedy nulová. Vysoké hodnoty accuracy pri týchto triedach preto nemožno interpretovať ako dôkaz kvalitnej detekcie, keďže sú spôsobené najmä veľkým počtom negatívnych príkladov vo validačných dátach.
 
 \FloatBarrier
 \begin{table*}[!htbp]
   \centering
-  \footnotesize
+  \small
   \renewcommand{\arraystretch}{1.15}
-  \label{tab:tfjs_eval_perlabel}
-  \begin{tabularx}{\textwidth}{|p{2.8cm}|*{6}{>{\centering\arraybackslash}X|}}
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabularx}{\textwidth}{|P{2.8cm}|Y|Y|Y|Y|Y|}
     \hline
     \textbf{Štítok} &
-    \textbf{Toxic} &
-    \textbf{Severe toxic} &
-    \textbf{Obscene} &
-    \textbf{Insult} &
-    \textbf{Threat} &
-    \textbf{Identity hate} \\
+    \textbf{Pozit.} &
+    \textbf{Predik. pozit.} &
+    \textbf{Precision} &
+    \textbf{Recall} &
+    \textbf{F1} \\
     \hline
-    F1 &
-    0{,}674 &
-    0{,}000 &
-    0{,}370 &
-    0{,}654 &
-    0{,}000 &
-    0{,}000 \\
+    toxic & 1\,525 & 888 & 0{,}930 & 0{,}542 & 0{,}685 \\
+    \hline
+    severe\_toxic & 143 & 0 & 0{,}000 & 0{,}000 & 0{,}000 \\
+    \hline
+    obscene & 826 & 211 & 0{,}948 & 0{,}242 & 0{,}386 \\
+    \hline
+    insult & 778 & 518 & 0{,}755 & 0{,}503 & 0{,}603 \\
+    \hline
+    threat & 42 & 0 & 0{,}000 & 0{,}000 & 0{,}000 \\
+    \hline
+    identity\_hate & 132 & 0 & 0{,}000 & 0{,}000 & 0{,}000 \\
     \hline
   \end{tabularx}
-  \caption[Per-label F1 pre lokálny model]{Per-label F1 skóre lokálneho TF.js modelu pri globálnom prahu $\tau = 0{,}85$.}
+  \caption[Per-label výsledky predtrénovaného TF.js modelu]{Per-label výsledky predtrénovaného TF.js toxicity modelu pri globálnom prahu $\tau = 0{,}85$.}
+  \label{tab:tfjs_eval_perlabel}
 \end{table*}
 \FloatBarrier
+
+Z praktického hľadiska bol najvýraznejším obmedzením čas spracovania. Vyhodnotenie 15\,958 komentárov trvalo viac než tri hodiny, čo zodpovedá približne 730 ms na jeden komentár. Takéto správanie nie je vhodné pre rozšírenie prehliadača, ktoré musí priebežne spracovávať viacero textových uzlov na stránke bez citeľného spomalenia používateľského rozhrania.
+
+Na základe týchto výsledkov nebol predtrénovaný TF.js toxicity model použitý ako finálny lokálny režim. Experiment však ukázal dôležitý baseline: hotový TF.js model poskytuje určitú kvalitu pri častejších kategóriách, ale pri jednom globálnom prahu zlyháva pri menšinových triedach a jeho výpočtová náročnosť je pre praktické lokálne nasadenie príliš vysoká. Toto zistenie motivovalo návrh vlastného optimalizovaného lokálneho modelu, ktorý je opísaný v ďalšej časti.
 
 \section{Vyhodnotenie optimalizovaného lokálneho režimu inferencie}
 
@@ -215,7 +229,7 @@ Cieľom experimentu bolo overiť dve vlastnosti optimalizovaného lokálneho re�
   \small
   \renewcommand{\arraystretch}{1.15}
   \setlength{\tabcolsep}{6pt}
-  \begin{tabularx}{\textwidth}{|p{4.4cm}|Y|Y|Y|Y|Y|}
+  \begin{tabularx}{\textwidth}{|p{3cm}|Y|Y|Y|Y|Y|}
     \hline
     \textbf{Konfigurácia} &
     \textbf{Model} &
