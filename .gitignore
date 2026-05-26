@@ -8,6 +8,7 @@ src/frontend/dist.zip
 src/frontend/.vite/
 src/frontend/.cache/
 src/frontend/.tmp/
+src/frontend/jigsaw/
 
 src/frontend/.env
 src/frontend/.env.*
