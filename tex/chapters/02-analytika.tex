@@ -1,0 +1,250 @@
+% !TEX root = ../thesis.tex
+\chapter{Analytická časť}
+
+Táto kapitola predstavuje analytický základ navrhovaného riešenia na detekciu toxického textu v prostredí webového prehliadača. Najprv sú opísané teoretické východiská problému, následne sú analyzované existujúce prístupy, datasety, modely a evaluačné metriky. Kapitola sa ďalej venuje etickým a spravodlivým aspektom, architektúre navrhovaného riešenia, otázkam viacjazyčnosti, špecifikám Chrome Manifest V3 a experimentálnemu protokolu použitému pri hodnotení systému.
+
+\section{Teoretické základy}
+Termín \emph{toxicita} online sa vzťahuje na výrazy, ktoré sú hrubé, neúctivé alebo môžu spôsobiť, že sa ostatní budú cítiť zle. Vo výskume sa problém bežne modeluje ako \emph{viacnásobná (multi-label)} klasifikácia textu, kde jeden text môže patriť do viacerých kategórií, ako \emph{toxicita}, \emph{vysoká toxicita}, \emph{obscénnosť}, \emph{vyhrážka}, \emph{urážka} alebo \emph{nenávisť voči identite}. Referenčné dátové súbory—najmä séria Jigsaw—štandardizovali túto taxonómiu a slúžia ako referenčné body pre hodnotenie modelov \cite{davidson2017hate}\cite{waseem2016hateful}\cite{founta2018large}\cite{zampieri2019offenseval}\cite{tsoumakas2007multilabel}\cite{jigsaw2018toxic}\cite{jigsaw2019bias}\cite{jigsaw2020multilingual}.
+
+Tradičné prístupy k trénovaniu systému detekcie toxicity vyžadujú milióny anotovaných komentárov. Tradičné systémy skutočne používali funkcie (bag-of-words) so štatistickými klasifikátormi, ako sú Support Vector Machines alebo Na\"{\i}ve Bayes. Hoci boli tieto tradičné metódy účinné, mali určité nedostatky: nedokázali hlboko porozumieť kontextu. Architektúry hlbokého učenia, ako napríklad LSTM, BiLSTM, CNN a neskôr transformátory, dosiahli v poslednej dobe skvelé výsledky vďaka svojej jasnej schopnosti zachytiť kontext a sémantický význam aj za hranicami izolovaných slov \cite{davidson2017hate}\cite{waseem2016hateful}\cite{kumar2024eliminating}\cite{sikiandani2025browser}\cite{bert2019}\cite{roberta2019}.
+
+\section{Prehľad súčasného výskumu}\label{sec:related_work}
+
+Existujúce práce o detekcii toxicity a škodlivého obsahu pre koncových používateľov možno rozdeliť do troch vrstiev:
+\begin{enumerate}
+  \item Prehliadačovo integrované systémy, ktoré sa snažia detegovať škodlivý obsah priamo v mieste konzumácie (rozšírenia, plug-iny),
+  \item ľahké NLP pipeline, ktoré uprednostňujú transparentnosť a nízku výpočtovú náročnosť,
+  \item zdieľané artefakty (datasety, evaluačné metriky a produkčné baseline), ktoré štandardizujú štítky a umožňujú porovnateľné hodnotenie.
+\end{enumerate}
+Toto rozdelenie vychádza z porovnania prehliadačových riešení, klasických NLP pipeline a spoločných výskumných artefaktov používaných pri hodnotení toxicity \cite{jigsaw2018toxic}\cite{jigsaw2019bias}\cite{kumar2024eliminating}\cite{sikiandani2025browser}\cite{deep2024integrated}\cite{perspectiveAPI}.
+
+Pre túto prácu je podstatné nielen to, ako presný je model „na papieri“, ale aj celkový príbeh nasadenia: súkromie (lokálna vs.\ vzdialená inferencia), latencia, konzistentné správanie UI, vysvetliteľnosť a otázky spravodlivosti. Prehľad literatúry naznačuje, že kvalitný UX je v prehliadači reálne dosiahnuteľný, avšak spôsob, akým sa inferencia vykonáva, má zásadný vplyv na súkromie a dôveru používateľov \cite{tfjsToxicity}\cite{chromemv3}\cite{edpb2019dpbdd}\cite{hatexplain2021}\cite{borkan2019nuanced}.
+
+Pre túto prácu je podstatné nielen to, ako presný je model „na papieri“, ale aj celkový príbeh nasadenia: súkromie (lokálna vs.\ vzdialená inferencia), latencia, konzistentné správanie UI, vysvetliteľnosť a otázky spravodlivosti. Prehľad literatúry naznačuje, že kvalitný UX je v prehliadači reálne dosiahnuteľný, avšak spôsob, akým sa inferencia vykonáva, má zásadný vplyv na súkromie a dôveru používateľov.
+
+\subsection{Sikiandani et al.: detekcia v prehliadači s BiLSTM a ASR}\label{subsec:sikiandani_related}
+Sikiandani, Suarjaya a Putra navrhujú systém orientovaný na prehliadač, kde rozšírenie pre Chrome tvorí používateľskú vrstvu a inferencia je realizovaná na backendovej službe. Zámerom je podporiť používateľa priamo počas čítania obsahu a poskytnúť rýchlu informáciu o potenciálne škodlivom texte \cite{sikiandani2025browser}.
+
+\paragraph{Dáta a nastavenie problému.}
+Autori modelujú toxicitu ako viacnásobnú (multi-label) klasifikáciu so štandardnou šesť-kategóriovou taxonómiou (toxic, severe toxic, obscene, insult, threat, identity hate). Trénovacie dáta obsahujú približne 15\,000 označených komentárov a vykazujú typickú nerovnováhu tried, kde zriedkavé štítky (napr.\ threat alebo severe toxic) môžu byť ľahko „prekryté“ dominantnými kategóriami \cite{sikiandani2025browser}.
+
+\paragraph{Model a technológie.}
+Textový klasifikátor je založený na BiLSTM a autori experimentujú s rôznymi embeddingmi. Dôležitým rozšírením je spracovanie reči v krátkych videách: audio sa najprv prepíše pomocou Whisper (ASR) a až následne sa prepis hodnotí z hľadiska toxicity. BiLSTM tu predstavuje pragmatickú voľbu: je ľahší než veľké transformery, no dokáže zachytiť viac kontextu než klasické bag-of-words prístupy \cite{sikiandani2025browser}\cite{radford2022whisper}.
+
+\paragraph{Silné stránky.}
+Práca ukazuje realistický používateľský scenár: detekcia prebieha priamo v prehliadači, výsledky sú zrozumiteľne prezentované a systém je rozšíriteľný aj na audio obsah. Z praktického hľadiska je relevantné aj to, že ľahšie neurónové architektúry môžu dosiahnuť vysokú mieru spomienky (recall), čo je dôležité pri minimalizácii falošne negatívnych výsledkov \cite{sikiandani2025browser}.
+
+\paragraph{Obmedzenia a riziká.}
+Najväčším problémom je súkromie: inferencia je vzdialená, takže používateľský text (a potenciálne aj prepisy) opúšťa zariadenie. Navyše vzniká reťaz chýb, keďže klasifikátor vidí iba prepis a chyby ASR znižujú kvalitu následnej detekcie. Pri menšinových triedach môže systém pôsobiť silno na agregovaných metrikách, no stále podávať slabší výkon práve v kritických kategóriách \cite{sikiandani2025browser}\cite{radford2022whisper}.
+
+\paragraph{Implikácie pre túto prácu.}
+Táto štúdia podporuje koncept rozšírenia s UX vzormi typu „zamaskovať a odhaliť“ obsah, no zároveň jasne ukazuje potrebu lokálneho režimu, ak má byť riešenie privacy-by-default. Z pohľadu architektúry tým posilňuje motiváciu pre hybridný prístup: lokálna inferencia ako predvolená možnosť a vzdialená inferencia iba ako voliteľná alternatíva (napr.\ pri viacjazyčnosti alebo pre presnejší model).
+
+\subsection{Kumar et al.: interpretovateľný klasický NLP pipeline (ToxiGuard)}\label{subsec:kumar_related}
+Kumar a kol.\ navrhujú ToxiGuard, ktorý kladie dôraz na interpretovateľnosť a efektivitu. Tento smer je zaujímavý najmä tam, kde je potrebná nízka latencia, jednoduché vysvetlenie výsledkov a použiteľnosť ako baseline pri porovnávaniach \cite{kumar2024eliminating}.
+
+\paragraph{Pipeline a technológie.}
+Riešenie využíva klasické predspracovanie NLP a bag-of-words príznaky, pričom klasifikátorom je Na\"{\i}ve Bayes (napr.\ cez CountVectorizer). Typický postup zahŕňa čistenie textu, tokenizáciu a normalizačné kroky, následne extrakciu príznakov a klasifikáciu \cite{kumar2024eliminating}.
+
+\paragraph{Silné stránky.}
+Takýto prístup je výpočtovo nenáročný, rýchly a transparentnejší než hlboké neurónové modely, čo môže zvyšovať dôveru používateľov v situáciách, kde očakávajú jednoduché zdôvodnenie. Zároveň je vhodný ako interpretovateľný baseline pri evaluácii a pri debugovaní správania systému \cite{kumar2024eliminating}.
+
+\paragraph{Obmedzenia a riziká.}
+Klasické bag-of-words modely typicky zlyhávajú pri kontexte, sarkazme a implicitnej nenávisti, keďže význam často závisí od slovosledu, negácií a dlhších závislostí. Z pohľadu nasadenia tiež nejde primárne o „extension-native“ riešenie, takže je potrebné odlišovať medzi výskumnou pipeline a reálnym prehliadačovým produktom \cite{kumar2024eliminating}.
+
+\paragraph{Implikácie pre túto prácu.}
+ToxiGuard je pre nás dôležitý najmä ako interpretovateľný referenčný bod a ako inšpirácia pre UI prvky typu „prečo“ (transparentnosť výsledku). Pre realistickú detekciu nuansovaných foriem toxicity a multi-label skórovanie však bude potrebný silnejší model než čistý Na\"{\i}ve Bayes baseline.
+
+\subsection{Deep et al.: prehliadačový plug-in s multimodálnou detekciou (text + obraz)}\label{subsec:deep_related}
+Deep a kol.\ navrhujú zásuvný modul prehliadača, ktorý analyzuje obscénny obsah v texte aj v obrázkoch, teda multimodálne. Takýto prístup je relevantný, pretože reálny web často kombinuje text s vizuálnym obsahom (memy, screenshoty), ktorý môže byť tiež škodlivý \cite{deep2024integrated}.
+
+\paragraph{Silné stránky.}
+Hlavným prínosom je rozšírenie perspektívy: prehliadačové nástroje nemusia byť obmedzené iba na text, ale môžu riešiť viac typov obsahu. To podporuje myšlienku, že používateľská ochrana sa dá integrovať priamo do toku prehliadania webu \cite{deep2024integrated}.
+
+\paragraph{Obmedzenia a riziká.}
+Analýza obrázkov zásadne zvyšuje výpočtovú náročnosť a zvyčajne prináša dodatočné oprávnenia a súkromnostné riziká, pretože obrázky môžu obsahovať osobné údaje aj vtedy, keď text nie. V praxi je preto multimodalita náročnejšia na bezpečný a zodpovedný dizajn \cite{deep2024integrated}.
+
+\paragraph{Implikácie pre túto prácu.}
+Táto práca zostáva zámerne zameraná na toxicitu v texte, aby bolo hodnotenie kontrolované a aby sa uprednostnil lokálny režim zachovávajúci súkromie. Multimodálny smer však predstavuje prirodzený priestor pre budúce rozšírenia a potvrdzuje prenositeľnosť UX vzorov (blokovanie/odhalenie, vysvetlenie, spätná väzba).
+
+\subsection{Podporné artefakty: baseline, datasety a evaluačné protokoly}\label{subsec:artefacts_related}
+Okrem jednotlivých systémov je výskum toxicity silne formovaný zdieľanými artefaktmi. Tieto artefakty definujú taxonómie označení, poskytujú tréningové a testovacie údaje a zavádzajú metriky, ktoré odhaľujú spôsoby zlyhania skryté za jedným hlavným skóre.
+
+\paragraph{Produkčný baseline: Perspective API.}
+Perspective API poskytuje viac atribútov toxicity a je dlhodobo udržiavané rozhranie pre hodnotenie textu. Je vhodné na porovnanie, avšak ide o vzdialené API, takže text sa odosiela do externej služby a privacy-by-default je možné dosiahnuť iba pri explicitnom opt-in a jasnej komunikácii \cite{perspectiveAPI}.
+
+\paragraph{Benchmarky a taxonómia: Jigsaw datasety.}
+Séria datasetov Jigsaw štandardizovala multi-label taxonómiu a poskytuje referenčné súbory na tréning a testovanie. Multilingual varianta zároveň ukazuje, že modely trénované iba na angličtine sa mimo angličtiny výrazne zhoršujú, ak nie sú explicitne prispôsobené \cite{jigsaw2018toxic}\cite{jigsaw2020multilingual}.
+
+\paragraph{Spravodlivosť: Unintended Bias a skupinové metriky.}
+Dataset \emph{Unintended Bias} zavádza identitne anotované testovanie a metriky orientované na podskupiny, ktoré odhaľujú neúmyselné skreslenia (napr.\ nadmerné označovanie identitných zmienok alebo dialektu). V kontexte nasadenia ide o kritický aspekt, pretože priamo ovplyvňuje dôveru používateľov a môže marginalizovať skupiny \cite{jigsaw2019bias}\cite{borkan2019nuanced}
+\cite{dixon2018bias}\cite{sap2019racialbias}.
+
+\paragraph{Vysvetliteľnosť: HateXplain.}
+HateXplain obsahuje triedy, anotácie cieľovej skupiny a ľudské racionály (zvýraznené úseky textu), čím podporuje vysvetliteľnosť a cielené hodnotenie. Aj keď systém nemusí byť priamo trénovaný na racionáloch, dataset motivuje UI prvky typu „prečo“ a diskusiu o spoľahlivosti vysvetlení \cite{hatexplain2021}.
+
+\paragraph{Robustnosť: ToxiGen.}
+ToxiGen cieli na implicitnú a adversariálnu nenávisť a poskytuje veľký dataset vhodný na stres-testovanie robustnosti modelov. Je užitočný najmä pri analýze zlyhaní, ktoré sa v reálnom online prostredí vyskytujú vo forme kódovaného jazyka alebo sarkazmu \cite{toxigen2022}\cite{hatecheck2021}.
+
+\paragraph{Lokálna inferencia v prehliadači: TF.js \textit{toxicity} a MV3.}
+Model TF.js \textit{toxicity} demonštruje, že multi-label inferencia je realizovateľná lokálne v prehliadači. Pri praktickom nasadení však treba rátať s obmedzeniami MV3 (načítanie, pamäť, responzivita UI a bezpečnostné pravidlá) \cite{tfjsToxicity}\cite{chromemv3}.
+
+\subsection{Syntéza: dôsledky pre návrh riešenia}\label{subsec:synthesis_related}
+
+\paragraph{Zhrnutie.}
+Literatúra ukazuje, že prehliadačovo integrované UX vzory sú realizovateľné a často efektívne, no vzdialená inferencia znižuje súkromie a zvyšuje nároky na transparentnosť. Klasické pipeline sú užitočné ako interpretovateľné baseline, ale samy osebe nestačia na nuansovanú alebo implicitnú toxicitu. Zdieľané datasety a fairness-orientované metriky sú nevyhnutné, pretože agregované skóre často neodhaľuje zlyhania menšinových tried ani neúmyselné skreslenia \cite{jigsaw2019bias}\cite{borkan2019nuanced}\cite{dixon2018bias}\cite{sap2019racialbias}.
+
+\paragraph{Dopad na architektúru práce.}
+Tieto zistenia priamo motivujú architektúru zvolenú v tejto práci: rozšírenie Chrome Manifest V3 s lokálnym režimom inferencie zachovávajúcim súkromie, voliteľným vzdialeným režimom cez bezpečný proxy, per-label skórovaním s nastaviteľnou prísnosťou a hodnotiacim protokolom, ktorý kombinuje prediktívne metriky (makro/mikro F1, Hammingova strata, výkon po štítkoch) s inžinierskymi metrikami (latencia, čas načítania modelu) a s fairness diagnostikou tam, kde je to relevantné \cite{jigsaw2019bias}\cite{tfjsToxicity}\cite{chromemv3}\cite{borkan2019nuanced}.
+
+\FloatBarrier
+\begin{table}[!htbp]
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{|Y|Y|Y|Y|}
+    \hline
+    \textbf{Dielo / Artefakt} & \textbf{Model / prístup} & \textbf{Nasadenie} & \textbf{Dáta / poznámka} \\
+    \hline
+    Sikiandani et al. & BiLSTM (multi-label) + Whisper ASR & Rozšírenie + vzdialený backend & $\sim$15k; 6 štítkov; text+reč; citlivé na menšinové triedy \\
+    \hline
+    Kumar et al. (ToxiGuard) & CountVectorizer/ BoW + Na\"{\i}ve Bayes & Výskumný nástroj (typ.\ lokálne) & Interpretovateľný baseline; slabší kontext/implicitná toxicita \\
+    \hline
+    Deep et al. & Multimodálne (text+obraz), hybrid & Plug-in prehliadača & Obscénny obsah; vyššia náročnosť a riziká pri obrázkoch \\
+    \hline
+    Perspective API & Proprietárne (transformery) & Vzdialené API & Multi-atribúty + jazyky; produkčný baseline, nie privacy-by-default \\
+    \hline
+    Jigsaw \textit{Unintended Bias} & Evaluačné metriky + dataset & Offline hodnotenie & Subgroup AUC, BPSN/BNSP; identity značky (bias audit) \\
+    \hline
+    HateXplain & Dataset (racionály, ciele) & Offline dataset & $\sim$20k (Gab/Twitter); podporuje vysvetliteľnosť \\
+    \hline
+    ToxiGen & Dataset (implicitná/adversariálna) & Offline dataset & 274k viet; stres-test implicitnej nenávisti; 13 skupín \\
+    \hline
+    TF.js \textit{toxicity} & Ľahký multi-label model (TF.js) & Lokálne v prehliadači & Jigsaw-štýl štítkov; per-label skóre; vhodné pre privacy režim \\
+    \hline
+  \end{tabularx}
+  \caption[Porovnanie prác a artefaktov]{Stručné porovnanie prác a artefaktov relevantných pre detekciu toxicity (model, nasadenie, dáta).}
+  \label{tab:review_comparison_short}
+\end{table}
+\FloatBarrier
+
+\section{Metódy a charakteristiky modelu}
+\paragraph{Predspracovanie.}
+Typické kroky zahŕňajú prevod na malé písmená (ak veľkosť písmen nenesie dôležitú informáciu), Unicode normalizáciu (napr.\ NFKC), nahradenie URL adries, používateľských mien a hashtagov špeciálnymi symbolmi, zjednotenie opakovanej interpunkcie a mierne „čistenie“ textu. Pri detekcii toxicity je užitočné: (a) ponechať emotikony a emoji (nesú informáciu o nálade), (b) normalizovať leetspeak a medzery vo vulgárnych výrazoch a (c) zachovať negácie. Pri použití tokenizérov pre transformátory sa agresívne odstraňovanie stop-slov a stemming zvyčajne vynecháva; pri klasických modeloch môžu byť slovné a znakové \(n\)-gramy (napr.\ 3--5 znakov) veľmi robustné voči obchádzaniu filtrov \cite{kumar2024eliminating}\cite{hatexplain2021}\cite{fasttext2017}.
+
+\paragraph{Reprezentácia príznakov.}
+Existujú tri praktické úrovne:
+\begin{enumerate}
+  \item \emph{Bag-of-words / TF--IDF} nad slovnými a znakovými \(n\)-gramami – rýchle, interpretovateľné a dobrý baseline \cite{davidson2017hate}\cite{kumar2024eliminating}.
+  \item \emph{Statické vektory} (word2vec/GloVe/FastText) – vhodné pre CNN/BiLSTM, pričom FastText lepšie zvláda preklepy \cite{fasttext2017}\cite{word2vec2013}\cite{glove2014}.
+  \item \emph{Kontextové vloženia} (BERT/RoBERTa, DistilBERT, mBERT/XLM-R pre viacjazyčnosť) – dosahujú najlepšiu presnosť vďaka modelovaniu kontextu, náznakov sarkazmu a dlhých závislostí. Kompaktné alebo destilované varianty sú vhodnejšie pre použitie v prehliadači \cite{jigsaw2018toxic}\cite{jigsaw2020multilingual}\cite{bert2019}\cite{roberta2019}\cite{toxigen2022}\cite{distilbert2019}\cite{xlmr2020}.
+\end{enumerate}
+
+\paragraph{Klasifikátory.}
+Základné modely, ako logistická regresia alebo lineárne SVM, fungujú dobre s TF--IDF reprezentáciou. V neurónových modeloch sa často používajú \emph{CNN} (rýchle, zachytávajú lokálne vzory), \emph{BiLSTM/GRU} (sekvenčné modelovanie, často s pozornosťou) a \emph{hybridné} architektúry (napr.\ CNN+BiLSTM). Transformátory doladené na dátach toxicity zvyčajne dosahujú najvyššiu presnosť. BiLSTM systém opísaný Sikiandanim a kol.\ ukazuje, že kompaktné rekurentné modely môžu dosiahnuť vysokú mieru spomienky pri nízkych výpočtových nákladoch, čo je atraktívne v prostrediach s obmedzenými zdrojmi \cite{davidson2017hate}\cite{kumar2024eliminating}
+\cite{sikiandani2025browser}\cite{bert2019}\cite{roberta2019}\cite{distilbert2019}.
+
+\paragraph{Cieľ multi-label učenia.}
+Štandardnou voľbou straty je \emph{binárna cross-entropia na každú značku}. Nerovnováha tried (napríklad to, že \emph{hrozba} je veľmi zriedkavá) sa rieši pomocou \emph{váh tried}, \emph{focal loss} alebo vyváženého vzorkovania. Veľmi účinnou a jednoduchou pákou je použitie \emph{prahov osobitne pre každú značku} (namiesto jedného globálneho prahu), ktoré sa doladia na validačných krivkách presnosť--spomienka \cite{tsoumakas2007multilabel}\cite{jigsaw2019bias}\cite{focalloss2017}\cite{sklearnPRCurve}.
+
+\paragraph{Kalibrácia a používateľské nastavenia.}
+Okrem optimalizácie F1 je užitočné kalibrovať pravdepodobnosti (napr.\ pomocou \emph{temperature scaling} alebo Plattovej kalibrácie), aby skóre lepšie zodpovedali úrovni istoty, ktorú UI zobrazuje. V samotnej aplikácii môže jeden posuvník prísnosti posúvať všetky prahy naraz, pričom relatívne rozdiely medzi značkami zostanú zachované, a panel s výsledkami by mal vždy zobrazovať \emph{aj} diskrétny verdikt, \emph{aj} skóre pre jednotlivé značky \cite{guo2017calibration}.
+
+\paragraph{Hodnotenie.}
+Je potrebné reportovať \emph{presnosť, spomienku a F1 pre každú značku}, \emph{makro-F1} (všetky značky majú rovnakú váhu), \emph{mikro-F1} (zohľadňuje objem), \emph{Hammingovu stratu} (chybovosť podľa štítkov) a \emph{PR-AUC} pre porovnanie nezávislé od konkrétneho prahu. Súčasťou by mali byť aj \emph{konfúzne matice} pre menšinové značky (napr.\ Threat, Severe toxic). Pre rozšírenie do prehliadača sú rovnako dôležité aj \emph{inžinierske} metriky: latencia (medián/p95 od výberu textu alebo načítania stránky po verdikt), čas prvého načítania modelu a pamäťová stopa pri lokálnom behu \cite{tsoumakas2007multilabel}\cite{jigsaw2018toxic}\cite{jigsaw2019bias}\cite{tfjsToxicity}\cite{chromemv3}\cite{borkan2019nuanced}\cite{dixon2018bias}\cite{sklearnPRCurve}\cite{sklearnF1}\cite{sklearnHamming}.
+
+\paragraph{Robustnosť a viacjazyčnosť.}
+Je vhodné doplniť záťažové testy pre bežné obchádzky (medzery, leetspeak, vkladanie symbolov) a spúšťať \emph{bias probes} na frázach s identitnými a dialektálnymi výrazmi. Pri zmiešaných alebo neanglických stránkach pomôže ľahká detekcia jazyka a smerovanie na viacjazyčný model; prahy podľa jazyka (lokality) pomáhajú zabrániť nadmernému označovaniu v menšinových jazykoch \cite{jigsaw2020multilingual}\cite{borkan2019nuanced}\cite{sap2019racialbias}\cite{hatecheck2021}\cite{xlmr2020}.
+
+\paragraph{Vysvetliteľnosť (voliteľná, ale užitočná).}
+Pri neurónových modeloch môžu jednoduché vizualizácie na úrovni tokenov (napr.\ pozornosť alebo gradientové mapy) pomôcť recenzentom pochopiť, prečo bol konkrétny úsek textu označený. Takéto výstupy by však mali byť prezentované ako \emph{heuristiky}, nie ako presné vysvetlenia rozhodnutia modelu \cite{hatexplain2021}.
+
+\paragraph{Inžinierske poznámky (lokálny vs.\ vzdialený režim).}
+Pri \emph{lokálnom} behu v TF.js je vhodné voliť kompaktné alebo destilované modely, obmedziť maximálnu dĺžku sekvencie, dávkovať kratšie úryvky a kešovať výsledky pre opakovane sa vyskytujúci text. Pri \emph{vzdialenom} behu je dôležité používať proxy (kde sa uchovávajú API kľúče), nastavovať limity požiadaviek a v rozhraní jasne komunikovať, keď je text odosielaný mimo zariadenia používateľa \cite{tfjsToxicity}\cite{chromemv3}\cite{distilbert2019}.
+
+\paragraph{Zhrnutie.}
+V praxi sa ako veľmi pragmatická skladba ukazuje: ľahké predspracovanie \(\rightarrow\) transformátor (alebo BiLSTM/CNN pre kompaktnejšie nasadenie) \(\rightarrow\) prahy pre jednotlivé značky \(\rightarrow\) verdikt + skóre pre značky, hodnotené pomocou makro-F1, Hammingovej straty a latencie, doplnené o testy zaujatosti a viacjazyčné fallback riešenia tam, kde sú potrebné.
+
+\section{Etické a spravodlivé hľadiská}
+Napriek vysokej agregovanej presnosti môžu automatizované detektory vykazovať problémy so spravodlivosťou. Štúdie a benchmarky poukazujú na to, že modely môžu nadmerne označovať dialektálne texty alebo zmienky o identite ako toxické, čo znižuje dôveru a môže marginalizovať určité skupiny; benchmark \emph{Unintended Bias} sa týmto účinkom venuje priamo. Spravodlivosť a transparentnosť sú preto kľúčové. Navrhované riešenie zobrazí skóre dôvery pre jednotlivé štítky a umožní používateľom poskytovať spätnú väzbu pri nesprávnej klasifikácii; túto spätnú väzbu možno následne použiť na prekalibráciu prahov alebo na preučenie klasifikátora \cite{jigsaw2019bias}\cite{borkan2019nuanced}\cite{dixon2018bias}\cite{sap2019racialbias}\cite{guo2017calibration}.
+
+Z pohľadu súkromia lokálna inferencia zabezpečuje, že vybraný text nikdy neopustí zariadenie používateľa. Pre prípady, ktoré vyžadujú vyššiu presnosť alebo viacjazyčné pokrytie, možno použiť vzdialený režim \emph{len so súhlasom} a s jasným informovaním, v súlade so zásadami minimalizácie a transparentnosti údajov podľa GDPR \cite{tfjsToxicity}\cite{chromemv3}\cite{edpb2019dpbdd}.
+
+\section{Architektúra navrhovaného riešenia}
+Architektúra rozšírenia bude vychádzať zo štandardov Chrome Manifest~V3. Tento formát je v súčasnosti odporúčaný pre nové rozšírenia, pretože prináša prísnejší bezpečnostný model (žiadny vzdialene hostovaný kód, prísnejšia Content Security Policy) a nahrádza trvalé background pages udalosťami riadeným service workerom. To je výhodné pre náš projekt, pretože inferencia modelu môže prebiehať na pozadí bez blokovania používateľského rozhrania, pričom štruktúra MV3 prirodzene rozdeľuje zodpovednosti medzi jednotlivé časti rozšírenia \cite{chromemv3}\cite{chromeCSP}\cite{chromeServiceWorkers}\cite{chromeContentScripts}\cite{chromeMessaging}.
+
+V rámci rozšírenia budú:
+\begin{itemize}
+  \item \textbf{Content skripty} zodpovedné za prístup k~DOM -- zachytávajú používateľom vybraný text a pri zapnutej funkcii aj automaticky skenujú text na stránke po načítaní \cite{chromeContentScripts}.
+  \item \textbf{Servisný pracovník} (pozadie), ktorý zabezpečuje komunikáciu s~modelom, batchovanie požiadaviek a prepínanie medzi lokálnym a vzdialeným režimom inferencie \cite{chromeServiceWorkers}\cite{chromeMessaging}.
+  \item \textbf{Popup} a \textbf{bočný panel} (side panel), ktoré zobrazujú výsledky klasifikácie -- hlavný verdikt (toxický / netoxický) spolu s čiastkovými skóre pre jednotlivé triedy toxicity.
+\end{itemize}
+
+Kľúčovým rozhodnutím je podpora dvoch režimov inferencie NLP modelu:
+\begin{enumerate}
+  \item \textbf{Lokálny režim (TensorFlow.js)}  
+  Predtrénovaný model sa zabalí priamo do rozšírenia a beží v prehliadači pomocou TensorFlow.js. Tento režim poskytuje okamžitú spätnú väzbu, nevyžaduje internetové pripojenie a najmä chráni súkromie -- analyzovaný text nikdy neopustí zariadenie používateľa. Zodpovedá aj zneniu zadania, ktoré explicitne spomína možnosť lokálneho modelu v prehliadači \cite{tfjsToxicity}.
+
+  \item \textbf{Vzdialený režim (API cez bezpečný proxy)}  
+  Pre viacjazyčné scenáre a zložitejšie modely, ktoré je náročné bežať priamo v prehliadači, bude k dispozícii vzdialený režim. Rozšírenie v tomto prípade nekomunikuje priamo s poskytovateľom modelu (napr.\ HuggingFace Inference API alebo Perspective API), ale s vlastným jednoduchým backendom -- bezpečným proxy. Proxy na serveri vkladá API kľúče, zabezpečuje obmedzenie počtu požiadaviek a umožňuje prípadné anonymizovanie alebo logovanie chýb. Tým sa predchádza tomu, aby citlivé kľúče boli uložené v kóde rozšírenia a aby bolo možné flexibilne meniť poskytovateľa modelu bez aktualizácie klienta \cite{perspectiveAPI}\cite{chromeCSP}.
+\end{enumerate}
+
+Voľba tejto hybridnej architektúry (MV3 + lokálny TF.js model + vzdialené API cez proxy) vychádza z kombinácie požiadaviek zadania a cieľov práce: rozšírenie musí byť implementované v~JavaScripte, malo by preferovať súkromie a rýchlosť (lokálny režim), ale zároveň umožniť experimentovať s presnejšími a viacjazyčnými modelmi (vzdialený režim). Takýto prístup je v súlade so zásadou minimalizácie údajov podľa GDPR, pričom vzdialená inferencia je explicitne voliteľná a používateľ o~nej dostáva jasnú informáciu. Porovnanie oboch režimov -- z hľadiska presnosti, latencie a dopadu na súkromie -- bude tvoriť súčasť analytického hodnotenia v ďalšej časti práce \cite{edpb2019dpbdd}.
+
+\section{Metriky hodnotenia a testovanie}
+Testovanie bude založené na referenčných dátových súboroch: \emph{Jigsaw Toxic Comment Classification Challenge}, \emph{Unintended Bias} a \emph{Multilingual Toxic Comment}. Pre všetky tieto súbory budú uvedené údaje o presnosti, spomienke (recall), F1-skóre a makropriemere na značku; súčasťou bude aj \emph{Hammingova strata} pre porovnateľnosť multi-label modelov. Testovanie bude zahŕňať aj porovnanie latencie a využitia zdrojov v lokálnom a vzdialenom režime. Matice zmätkov (confusion matrices) budú zobrazovať chyby v menšinových značkách a voliteľné kontroly zaujatosti pomôžu preskúmať rozdiely medzi jazykovými variantmi \cite{tsoumakas2007multilabel}\cite{jigsaw2018toxic}\cite{jigsaw2019bias}\cite{jigsaw2020multilingual}\cite{sikiandani2025browser}
+\cite{tfjsToxicity}\cite{chromemv3}\cite{borkan2019nuanced}\cite{sap2019racialbias}\cite{hatecheck2021}\cite{sklearnF1}\cite{sklearnHamming}.
+
+\section{Diskusia o otvorených problémoch}
+Hoci najnovšia literatúra ukazuje solídny pokrok v tejto oblasti, stále zostáva niekoľko otvorených otázok bez odpovede:
+\begin{enumerate}
+  \item Detekcia implicitnej a sarkastickej toxicity, ktorá vyžaduje pochopenie kontextu a nielen doslovného textu \cite{jigsaw2018toxic}\cite{toxigen2022}\cite{hatecheck2021}.
+  \item Zľahčovanie menšinových tried, ako sú \emph{hrozby} alebo \emph{závažná toxicita} \cite{tsoumakas2007multilabel}\cite{sikiandani2025browser}.
+  \item Predsudky v rôznych jazykoch a nárečiach, ktoré obmedzujú spravodlivé používanie modelu \cite{jigsaw2019bias}\cite{jigsaw2020multilingual}\cite{borkan2019nuanced}\cite{sap2019racialbias}.
+  \item Nasadenie spôsobom, ktorý chráni súkromie, pri zvažovaní kompromisu medzi presnosťou a etickým spracovaním údajov (lokálne spracovanie verzus vzdialená inferencia v súlade s MV3 a GDPR) \cite{tfjsToxicity}\cite{chromemv3}\cite{edpb2019dpbdd}.
+\end{enumerate}
+
+Navrhovaná práca sa snaží riešiť aspoň niektoré z týchto výziev implementáciou hybridného systému zameraného na ochranu súkromia, ktorý vyvažuje výkon a dôveru používateľov.
+
+\section{Kalibrácia prahu a hodnotenie orientované na používateľa}
+Keďže ide o problém s viacerými označeniami, jediný globálny prah môže viesť k nevýhodným kompromisom (napr.\ vynikajúca detekcia \emph{toxicity}, ale mnoho prehliadnutých \emph{hrozieb}). Vhodnejší prístup je použiť \emph{prahy pre každé označenie} nastavené na validačnom rozdelení tak, aby vyvažovali presnosť a spomienku pre každú kategóriu z taxonómie Jigsaw. V praxi to zahŕňa vykreslenie kriviek presnosť--spomienka pre každú značku a výber prevádzkových bodov, ktoré odrážajú ciele používateľského rozhrania (napr.\ prísnejšie posudzovanie \emph{nenávisti voči identite} a citlivejšie nastavenie pre \emph{hrozby}). Aby rozhranie zostalo zrozumiteľné, rozšírenie môže zobraziť jeden \emph{hlavný verdikt} (``Pravdepodobne toxický'') a rozbaľovací zoznam skóre pre jednotlivé značky (napr.\ Toxický~0{,}91, Urážka~0{,}78, Hrozba~0{,}12), čím sprístupní pravdepodobnosti atribútov pri zachovaní produktových prahov \cite{jigsaw2018toxic}\cite{tsoumakas2007multilabel}\cite{jigsaw2019bias}\cite{jigsaw2020multilingual}\cite{kumar2024eliminating}\cite{sikiandani2025browser}\cite{sklearnPRCurve}\cite{guo2017calibration}.
+
+Kalibrácia sa ďalej spája s \emph{Hammingovou stratou} a \emph{makro-F1}: Hammingova strata rovnako penalizuje každú chybu podľa označenia, a preto je užitočná na porovnanie lokálneho a vzdialeného režimu, aj keď sú ich profily chýb odlišné. Makro-F1 zachováva viditeľnosť menšinových kategórií priemerovaním F1 naprieč značkami. Vykazovanie \emph{makro-F1} aj \emph{Hammingovej straty} zosúlaďuje hodnotenie s predchádzajúcou prácou a zabraňuje kozmetickým vylepšeniam, ktoré maskujú regresie menšinových značiek \cite{tsoumakas2007multilabel}\cite{jigsaw2018toxic}\cite{sikiandani2025browser}\cite{borkan2019nuanced}\cite{sklearnF1}\cite{sklearnHamming}.
+
+\section{Úvahy o viacjazyčnosti a prechode medzi jazykmi}
+Webový text často predstavuje zmes jazykov, dialektov a transliterácií – napríklad latinizácia v nelatinských jazykoch alebo zmiešavanie angličtiny so slovenčinou v jednej vete. Porovnávacie štúdie, ako napríklad Jigsaw Multilingual challenge, preukázali, že modely, ktoré sú trénované výlučne na angličtine, dosahujú výrazne horšie výsledky v iných jazykoch, pokiaľ nie sú výslovne prispôsobené alebo vyladené pre tieto jazyky. V praxi to vedie k dvom kľúčovým problémom: nedostatočné odhalenie toxicity v neanglickom texte a nadmerné označovanie neškodných identitných termínov v jazykoch alebo dialektoch, ktoré model dostatočne nepozná \cite{jigsaw2019bias}\cite{jigsaw2020multilingual}\cite{hatexplain2021}\cite{sap2019racialbias}\cite{toxigen2022}\cite{xlmr2020}.
+
+Praktickým plánom rozšírenia je preto explicitne zaobchádzať s viacjazyčnosťou, namiesto toho, aby sa predstieralo, že model je „jazykovo agnostický“:
+\begin{itemize}
+  \item \textbf{Lokálny režim: zameraný na angličtinu.} V tomto režime rozšírenie udržiava malý model zameraný hlavne na angličtinu. Je to preto, lebo spustenie v prehliadači obmedzuje veľkosť modelu: menšie modely sa načítajú rýchlejšie, vyžadujú menej pamäte a celé spracovanie zostáva na zariadení používateľa. Na oplátku akceptujeme, že iné jazyky ako angličtina budú v tomto režime podporované len obmedzene. Toto obmedzenie môže byť v rozhraní používateľa označené malou poznámkou, napríklad „optimalizované pre angličtinu“, aby používateľ vedel, kedy môžu byť výsledky menej spoľahlivé \cite{jigsaw2020multilingual}\cite{tfjsToxicity}\cite{distilbert2019}.
+
+  \item \textbf{Vzdialený režim: viacjazyčné eskalovanie.} Keď ľahký detektor jazyka – alebo atribút \texttt{lang} stránky – indikuje, že vybraný text je prevažne v inom jazyku ako angličtina, rozšírenie prejde na viacjazyčný model prostredníctvom vzdialeného API. V tomto prípade sa vedľa výsledku zobrazí diskrétny indikátor, napríklad „(viacjazyčný režim)“, aby používateľ vedel, že jeho text bol odoslaný na server a že sa používa iný model. Toto smerovanie môže spracovávať aj zmiešané prípady: ak je odsek čiastočne v angličtine a čiastočne v inom jazyku, rozšírenie ho môže rozdeliť na segmenty a odoslať iba segmenty, ktoré nie sú v angličtine, do vzdialeného modelu, pričom zvyšok zostane lokálny \cite{jigsaw2020multilingual}\cite{perspectiveAPI}\cite{xlmr2020}.
+
+  \item \textbf{Prahové hodnoty špecifické pre jazyk/písmo.} Dokonca aj v prípade viacjazyčných modelov nie sú rozdelenia skóre v jednotlivých jazykoch identické. Aby sa zabránilo systematickému nadmernému alebo nedostatočnému označovaniu, systém udržiava samostatné prahové hodnoty pre každý jazyk alebo písmo, napríklad angličtina verzus slovanské jazyky, latinka verzus cyrilika. Tieto prahové hodnoty je možné nastaviť offline na základe validačných údajov alebo malých kurátorských testovacích súborov a uložiť v jednoduchej vyhľadávacej tabuľke vnútri rozšírenia. Ide o veľmi lacný mechanizmus, ktorý sa zvyčajne oplatí v podobe výrazne zlepšenej vnímanej kvality \cite{jigsaw2019bias}\cite{jigsaw2020multilingual}\cite{borkan2019nuanced}.
+\end{itemize}
+
+Viacjazyčné problémy vznikajú aj nepriamo v procese ASR$\rightarrow$klasifikácia, kde kvalita transkripčného modelu – napríklad Whisper – stanovuje hornú hranicu detekcie toxicity v nadväzujúcich procesoch. Dokonca aj silný viacjazyčný ASR môže mať problémy s rôznymi prízvukmi, prepínaním kódov a menovanými entitami; v takýchto prípadoch sa chyby v transkripcii prenášajú priamo do klasifikátora. Z tohto dôvodu by akákoľvek funkcia založená na reči v rozšírení mala výslovne hlásiť kvalitu transkripcie (alebo aspoň varovanie pre segmenty s nízkou spoľahlivosťou) a rozhodnutie o toxicite a vyhnúť sa prezentovaniu štítkov založených na ASR ako rovnako spoľahlivých ako štítky natívne pre text \cite{sikiandani2025browser}\cite{radford2022whisper}.
+
+Celkovo nie je cieľom úplne vyriešiť detekciu viacjazyčnej toxicity, ale skôr zviditeľniť a kontrolovať výber jazyka: lokálne spracovanie anglického textu z dôvodu rýchlosti a ochrany súkromia, eskalované spracovanie neanglického textu na silnejšom viacjazyčnom back-ende, ak to používateľ povolí, a ladenie prahov pre každý jazyk s cieľom znížiť systematickú zaujatosť namiesto použitia jedného globálneho prahu.
+
+\section{Vývoj rozšírení v rámci Chrome Manifest V3}
+MV3 prináša službu riadenú udalosťami namiesto pretrvávajúcej stránky na pozadí, prísnejšiu politiku CSP a zakazuje vzdialene hostovaný vykonateľný kód---čo ovplyvňuje načítanie modelu aj prístup k API \cite{chromemv3}\cite{chromeCSP}\cite{chromeServiceWorkers}. Kľúčové vzory:
+\begin{itemize}
+  \item \textbf{Skripty obsahu len pre DOM.} Skripty obsahu spracúvajú prístup k DOM a zachytávanie výberu; náročnejšia práca (lokálna inferencia, dávkovanie, volania API) sa deleguje na service worker cez odovzdávanie správ \cite{chromemv3}\cite{chromeContentScripts}
+  \cite{chromeMessaging}.
+  \item \textbf{Balenie a lazy-loading modelu.} Zabaľte TensorFlow.js a artefakty modelu ako prostriedky rozšírenia a načítavajte ich pri prvom použití analýzy \cite{tfjsToxicity}\cite{chromemv3}\cite{chromeCSP}.
+  \item \textbf{Bezpečnosť kľúčov pre vzdialený režim.} Nikdy nedistribuujte poskytovateľské kľúče v klientskom balíku; použite minimálny proxy backend, ktorý vkladá poverenia na strane servera a aplikuje obmedzenie rýchlosti; rozšírenie drží len krátkodobý anonymný token \cite{chromemv3}\cite{chromeCSP}.
+  \item \textbf{Tipy na výkon.} Ukladajte do vyrovnávacej pamäte (\emph{chrome.storage.session}) nedávne výsledky, sledujte čas a pamäťovú stopu načítania TF.js grafu a optimalizujte prvé použitie \cite{tfjsToxicity}\cite{chromemv3}.
+\end{itemize}
+
+Tieto voľby zabezpečujú, že rozšírenie zostane odozvové, kompatibilné s MV3 a bude podporovať lokálny aj vzdialený režim inferencie \cite{tfjsToxicity}\cite{chromemv3}.
+
+\section{Experimentálny protokol a podávanie správ}
+Reprodukovateľný protokol spája technické rozhodnutia systému s merateľnými výsledkami:
+\begin{itemize}
+  \item \textbf{Rozdelenie údajov.} Použiť stratifikované rozdelenie trénovacích/validačných/testovacích dát v \emph{Jigsaw Toxic Comment}, a hodnotiť generalizáciu medzi dátovými sadami na \emph{Unintended Bias} a \emph{Multilingual} (zero-shot, ak je tréning iba v angličtine) \cite{jigsaw2018toxic}\cite{jigsaw2019bias}\cite{jigsaw2020multilingual}.
+  \item \textbf{Metriky.} Reportovať presnosť (precision), spomienku (recall) a F1 na značku, \emph{makro-F1}, \emph{Hammingovu stratu} a zahrnúť matice zámien (confusion matrices) pre menšinové značky \emph{Threat} a \emph{Severe toxic} \cite{tsoumakas2007multilabel}\cite{jigsaw2018toxic}\cite{sikiandani2025browser}\cite{sklearnPRCurve}\cite{sklearnF1}\cite{sklearnHamming}.
+  \item \textbf{Metriky latencie a UX.} Merať čas od výberu používateľa po vykreslenie verdiktu (medián/p95) pre \emph{lokálny} vs.\ \emph{vzdialený} režim; zaznamenať čas načítania modelu pri prvom použití a sledovať pamäťovú stopu grafu TF.js \cite{tfjsToxicity}\cite{chromemv3}.
+  \item \textbf{Ablácie.} Porovnať s/bez normalizácie; \emph{per-label} vs.\ \emph{globálny} prah; lokálne vs.\ vzdialené spracovanie na rovnakých textoch; a viacjazyčné eskalácie na neanglických stránkach \cite{jigsaw2018toxic}\cite{jigsaw2019bias}\cite{jigsaw2020multilingual}\cite{tfjsToxicity}.
+  \item \textbf{Sondy zaujatosti.} Použiť malé, ručne kurátorské sady s dialektálnymi výrazmi a zmienkami o identite na kvantifikáciu rozdielov a usmernenie úprav prahov \cite{jigsaw2019bias}\cite{borkan2019nuanced}\cite{sap2019racialbias}\cite{hatecheck2021}.
+  \item \textbf{Reč.} V sprievodnom experimente podať do textového klasifikátora prepisy z Whisper a reportovať \emph{WER} prepisov spolu s metrikami toxicity, aby bol zviditeľnený reťazec chýb \cite{sikiandani2025browser}\cite{radford2022whisper}.
+\end{itemize}

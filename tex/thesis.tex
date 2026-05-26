@@ -1,0 +1,115 @@
+%% !TEX program = xelatex
+%% -----------------------------------------------------------------
+%% This file uses UTF-8 encoding
+%%
+%% For compilation use following command:
+%% $ latexmk -pdf -pvc thesis
+%%
+%% -----------------------------------------------------------------
+%%                                     _     _
+%%      _ __  _ __ ___  __ _ _ __ ___ | |__ | | ___
+%%     | '_ \| '__/ _ \/ _` | '_ ` _ \| '_ \| |/ _ \
+%%     | |_) | | |  __/ (_| | | | | | | |_) | |  __/
+%%     | .__/|_|  \___|\__,_|_| |_| |_|_.__/|_|\___|
+%%     |_|
+%%
+%% -----------------------------------------------------------------
+\PassOptionsToPackage{hyphens}{url}
+
+\documentclass[
+    mainlanguage=slovak,    % Main language of the thesis
+    otherlanguage=english   % Other language of the thesis
+]{tukethesis}
+
+% Additional packages
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{ragged2e}   
+\usepackage{tabularx}  
+\usepackage{placeins}  
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\arrayrulewidth}{0.4pt} 
+\makeatletter
+\g@addto@macro\UrlBreaks{%
+  \do\/\do-\do\_\do\.\do\?\do\&\do\=\do\#%
+}
+\makeatother
+
+\AtBeginBibliography{%
+  \sloppy
+  \emergencystretch=3em
+  \Urlmuskip=0mu plus 1mu\relax
+}
+
+\addbibresource{bibliography.bib}   % Location of file with bibliography resources
+\input{acronyms}                    % Load acronyms
+\input{metadata}                    % Load thesis metadata
+
+
+%% -----------------------------------------------------------------
+%%          _                                       _
+%%       __| | ___   ___ _   _ _ __ ___   ___ _ __ | |_
+%%      / _` |/ _ \ / __| | | | '_ ` _ \ / _ \ '_ \| __|
+%%     | (_| | (_) | (__| |_| | | | | | |  __/ | | | |_
+%%      \__,_|\___/ \___|\__,_|_| |_| |_|\___|_| |_|\__|
+%%
+%% -----------------------------------------------------------------
+
+\begin{document}
+
+
+%% Title page, abstract, declaration etc.:
+\frontmatter{}
+
+\include{chapters/01-introduction}
+\include{chapters/02-analytika}
+\include{chapters/03-Ciele}
+\include{chapters/04-implementacia}
+\include{chapters/05-evaluation}
+\include{chapters/06-summary}
+
+%% Bibliography, glossary, acronyms
+\backmatter{}
+
+
+%% -----------------------------------------------------------------
+%%                                       _ _
+%%       __ _ _ __  _ __   ___ _ __   __| (_) ___ ___  ___
+%%      / _` | '_ \| '_ \ / _ \ '_ \ / _` | |/ __/ _ \/ __|
+%%     | (_| | |_) | |_) |  __/ | | | (_| | | (_|  __/\__ \
+%%      \__,_| .__/| .__/ \___|_| |_|\__,_|_|\___\___||___/
+%%           |_|   |_|
+%% -----------------------------------------------------------------
+
+\include{appendices/00-list}
+
+\appendix
+\setappendixstyle
+\setcounter{chapter}{1}
+\include{appendices/system.manual}
+\include{appendices/user.manual}
+
+% avoid empty lof, lot and lol
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\setcounter{lstlisting}{0}
+
+
+%% -----------------------------------------------------------------
+%%       ___ _   _ _ __ ___   _____   __
+%%      / _ \ | | | '__/ _ \ / __\ \ / /
+%%     |  __/ |_| | | | (_) | (__ \ V /
+%%      \___|\__,_|_|  \___/ \___| \_/
+%% -----------------------------------------------------------------
+
+% Životopis autora
+% \curriculumvitae\protect
+% Táto časť je nepovinná. Autor tu môže uviesť svoje biografické
+% údaje, údaje o~záujmoch, účasti na~projektoch, účasti na~súťažiach,
+% získané ocenenia, zahraničné pobyty na~praxi, domácu prax, publikácie
+% a~pod.
+
+\end{document}

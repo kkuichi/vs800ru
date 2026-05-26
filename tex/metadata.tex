@@ -1,0 +1,55 @@
+% !TEX root = thesis.tex
+
+%% Document Metadata
+
+%% The location of your Assignment Statement (scanned as image)
+\thesisspec{figures/zadavaci-list.png}
+
+\title{Final Thesis Template}{Vývoj rozšírenia prehliadača na detekciu toxického obsahu pomocou NLP modelu}
+%\thesis{Master thesis}{Diplomová práca}  % typ prace
+
+\author[]{Vladyslav}{Stakhov}[]
+\supervisor{Ing. Oliver Lohaj, PhD.}   % thesis supervisor
+% \consultant{Donald E. Knuth}  % thesis consultant
+% \consultantsaffiliation{Stanford University}{Stanfordská univerzita}  % affiliation of the consultant
+% \college{University of Žilina}{Žilinská univerzita}  % univerzita
+% \faculty{Faculty of Electrical Engineering and informatics}{Fakulta elektrotechniky a informatiky}  % fakulta
+\department{Institute of Artistic Intelligence}{Ústav umeleckej inteligencie}  % katedra
+\departmentacr{IAI}{ÚUI}  % skratka katedry
+\submissiondate{11}{2}{2026}
+\fieldofstudy{Informatika}
+\studyprogramme{Informatika}  % iba názov bez číselného kódu
+%\city{Košice}  % mesto
+
+\keywords{%
+  % english
+  toxicity detection, browser extension, natural language processing, multi-label classification, TensorFlow.js, Chrome Manifest V3, privacy
+}{%
+  % slovak
+  detekcia toxicity, rozšírenie prehliadača, spracovanie prirodzeného jazyka, viacštítková klasifikácia, TensorFlow.js, Chrome Manifest V3, súkromie
+}
+
+\declaration{
+ Vyhlasujem, že som záverečnú prácu vypracoval samostatne s použitím uvedenej odbornej literatúry, ako aj s využitím nástrojov generatívnej umelej inteligencie v súlade s Metodickým pokynom o záverečných a kvalifikačných prácach a Etickým kódexom študenta Technickej univerzity v Košiciach. Umelá inteligencia bola použitá ako podporný nástroj bez porušenia zásad akademickej etiky a autorskej integrity.
+}
+
+\abstract{%
+  % english
+  This thesis focuses on the detection of toxic text in a web browser environment and on the development of a browser extension named \textit{Toxic Text Detector}. The aim of the work is to provide users with a practical tool for identifying potentially harmful online content while preserving user control and privacy. The solution was designed and implemented as a Chrome Manifest V3 extension. It uses a React-based user interface, a content script for working with web page text, a service worker for communication between components, persistent settings and two inference modes. The local mode performs classification directly in the browser, while the remote mode uses an external API through a backend service. The implemented extension can analyze selected text or text elements on a page, mark potentially toxic content, blur it visually and display the detected category together with a confidence score. The solution was evaluated through user interface testing and model experiments focused on local and remote inference. The results show that a hybrid browser-based approach can provide a practical compromise between detection quality, latency, usability and privacy protection. At the same time, the work confirms that toxicity detection remains challenging, especially for minority categories and more context-dependent forms of harmful language.
+}{%
+  % slovak
+  Táto práca sa zameriava na detekciu toxického textu v prostredí webového prehliadača a na vývoj rozšírenia s názvom \textit{Toxic Text Detector}. Cieľom práce je poskytnúť používateľom praktický nástroj na identifikáciu potenciálne škodlivého online obsahu pri zachovaní používateľskej kontroly a ochrany súkromia. Riešenie bolo navrhnuté a implementované ako rozšírenie prehliadača Chrome založené na architektúre Manifest V3. Využíva používateľské rozhranie vytvorené v Reacte, content script na prácu s textom webovej stránky, service worker na komunikáciu medzi komponentmi, perzistentné nastavenia a dva režimy inferencie. Lokálny režim vykonáva klasifikáciu priamo v prehliadači, zatiaľ čo vzdialený režim využíva externé API prostredníctvom backendovej služby. Implementované rozšírenie dokáže analyzovať vybraný text alebo textové prvky stránky, označiť potenciálne toxický obsah, vizuálne ho rozmazať a zobraziť detegovanú kategóriu spolu so skóre istoty. Riešenie bolo vyhodnotené prostredníctvom testovania používateľského rozhrania a experimentov s modelmi zameraných na lokálnu a vzdialenú inferenciu. Výsledky ukazujú, že hybridný prístup integrovaný do prehliadača môže poskytnúť praktický kompromis medzi kvalitou detekcie, latenciou, použiteľnosťou a ochranou súkromia. Práca zároveň potvrdzuje, že detekcia toxicity zostáva náročná najmä pri menšinových kategóriách a kontextovo závislých formách škodlivého jazyka.
+}
+
+\acknowledgment{%
+  Na tomto mieste by som sa rád poďakoval svojmu vedúcemu práce za jeho čas a odborné vedenie počas riešenia mojej záverečnej práce.
+  Rovnako by som sa rád poďakoval svojim rodičom a priateľom za ich podporu a povzbudzovanie počas celého môjho štúdia.
+}
+
+
+% Uncomment the following line for the printer-friendly version of the thesis.
+% When defined, final PDF will not contain colored links, which is useful for printing.
+% WARNING: Uncomment ONLY when used manually without the Docker image for building the thesis. By uncommenting this line, you will manually override the printable flag and behavior of the Docker image will not work as expected.
+% If you want to use the Docker image for building the document, please do not uncomment this line.
+%\def\printable{}
+

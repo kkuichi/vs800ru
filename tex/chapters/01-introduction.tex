@@ -1,0 +1,21 @@
+% !TEX root = ../thesis.tex
+
+\chapter{Úvod}\label{ch:introduction}
+
+Internet sa stal jednou z najväčších súčastí moderného ľudského života. Sociálne siete, textové fóra a sekcie komentárov dali každému používateľovi možnosť verejne vyjadriť svoj názor z ktorejkoľvek časti sveta. Táto dostupnosť však viedla k šíreniu škodlivého a toxického obsahu. Používatelia sú denne vystavení urážkam, nenávistným prejavom, hrozbám a iným neprijateľným formám toxického obsahu, ktoré negatívne ovplyvňujú duševné zdravie.
+
+Preto sa automatická detekcia takéhoto obsahu stala aktívnou oblasťou výskumu v oblasti umelej inteligencie a ešte viac v oblasti spracovania prirodzeného jazyka (NLP). Moderné prístupy využívajú hlboké učenie na identifikáciu toxicity s vysokou presnosťou a prispôsobivosťou. Väčšina týchto systémov však beží na serverovej infraštruktúre, čo znamená, že niektoré osobné údaje používateľov musia byť prenesené na externé platformy, čo znižuje súkromie a bezpečnosť používateľov. Riešenie integrované do prehliadača s možnosťou lokálneho vyhodnocovania textu môže minimalizovať tieto riziká a zároveň zabezpečiť plynulý používateľský zážitok.
+
+Cieľom tejto práce je vyvinúť a vytvoriť rozšírenie prehliadača, ktoré dokáže analyzovať vybraný text na webovej stránke a určiť jeho úroveň toxicity. Výsledok aplikácie sa zobrazí v rozhraní prehliadača s uvedením, či je obsah toxický alebo netoxický, alebo s číselným skóre toxicity. Systém by mal fungovať v dvoch režimoch:
+\begin{enumerate}
+  \item \textbf{Lokálny režim}, s použitím vopred natrénovaného modelu bežiaceho v prehliadači.
+  \item \textbf{Vzdialený režim}, ktorý zavolá externé API na klasifikáciu.
+\end{enumerate}
+
+Nedávny výskum ukazuje, že je to v praxi možné. Modely hlbokého učenia už dosahujú dobré výsledky pri detekcii bežných prejavov toxicity. Implementácia v reálnom svete však stále čelí niekoľkým prekážkam: nerovnováha tried (napr. hrozby sú menej bežné a ľahšie sa prehliadajú), jazyková a dialektová skreslenosť. Obzvlášť náročné zostávajú jemnejšie formy zneužívania – ako je sarkazmus, kódovaný jazyk alebo kontextové urážky.
+
+\section*{Formulácia úlohy}
+
+Hlavnou úlohou tejto práce je vytvoriť aplikáciu, ktorá používateľom poskytne jasný a rýchly spôsob, ako pochopiť, či je text na stránke škodlivý alebo nie. Rozšírenie prehliadača, ktoré analyzuje vybraný text a poskytuje jasný záver, pomôže používateľom robiť informované rozhodnutia v reálnom čase. Okrem pohodlia má aj ďalšiu výhodu – znižuje dopad toxických výmen. Toto rozšírenie tiež pomôže udržiavať konštruktívnosť online priestoru a zachovať bezpečnosť používateľov. Projekt sa nachádza na priesečníku webového inžinierstva a umelej inteligencie.
+
+Táto práca rieši tieto problémy prostredníctvom dizajnu zameraného na používateľa a súkromie. Stručne povedané, rozšírenie ponúkne dva režimy výstupu – lokálny a vzdialený – bude prezentovať hodnotenia značiek a bude obsahovať možnosť hodnotiť výkon aplikácie, aby používatelia mohli nahlásiť chyby. Spoločne sa zameriava na vyváženie presnosti s jednoduchosťou a vytvára nástroj, ktorý je nielen efektívny, ale aj skutočne užitočný pri každodennom prehliadaní webu pre bežného používateľa.

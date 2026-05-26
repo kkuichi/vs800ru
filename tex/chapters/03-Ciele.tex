@@ -1,0 +1,30 @@
+\chapter{Ciele záverečnej práce}
+Celkovým cieľom tejto práce je vývoj, implementácia a experimentálne testovanie doplnku prehliadača, ktorý pomôže používateľom identifikovať toxický obsah na webových stránkach spôsobom zachovávajúcim súkromie, berúc do úvahy realizmus online interakcií. Mal by používateľom umožniť získať informatívne odpovede týkajúce sa toxicity vybraného textového úseku s rozumným kompromisom medzi čisto klientskym spracovaním a presnejšími, ale potenciálne menej súkromne chrániacimi, serverovými prístupmi.
+
+Aby práca dosiahla svoj cieľ, snaží sa splniť nasledujúce implementačné ciele:
+\begin{itemize}
+  \item \textbf{Vytvoriť rozšírenie Chrome Manifest V3 pre analýzu toxicity.}\\
+  Bude rozdelené do osvedčených postupov MV3, vrátane skriptov pre prístup k DOM, servisného pracovníka pre spúšťanie úloh na pozadí pre komunikáciu s modelmi alebo API a komponentov používateľského rozhrania pre vykresľovanie výsledkov používateľovi prostredníctvom kontextového okna alebo bočného panela.
+  \item \textbf{Poskytnúť plne lokálnu inferenciu pomocou viacnásobného modelu toxicity.}\\
+  V tomto nastavení by sa predtrénovaný klasifikátor pre predikciu toxicity, ktorý je súčasťou rozšírenia (napr.\ graf TensorFlow.js), spustil výlučne na strane klienta. Systém by mal byť schopný prijať vybraný text, vykonať tokenizáciu a generovať skóre pre označenia, ako aj celkovú predikciu bez toho, aby klient odosielal akékoľvek údaje.
+  \item \textbf{Povoliť režim vzdialenej inferencie prostredníctvom zabezpečeného proxy API.}\\
+  Okrem lokálneho riešenia by rozšírenie umožnilo aj vyvolanie vzdialeného riešenia pre toxicitu prostredníctvom minimálneho backendového proxy. To by umožnilo zapuzdrenie poverení pre poskytovateľov, obmedzenie rýchlosti, ako aj prepínanie medzi riešeniami, ako je transformačné riešenie alebo produkčné riešenie, bez nutnosti akejkoľvek zmeny v klientovi.
+  \item \textbf{Pridať používateľské rozhranie pre skóre a prísnosť pre každé označenie.}\\
+  „Rozšírenie by malo poskytovať súhrnný hlavný verdikt (pravdepodobnostná toxickosť vs.\ netoxickosť) spolu so skóre pre podrobné verdikty o toxickosti (napr.\ urážka, hrozba, nenávisť na základe identity). Malo by byť možné nastaviť prísnosť detekcie pomocou jednoduchého rozhrania (napr.\ globálny posuvník) preložením úprav interných prahov do zrozumiteľného kontextu.“
+  \item \textbf{Zvážiť voliteľné rozšírenia používateľskej interakcie.}\\
+  Zadanie práce pripúšťalo aj voliteľné rozšírenia, napríklad spätnú väzbu používateľa, podporu viacerých jazykov alebo export a anotáciu textov. V rámci práce bola spätná väzba používateľa zvažovaná v skorom návrhu rozhrania, avšak nebola zahrnutá do finálnej implementácie, keďže hlavný dôraz bol kladený na detekciu toxicity, používateľské rozhranie, lokálnu a vzdialenú inferenciu a vyhodnotenie modelov.
+\end{itemize}
+
+Súbežne s implementáciou si práca stanovila nasledujúce ciele týkajúce sa hodnotenia a analýzy:
+\begin{itemize}
+  \item \textbf{Vyhodnotiť výkonnosť použitých modelov podľa dostupného experimentálneho protokolu.}\\
+  Pri hodnotení modelov budú použité štandardné metriky viacštítkovej klasifikácie, najmä presnosť, úplnosť, F1-skóre pre jednotlivé štítky, makropriemerovaný F1, mikropriemerovaný F1 a Hammingova strata. Rozsah hodnotenia sa môže líšiť podľa konkrétneho režimu inferencie a použitého modelu, keďže vzdialený model, pôvodný lokálny TF.js model a optimalizovaný lokálny model majú rozdielne technické vlastnosti a experimentálne obmedzenia.
+  \item \textbf{Porovnať lokálny a vzdialený režim inferencie z hľadiska presnosti a praktickej použiteľnosti.}\\
+  Práca porovná správanie lokálneho a vzdialeného režimu na základe dostupných experimentálnych meraní. Vzdialený model bude hodnotený najmä z hľadiska klasifikačnej kvality, vplyvu nerovnováhy tried a nastavenia rozhodovacích prahov. Lokálny režim bude hodnotený ako súkromie zachovávajúci variant z hľadiska použiteľnosti v prehliadači, odozvy a kvality detekcie pri použitých lokálnych modeloch. Keďže jednotlivé modely majú rozdielne technické vlastnosti a obmedzenia, výsledky budú interpretované s ohľadom na konkrétny experimentálny protokol.
+  \item \textbf{Analyzovať nastavenia kalibrácie a prahov z pohľadu používateľa.}\\
+  Práca preskúma, ako dobre skóre modelu zodpovedá pozorovaným mieram chybovosti a preskúma konfigurácie prahov podľa označenia, ktoré odrážajú rôzne ciele produktu, ako napríklad konzervatívnejšiu voľbu pre nenávisť založenú na identite ako pre generickú toxicitu. Výsledné nastavenia budú zdôvodnené numericky aj z hľadiska ich dôsledkov pre používateľskú skúsenosť.
+  \item \textbf{Diskutovať vybrané aspekty spravodlivosti a skreslenia relevantné pre nasadenie.}\\
+  Práca sa bude venovať rizikám neúmyselného skreslenia najmä na analytickej úrovni a pri interpretácii výsledkov modelov. Cieľom nie je vykonať úplný audit spravodlivosti, ale pomenovať riziká, ktoré môžu ovplyvniť praktické nasadenie systému, najmä pri menšinových kategóriách, jazykovo odlišných textoch a rôznych používateľských kontextoch.
+  \item \textbf{Zdokumentovať architektonické kompromisy a formulovať odporúčania pre odborníkov z praxe.}\\
+  Na základe skúseností z implementácie a experimentálnych výsledkov táto práca zhrnie hlavné kompromisy medzi lokálnou a vzdialenou inferenciou – súkromie, výkon, udržiavateľnosť, kvalita modelu – a načrtne pokyny pre vývojárov, ktorí sú ochotní integrovať detekciu toxicity do rozšírení prehliadača.
+\end{itemize}

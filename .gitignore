@@ -1,3 +1,7 @@
+# =========================
+# Frontend
+# =========================
+
 src/frontend/node_modules/
 src/frontend/dist/
 src/frontend/dist.zip
@@ -5,24 +9,20 @@ src/frontend/.vite/
 src/frontend/.cache/
 src/frontend/.tmp/
 
-.env
-.env.*
 src/frontend/.env
 src/frontend/.env.*
+!src/frontend/.env.example
+
+src/frontend/console.log(r.status)
+
+
+# =========================
+# Backend
+# =========================
+
 src/backend/.env
 src/backend/.env.*
-!.env.example
-!src/frontend/.env.example
 !src/backend/.env.example
-
-.vscode/
-.DS_Store
-Thumbs.db
-
-*.log
-npm-debug.log*
-yarn-debug.log*
-pnpm-debug.log*
 
 src/backend/__pycache__/
 src/backend/**/__pycache__/
@@ -57,4 +57,83 @@ src/backend/MODEL_ID
 src/backend/THRESHOLD_SET
 src/backend/THRESHOLDS_PATH
 src/backend/py
-src/frontend/console.log(r.status)
+
+
+# =========================
+# Root env files
+# =========================
+
+.env
+.env.*
+!.env.example
+
+
+# =========================
+# LaTeX / thesis files inside tex/
+# =========================
+
+tex/**/_minted*/
+
+tex/**/*.acn
+tex/**/*.acr
+tex/**/*.alg
+tex/**/*.aux
+tex/**/*.bbl*
+tex/**/*.bcf
+tex/**/*.blg
+tex/**/*.fdb_latexmk
+tex/**/*.fls
+tex/**/*.glsdefs
+tex/**/*.ist
+tex/**/*.lof
+tex/**/*.log
+tex/**/*.lol
+tex/**/*.lot
+tex/**/*.out
+tex/**/*.run.xml
+tex/**/*.synctex.gz
+tex/**/*.toc
+tex/**/*.glg
+tex/**/*.glo
+tex/**/*.gls
+tex/**/*.te~
+tex/**/*busy*
+tex/**/*.swp
+tex/**/*.xdv
+
+tex/dist/
+tex/build/
+tex/thesis*.pdf
+
+tex/**/**SAVE-ERROR*
+
+
+# =========================
+# Common IDEs and editors
+# =========================
+
+.vscode/
+*.code-workspace
+.idea/
+*.sublime-project
+*.sublime-workspace
+.zed/
+
+
+# =========================
+# OS generated files
+# =========================
+
+*~
+.DS_Store
+Thumbs.db
+
+
+# =========================
+# Logs
+# =========================
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*

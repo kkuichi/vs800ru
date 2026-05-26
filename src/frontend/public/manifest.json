@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "Toxic Text Detector (Hybrid: Local + Remote)",
+  "version": "1.0.1",
+  "description": "Detect and blur toxic text using local TFJS or a remote API (opt-in).",
+
+  "permissions": ["storage", "tabs", "activeTab"],
+
+  "host_permissions": [
+    "https://api-m3jhrljqsq-ew.a.run.app/*",
+    "https://api-1009360317486.europe-west1.run.app/*",
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*"
+  ],
+
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
+
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+
+  "action": {
+    "default_title": "Toxic Text Detector",
+    "default_popup": "popup.html"
+  },
+
+  "options_page": "options.html",
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "run_at": "document_idle",
+      "js": [
+        "local_char_model/tf-core.min.js",
+        "local_char_model/tf-backend-cpu.min.js",
+        "local_char_model/tf-backend-wasm.min.js",
+        "local_char_model/tf-converter.min.js",
+        "toxicityContract.global.js",
+        "contentScript.js"
+      ]
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "local_char_model/*"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

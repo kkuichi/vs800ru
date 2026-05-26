@@ -1,0 +1,398 @@
+\chapter{Vyhodnotenie riešenia}
+
+Táto kapitola sa venuje vyhodnoteniu navrhnutého a implementovaného riešenia \textit{Toxic Text Detector}. Hodnotenie je rozdelené na viacero častí, ktoré spoločne posudzujú používateľské rozhranie, vzdialený režim inferencie, lokálny TF.js model a optimalizovaný lokálny model. Cieľom kapitoly je overiť, do akej miery riešenie spĺňa požiadavky definované v predchádzajúcich častiach práce, najmä z hľadiska použiteľnosti, presnosti, výkonu a ochrany súkromia.
+
+\section{Metodika vyhodnotenia}
+Vyhodnotenie navrhnutého riešenia bolo realizované na viacerých úrovniach, aby bolo možné posúdiť nielen technickú funkčnosť rozšírenia, ale aj kvalitu používateľského rozhrania a správanie modelov v lokálnom aj vzdialenom režime inferencie. Hodnotenie preto zahŕňa používateľské testovanie prototypov rozhrania, podrobnejšie experimenty so vzdialeným modelom toxicity, orientačné vyhodnotenie pôvodného lokálneho TF.js modelu a vyhodnotenie optimalizovaného lokálneho modelu vo formáte TensorFlow.js GraphModel.
+
+Pri používateľskom rozhraní bolo cieľom overiť zrozumiteľnosť interakcií, objaviteľnosť hlavných ovládacích prvkov a celkové vnímanie použiteľnosti. Hodnotenie prebiehalo formou scenárových úloh, krátkeho post-test dotazníka s 5-bodovou Likertovou škálou, kvalitatívnych pozorovaní typu think-aloud a následného krátkeho rozhovoru.
+
+Pri modelovej časti bolo cieľom vyhodnotiť kvalitu detekcie toxicity pomocou metrík viacštítkovej klasifikácie, pričom rozsah hodnotenia sa líšil podľa konkrétneho režimu a modelu. Pri vzdialenom režime boli podrobnejšie analyzované viaceré verzie modelu, nerovnováha tried a rozhodovacie prahy. Pri lokálnom režime bolo hodnotenie rozdelené na orientačné overenie pôvodného predtrénovaného TF.js modelu a následné vyhodnotenie optimalizovaného lokálneho modelu, ktorý bol použitý ako praktickejší variant pre finálne riešenie.
+
+\section{Vyhodnotenie používateľského rozhrania}
+
+Používateľské rozhranie bolo vyhodnocované v dvoch iteráciách, ktoré zodpovedajú postupnému vývoju prototypu. Prvá iterácia overovala základný mentálny model a hlavné interakčné vzory, zatiaľ čo druhá iterácia sa sústredila na konzistentnosť stavov, použiteľnosť ovládacích prvkov a realistickejšie správanie rozhrania. Vyhodnotenie tejto časti preto porovnáva zistenia z oboch prototypov a ukazuje, ako sa spätná väzba od účastníkov testovania premietla do ďalšieho návrhu.
+
+\subsection{Prvý prototyp a jeho verifikácia}
+Prvý prototyp bol vytvorený vo Figme ako interaktívny mock-up so strednou vernosťou. Jeho cieľom bolo overiť mentálny model a základný interakčný vzor bez implementačných detailov: rozmazanie toxického textu, zobrazenie a skrytie na úrovni komentára, prístup k nastaveniam a jednoduché mini-modálne okno spätnej väzby.
+
+\textbf{Metóda verifikácie.} Testovanie prebiehalo formou krátkej moderovanej relácie. Účastníci riešili scenárové úlohy, napríklad zobraziť a opäť skryť rozmazaný komentár, nájsť dôvod alebo kategóriu a zmeniť nastavenie, pričom priebežne verbalizovali svoje rozhodnutia formou think-aloud. Po úlohách vyplnili krátky post-test dotazník s 5-bodovým hodnotením vybraných častí UI, doplnený otvorenými otázkami.
+
+\textbf{Účastníci.} Prvý prototyp bol testovaný s \textbf{5} účastníkmi (n~=~5).
+
+\textbf{Výsledky a interpretácia.}
+\begin{itemize}
+  \item \textbf{Kvantitatívne:} Interakčný koncept bol hodnotený pozitívne a používanie bolo vnímané ako jednoduché. Najlepšie dopadlo rozbaľovacie menu rozšírenia, kde prevažovali hodnotenia 5/5 a ojedinele 4/5. Príklady detekcie a nastavenia dosiahli mierne nižšie hodnotenia, stále prevažne 4--5/5, avšak s ojedinelým 3/5, čo naznačuje priestor na zlepšenie v jasnosti a spoľahlivosti.
+  \item \textbf{Kvalitatívne:} Účastníci oceňovali jednoduchosť prototypu a bezprostrednosť interakcií. Ako najviac pozitívna časť sa najčastejšie uvádzalo rozbaľovacie menu; časť účastníkov vyzdvihla aj nastavenia. Ako najmenej obľúbené sa opakovane objavili príklady detekcie a mini-modálne okno spätnej väzby. Najvýraznejšia negatívna spätná väzba sa týkala ovládania v nastaveniach, najmä poznámok o nefunkčných alebo ťažko použiteľných tlačidlách.
+  \item \textbf{Faktory ovplyvnenia:} Malá a potenciálne homogénna vzorka, napríklad prevažne technicky zdatní účastníci, môže viesť k optimistickejším výsledkom. Tento faktor bol zohľadnený pri návrhu zmien pre ďalšiu iteráciu.
+\end{itemize}
+
+Podrobná tabuľka výsledkov dotazníka a súhrn pozorovaní sú dostupné v dokumentácii.\footnote{Odkaz na výsledky testovania: \href{https://docs.google.com/spreadsheets/d/1EyIOnNBmjI6_5DjKKHNp1mlViQyInPSu9pmalV57u8U/edit?usp=sharing}{User Testing Results (Spreadsheet)}.}
+
+\subsection{Druhý prototyp a jeho verifikácia}
+Druhý prototyp implementoval overený interakčný vzor v bežiacom HTML/React prototype (Vite + React). Táto iterácia zvýšila fidelitu a zabezpečila, že všetky prepínače a stavy sa správajú konzistentne: globálne zapnutie ochrany, správanie Auto-blur, zapnutie alebo vypnutie kategórií a voliteľné zobrazenie istoty.
+
+Verifikácia v druhej iterácii opätovne použila rovnaký typ scenárových úloh, aby bolo možné porovnať zmeny medzi iteráciami. Dotazník bol administrovaný znovu a súhrnné skóre za druhý prototyp je \textbf{86.4/100}.
+
+\textbf{Interpretácia výsledkov.} Oproti prvej iterácii sa zlepšila konzistentnosť stavov a objaviteľnosť ovládacích prvkov, najmä po presune kontextových akcií do hlavičky karty a po zjednotení vizuálnych stavov v celom rozhraní. Výsledky naznačujú, že druhá iterácia lepšie napĺňa požiadavku na rýchlu a reverzibilnú interakciu bez výrazného narušenia čítania.
+
+\textbf{Obmedzenia a faktory ovplyvňujúce výsledky.} Malá alebo homogénna vzorka, napríklad prevažne technicky zdatní účastníci, môže skresliť výsledky hodnotenia. Zároveň druhý prototyp používa simulované výstupy detekcie, čo môže ovplyvniť vnímanú užitočnosť v porovnaní s integráciou reálneho modelu.
+
+\section{Vyhodnotenie vzdialeného režimu inferencie}
+
+Vzdialený režim inferencie bol hodnotený ako alternatíva k lokálnemu spracovaniu textu, ktorá umožňuje použiť výkonnejší model a flexibilnejšie experimentovať s nastavením prahov. Táto časť sa zameriava najmä na vplyv nerovnováhy tried, porovnanie jednotlivých iterácií modelu a rozdiel medzi validačne optimalizovanými a produktovými prahmi. Výsledky slúžia na posúdenie toho, akú úlohu môže vzdialený režim zohrávať v hybridnej architektúre rozšírenia.
+
+\subsection{Nerovnováha tried a príprava dát}
+Pri viacštítkovej detekcii toxicity podľa taxonómie Jigsaw sa potvrdila výrazná nerovnováha tried. V baseline rozdelení dát Jigsaw2018 dosahuje napríklad štítok \emph{threat} iba približne 0{,}30\% pozitívnych príkladov v tréningu a 0{,}26\% vo validácii, pričom \emph{severe\_toxic} sa pohybuje približne na úrovni 1\%. Na zlepšenie učenia menšinových tried boli otestované oversampling konfigurácie pre vybrané štítky. Kľúčovým rozhodnutím bolo aplikovať oversampling iba na tréningovú množinu a validačnú množinu ponechať nezmenenú, aby metriky ostali porovnateľné.
+
+\FloatBarrier
+\begin{table*}[!htbp]
+  \centering
+  \small
+  \label{tab:jigsaw_imbalance_os}
+  \begin{tabularx}{\textwidth}{|p{3.4cm}|p{1.7cm}|Y|Y|Y|Y|Y|Y|}
+    \hline
+    \textbf{Split} & \textbf{Riadky} & \textbf{toxic} & \textbf{severe} & \textbf{obscene} & \textbf{insult} & \textbf{threat} & \textbf{identity} \\
+    \hline
+    Baseline (train) & 143\,613 & 9{,}59\% & 1{,}01\% & 5{,}31\% & 4{,}94\% & 0{,}30\% & 0{,}89\% \\
+    \hline
+    Baseline (val) & 15\,958 & 9{,}56\% & 0{,}90\% & 5{,}18\% & 4{,}88\% & 0{,}26\% & 0{,}83\% \\
+    \hline
+    Oversampling (train-only, train) & 152\,294 & 14{,}56\% & 4{,}48\% & 9{,}63\% & 9{,}09\% & 2{,}55\% & 2{,}66\% \\
+    \hline
+    Oversampling (train-only, val) & 15\,958 & \multicolumn{6}{l|}{\emph{nezmenené (identické s Baseline (val))}} \\
+    \hline
+  \end{tabularx}
+  \caption[Rozdelenie pozitívnych príkladov]{Rozdelenie pozitívnych príkladov v Jigsaw2018 (baseline) a po oversamplingu aplikovanom iba na tréningovú množinu.}
+\end{table*}
+\FloatBarrier
+
+\subsection{Iterácie modelu a porovnanie verzií}
+Na pripravených dátach boli vytrénované a vyhodnotené tri iterácie modelu XLM-R, konkrétne verzie v1, v2 a v2\_1, pričom všetky boli hodnotené rovnakým protokolom na validačnej množine Jigsaw2018. Výsledky ukazujú, že verzia v2 dosiahla najlepší kompromis medzi makro-F1, mikro-F1 a Hammingovou stratou a zároveň výrazne zlepšila menšinové triedy. Príkladom je metrika \emph{F1\_threat}, ktorá vzrástla z 0{,}362 na 0{,}743.
+
+\FloatBarrier
+\begin{table*}[!htbp]
+  \centering
+  \small
+  \label{tab:xlmr_versions_val}
+  \begin{tabularx}{\textwidth}{|Y|Y|Y|Y|Y|Y|}
+    \hline
+    \textbf{Model} & \textbf{macro-F1} & \textbf{micro-F1} & \textbf{Hamming loss} & \textbf{F1\_threat} & \textbf{F1\_severe} \\
+    \hline
+    xlmr-toxic-v1 & 0{,}635 & 0{,}777 & 0{,}0169 & 0{,}362 & 0{,}470 \\
+    \hline
+    xlmr-toxic-v2 & 0{,}780 & 0{,}839 & 0{,}0122 & 0{,}743 & 0{,}628 \\
+    \hline
+    xlmr-toxic-v2\_1 & 0{,}647 & 0{,}768 & 0{,}0176 & 0{,}448 & 0{,}489 \\
+    \hline
+  \end{tabularx}
+  \caption[Porovnanie verzií XLM-R]{Porovnanie iterácií XLM-R modelu na validačnej množine Jigsaw2018 (multi-label).}
+\end{table*}
+\FloatBarrier
+
+Verzia v2\_1 bola použitá ako doplnková kontrolná konfigurácia pri experimentoch zameraných na prahovanie a stabilitu správania v produktových nastaveniach rozšírenia.
+
+\subsection{Prahy rozhodovania: tuned vs.\ product}
+Keďže ide o multi-label úlohu, nepostačuje jeden globálny prah. Preto boli zavedené per-label prahy v dvoch režimoch: \emph{tuned} prahy optimalizované na validačnej množine a \emph{product} prahy určené pre reálne správanie doplnku, ktoré zohľadňujú aj UX kompromisy. Pri bezpečnostne kritických prejavoch, ako je \emph{threat}, bolo cieľom znížiť počet falošne negatívnych prípadov aj za cenu citlivejšieho rozhodovania.
+
+\FloatBarrier
+\begin{table*}[!htbp]
+  \centering
+  \small
+  \label{tab:thresholds_tuned_vs_product}
+  \begin{tabularx}{\textwidth}{|Y|Y|Y|}
+    \hline
+    \textbf{Štítok} & \textbf{tuned} & \textbf{product} \\
+    \hline
+    toxic & 0{,}675 & 0{,}80 \\
+    \hline
+    severe\_toxic & 0{,}95 & 0{,}70 \\
+    \hline
+    obscene & 0{,}89 & 0{,}92 \\
+    \hline
+    insult & 0{,}85 & 0{,}85 \\
+    \hline
+    threat & 0{,}945 & 0{,}55 \\
+    \hline
+    identity\_hate & 0{,}95 & 0{,}75 \\
+    \hline
+  \end{tabularx}
+  \caption[Prahy tuned vs product]{Porovnanie per-label prahov pre režim \emph{tuned} (optimalizácia na val) a \emph{product} (UX kompromis) pre v2\_1.}
+\end{table*}
+\FloatBarrier
+
+\textbf{Interpretácia.} Výsledky ukazujú, že rozhodovanie modelu je pri menšinových a bezpečnostne citlivých triedach výrazne závislé od nastavenia prahov. Z tohto dôvodu je vhodné oddeľovať prahy optimalizované na validačných dátach od prahov určených pre produktové správanie systému, kde sa okrem klasickej presnosti zohľadňuje aj používateľský dopad falošných pozitív a falošných negatív.
+
+\section{Experimentálne vyhodnotenie lokálneho TF.js modelu}
+
+Lokálny TF.js model bol vyhodnotený ako prvý orientačný variant inferencie priamo v prehliadači. Cieľom tejto časti je zistiť, do akej miery je predtrénovaný model použiteľný ako základ pre režim orientovaný na súkromie používateľa. Vyhodnotenie sa sústreďuje na základné metriky viacštítkovej klasifikácie, správanie jednotlivých kategórií toxicity a obmedzenia vyplývajúce z použitia jedného globálneho rozhodovacieho prahu.
+
+\subsection{Nastavenie experimentu}
+Pre lokálny režim bol otestovaný predtrénovaný model \emph{@tensorflow-models/toxicity} spúšťaný priamo v prehliadači. Cieľom testu bolo získať orientačný obraz o kvalite detekcie v režime \emph{privacy-by-default}, teda bez odosielania textu mimo klienta. Keďže lokálne nasadenie je limitované výkonom a kompatibilitou backendov, meranie bolo vykonané s backendom \emph{CPU} a so zjednodušeným rozhodovaním pomocou jedného globálneho prahu $\tau=0{,}85$.
+
+Vyhodnotenie prebehlo na podmnožine \emph{val.csv}, z ktorej bolo použitých 5\,000 riadkov. Reportované sú štandardné multi-label metriky, konkrétne macro-F1, micro-F1, Hammingova strata a F1 pre jednotlivé štítky.
+
+\FloatBarrier
+\begin{table*}[!htbp]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.15}
+  \setlength{\tabcolsep}{4pt}
+  \label{tab:tfjs_eval_summary}
+  \begin{tabularx}{\textwidth}{|P{3.6cm}|Y|Y|Y|Y|Y|}
+    \hline
+    \textbf{Konfigurácia} &
+    \textbf{Backend} &
+    \textbf{TF.js ver.} &
+    \textbf{Riadky} &
+    \textbf{Prahovanie} &
+    \textbf{Batch size} \\
+    \hline
+    Lokálny TF.js test &
+    cpu &
+    4.22.0 &
+    5\,000 &
+    $\tau=0{,}85$ (globálne) &
+    16 \\
+    \hline
+    \multicolumn{6}{|P{\dimexpr\textwidth-2\tabcolsep-2\arrayrulewidth\relax}|}{%
+      \textbf{Metriky:} macro-F1 = 0{,}283;\quad micro-F1 = 0{,}568;\quad Hamming loss = 0{,}0236.
+    } \\
+    \hline
+  \end{tabularx}
+  \caption[Vyhodnotenie lokálneho TF.js modelu]{Súhrn vyhodnotenia lokálneho TF.js modelu (\emph{@tensorflow-models/toxicity}) na podmnožine validačných dát.}
+\end{table*}
+\FloatBarrier
+
+\subsection{Výsledky a interpretácia}
+Výsledky naznačujú, že lokálny model dosahuje použiteľnú výkonnosť najmä pre častejšie triedy, napríklad \emph{toxic} a \emph{insult}, avšak pri menšinových kategóriách, ako sú \emph{threat}, \emph{severe\_toxic} a \emph{identity\_hate}, pri zvolenom globálnom prahu nedosahuje pozitívny F1. Tento jav je v súlade s očakávaniami z analytickej časti: menšinové triedy sú náročné na citlivé prahovanie a lokálny model je primárne vhodný ako \emph{privacy-friendly baseline} alebo ako režim s nižšími nárokmi na presnosť.
+
+Z praktického pohľadu to podporuje architektúru s dvomi režimami inferencie, kde lokálny režim poskytuje okamžitú ochranu súkromia a vzdialený režim môže slúžiť ako presnejší opt-in doplnok.
+
+\FloatBarrier
+\begin{table*}[!htbp]
+  \centering
+  \footnotesize
+  \renewcommand{\arraystretch}{1.15}
+  \label{tab:tfjs_eval_perlabel}
+  \begin{tabularx}{\textwidth}{|p{2.8cm}|*{6}{>{\centering\arraybackslash}X|}}
+    \hline
+    \textbf{Štítok} &
+    \textbf{Toxic} &
+    \textbf{Severe toxic} &
+    \textbf{Obscene} &
+    \textbf{Insult} &
+    \textbf{Threat} &
+    \textbf{Identity hate} \\
+    \hline
+    F1 &
+    0{,}674 &
+    0{,}000 &
+    0{,}370 &
+    0{,}654 &
+    0{,}000 &
+    0{,}000 \\
+    \hline
+  \end{tabularx}
+  \caption[Per-label F1 pre lokálny model]{Per-label F1 skóre lokálneho TF.js modelu pri globálnom prahu $\tau = 0{,}85$.}
+\end{table*}
+\FloatBarrier
+
+\section{Vyhodnotenie optimalizovaného lokálneho režimu inferencie}
+
+Po vyhodnotení pôvodného lokálneho baseline modelu bol lokálny režim rozšírený o vlastný optimalizovaný model vo formáte TensorFlow.js GraphModel. Táto časť hodnotí, či takýto model dokáže zlepšiť klasifikačnú kvalitu, zachovať výhody lokálneho spracovania a zároveň dosiahnuť dostatočný výkon pre praktické použitie v rozšírení. Pozornosť je venovaná ladeniu prahov, výsledkom na validačných dátach a porovnaniu backendov CPU a WASM.
+
+\subsection{Nastavenie experimentu}
+Táto časť nadväzuje na predchádzajúce experimentálne vyhodnotenie lokálneho TF.js modelu založeného na predtrénovanom balíku toxicity modelu. Pôvodné riešenie slúžilo ako orientačný lokálny baseline, avšak pri jednom globálnom prahu dosahovalo slabšie výsledky najmä pri menšinových triedach. Z tohto dôvodu bol lokálny režim ďalej rozšírený o vlastný model exportovaný do formátu TensorFlow.js GraphModel.
+
+Nový lokálny model pracuje na znakovej reprezentácii vstupu. Každý text je normalizovaný, skrátený na maximálnu dĺžku 256 znakov a následne zakódovaný podľa slovníka znakov. Výstupom modelu je šestica skóre zodpovedajúca taxonómii Jigsaw: \emph{toxic}, \emph{severe\_toxic}, \emph{obscene}, \emph{insult}, \emph{threat} a \emph{identity\_hate}.
+
+Cieľom experimentu bolo overiť dve vlastnosti optimalizovaného lokálneho režimu. Prvou bola klasifikačná použiteľnosť modelu na validačnej množine Jigsaw2018. Druhou bolo porovnanie výkonu backendov \emph{CPU} a \emph{WASM}, keďže lokálna inferencia v rozšírení prehliadača musí byť dostatočne rýchla, aby nespomaľovala používateľské rozhranie. Experiment bol vykonaný na validačnej množine \emph{val.csv} s počtom 15\,958 komentárov. Veľkosť dávky bola nastavená na 64 a použitá verzia TensorFlow.js bola 4.22.0.
+
+\FloatBarrier
+\begin{table*}[!htbp]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.15}
+  \setlength{\tabcolsep}{6pt}
+  \begin{tabularx}{\textwidth}{|p{4.4cm}|Y|Y|Y|Y|Y|}
+    \hline
+    \textbf{Konfigurácia} &
+    \textbf{Model} &
+    \textbf{TF.js ver.} &
+    \textbf{Riadky} &
+    \textbf{Batch size} &
+    \textbf{Max. dĺžka vstupu} \\
+    \hline
+    Optimalizovaný lokálny režim &
+    Char-CNN GraphModel &
+    4.22.0 &
+    15\,958 &
+    64 &
+    256 znakov \\
+    \hline
+  \end{tabularx}
+  \caption[Nastavenie lokálneho Char-CNN experimentu]{Nastavenie experimentu pre optimalizovaný lokálny režim inferencie pomocou TensorFlow.js GraphModel.}
+  \label{tab:local_charcnn_eval_setup}
+\end{table*}
+\FloatBarrier
+
+\subsection{Ladenie rozhodovacích prahov}
+Na rozdiel od pôvodného lokálneho baseline riešenia, ktoré bolo vyhodnotené s jedným globálnym prahom, nový lokálny model používa samostatné rozhodovacie prahy pre jednotlivé štítky. Takéto nastavenie lepšie zodpovedá viacštítkovej povahe úlohy, pretože jednotlivé kategórie toxicity majú rozdielne rozdelenie dát a rozdielnu náročnosť detekcie.
+
+Prahy boli optimalizované na validačnej množine tak, aby sa maximalizovala hodnota F1 pre jednotlivé triedy. Výsledky ukazujú, že model generuje pomerne vysoké skóre pri pozitívnych prípadoch, preto sa najlepšie prahy pohybovali v rozsahu 0{,}90 až 0{,}94.
+
+\FloatBarrier
+\begin{table*}[!htbp]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabularx}{\textwidth}{|p{3.2cm}|Y|Y|Y|Y|Y|Y|}
+    \hline
+    \textbf{Režim} &
+    \textbf{toxic} &
+    \textbf{severe} &
+    \textbf{obscene} &
+    \textbf{insult} &
+    \textbf{threat} &
+    \textbf{identity} \\
+    \hline
+    Tuned &
+    0{,}90 &
+    0{,}94 &
+    0{,}94 &
+    0{,}92 &
+    0{,}94 &
+    0{,}94 \\
+    \hline
+    Product &
+    0{,}90 &
+    0{,}96 &
+    0{,}94 &
+    0{,}92 &
+    0{,}97 &
+    0{,}96 \\
+    \hline
+  \end{tabularx}
+  \caption[Prahy pre lokálny Char-CNN model]{Porovnanie per-label prahov pre optimalizovaný lokálny model. Režim \emph{tuned} maximalizuje F1 na validačnej množine, zatiaľ čo režim \emph{product} sprísňuje rozhodovanie pri zriedkavých triedach.}
+  \label{tab:local_charcnn_thresholds}
+\end{table*}
+\FloatBarrier
+
+Režim \emph{product} bol navrhnutý ako konzervatívnejšie nastavenie pre reálne použitie v rozšírení. Pri triedach \emph{severe\_toxic}, \emph{threat} a \emph{identity\_hate} boli prahy zvýšené, pretože tieto triedy majú výrazne menší počet pozitívnych príkladov a pri optimalizácii iba podľa F1 vykazovali nižšiu presnosť. Takéto nastavenie znižuje riziko falošne pozitívneho rozmazania bežného textu.
+
+\subsection{Klasifikačné výsledky na validačnej množine}
+Klasifikačné výsledky ukazujú, že model dosahuje najlepšie výsledky pri častejších triedach, najmä \emph{toxic}, \emph{obscene} a \emph{insult}. Najvyššiu hodnotu F1 dosiahol štítok \emph{obscene} s hodnotou 0{,}801. Trieda \emph{toxic} dosiahla F1 0{,}732 a \emph{insult} 0{,}702. Slabšie výsledky boli pozorované pri zriedkavých triedach, hlavne \emph{threat}, kde bolo vo validačnej množine iba 42 pozitívnych príkladov.
+
+\FloatBarrier
+\begin{table*}[!htbp]
+  \centering
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabularx}{\textwidth}{|P{2.6cm}|Y|Y|Y|Y|Y|Y|}
+    \hline
+    \textbf{Štítok} &
+    \textbf{Pozit.} &
+    \textbf{Prah} &
+    \textbf{Precision} &
+    \textbf{Recall} &
+    \textbf{F1} &
+    \textbf{Accuracy} \\
+    \hline
+    toxic & 1\,525 & 0{,}90 & 0{,}787 & 0{,}684 & 0{,}732 & 0{,}952 \\
+    \hline
+    severe\_toxic & 143 & 0{,}94 & 0{,}286 & 0{,}783 & 0{,}419 & 0{,}981 \\
+    \hline
+    obscene & 826 & 0{,}94 & 0{,}808 & 0{,}794 & 0{,}801 & 0{,}980 \\
+    \hline
+    insult & 778 & 0{,}92 & 0{,}664 & 0{,}743 & 0{,}702 & 0{,}969 \\
+    \hline
+    threat & 42 & 0{,}94 & 0{,}189 & 0{,}714 & 0{,}299 & 0{,}991 \\
+    \hline
+    identity\_hate & 132 & 0{,}94 & 0{,}329 & 0{,}636 & 0{,}434 & 0{,}986 \\
+    \hline
+  \end{tabularx}
+  \caption[Per-label výsledky lokálneho Char-CNN modelu]{Per-label výsledky optimalizovaného lokálneho modelu na validačnej množine Jigsaw2018.}
+  \label{tab:local_charcnn_perlabel}
+\end{table*}
+\FloatBarrier
+
+Okrem samostatných štítkov bol vyhodnotený aj celkový binárny verdikt \emph{toxic}/\emph{non-toxic}, ktorý zodpovedá praktickému správaniu rozšírenia. Text je v používateľskom rozhraní označený alebo rozmazaný vtedy, ak aspoň jeden povolený štítok prekročí nastavený prah. Pri tomto zjednodušenom rozhodovaní dosiahol model F1 0{,}734 pri najlepšom globálnom prahu 0{,}86.
+
+\FloatBarrier
+\begin{table*}[!htbp]
+  \centering
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabularx}{\textwidth}{|P{2.8cm}|Y|Y|Y|Y|Y|Y|}
+    \hline
+    \textbf{Verdikt} &
+    \textbf{Pozit.} &
+    \textbf{Prah} &
+    \textbf{Precision} &
+    \textbf{Recall} &
+    \textbf{F1} &
+    \textbf{Accuracy} \\
+    \hline
+    toxic / non-toxic & 1\,623 & 0{,}86 & 0{,}744 & 0{,}725 & 0{,}734 & 0{,}947 \\
+    \hline
+  \end{tabularx}
+  \caption[Celkový toxický verdikt lokálneho modelu]{Vyhodnotenie celkového binárneho verdiktu lokálneho modelu na validačnej množine Jigsaw2018.}
+  \label{tab:local_charcnn_overall}
+\end{table*}
+\FloatBarrier
+
+\textbf{Interpretácia.} Výsledky potvrdzujú, že optimalizovaný lokálny model je výrazne použiteľnejší ako pôvodný lokálny baseline opísaný v predchádzajúcej časti. Zatiaľ čo pôvodný model bol vhodný najmä ako orientačné riešenie typu \emph{privacy-friendly baseline}, nový GraphModel poskytuje skóre pre všetkých šesť štítkov v rovnakej taxonómii ako vzdialený režim a umožňuje samostatné prahovanie pre každú kategóriu. Napriek tomu zostáva detekcia menšinových tried náročná, najmä pre \emph{threat} a \emph{identity\_hate}, kde nízky počet pozitívnych príkladov zvyšuje citlivosť metriky precision na falošne pozitívne predikcie.
+
+\subsection{Porovnanie výkonu backendov CPU a WASM}
+Dôležitou súčasťou lokálneho režimu je výkon inferencie. Model bol preto spustený s dvomi backendmi TensorFlow.js: \emph{CPU} a \emph{WASM}. Pri oboch backendch boli klasifikačné metriky rovnaké, rozdiel sa prejavil najmä v rýchlosti výpočtu. Backend \emph{CPU} spracoval 15\,958 komentárov za 85{,}60 s, zatiaľ čo backend \emph{WASM} potreboval 6{,}35 s. Priemerný čas na jeden komentár klesol z 5{,}36 ms na 0{,}40 ms.
+
+\FloatBarrier
+\begin{table*}[!htbp]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.2}
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabularx}{\textwidth}{|Y|Y|Y|Y|Y|Y|Y|}
+    \hline
+    \textbf{Backend} &
+    \textbf{Riadky} &
+    \textbf{Batch} &
+    \textbf{Predikcia [s]} &
+    \textbf{Priemer [ms]} &
+    \textbf{Priepust. [textov/s]} &
+    \textbf{Warm-up [ms]} \\
+    \hline
+    CPU &
+    15\,958 &
+    64 &
+    85{,}60 &
+    5{,}36 &
+    186{,}42 &
+    34{,}27 \\
+    \hline
+    WASM &
+    15\,958 &
+    64 &
+    6{,}35 &
+    0{,}40 &
+    2\,514{,}57 &
+    10{,}66 \\
+    \hline
+  \end{tabularx}
+  \caption[Porovnanie CPU a WASM backendu]{Porovnanie výkonu lokálnej inferencie pri backendch CPU a WASM.}
+  \label{tab:local_charcnn_backend_perf}
+\end{table*}
+\FloatBarrier
+
+Backend \emph{WASM} bol približne 13{,}49-krát rýchlejší než backend \emph{CPU} pri samotnej predikcii. Tento rozdiel je prakticky významný, pretože rozšírenie neklasifikuje iba jeden text, ale priebežne skenuje viaceré textové uzly na stránke. Rýchlejšia inferencia znižuje riziko oneskorenia pri prehliadaní obsahu a umožňuje spracovanie väčšieho počtu komentárov bez výrazného dopadu na používateľské rozhranie.
+
+\section{Zhrnutie vyhodnotenia}
+
+Vyhodnotenie ukázalo, že navrhnuté používateľské rozhranie je zrozumiteľné a použiteľné. Druhá iterácia prototypu dosiahla lepšie výsledky než prvá a odstránila viaceré problémy zistené pri prvotnom testovaní.
+
+Z technického hľadiska sa potvrdilo, že lokálny a vzdialený režim inferencie majú rozdielne výhody. Optimalizovaný lokálny režim zachováva princíp \emph{privacy-by-default}, keďže text sa spracúva priamo v prehliadači, a pri použití backendu \emph{WASM} dosahuje dostatočnú rýchlosť na praktické použitie. V porovnaní s pôvodným baseline riešením poskytuje vlastný \emph{GraphModel} lepšiu kontrolu nad prahmi, jednotnejšiu štruktúru výstupu a lepšie možnosti optimalizácie.
+
+Lokálny TF.js model je preto vhodný ako základ pre súkromie orientované nasadenie, avšak pri jednoduchom globálnom prahu dosahuje slabšie výsledky pri menej zastúpených kategóriách. Vzdialený režim naopak umožňuje lepšiu optimalizáciu presnosti, najmä pri menšinových triedach a \emph{per-label} prahovaní.
+
+Navrhnutá hybridná architektúra tak predstavuje vhodný kompromis medzi ochranou súkromia, použiteľnosťou, výkonom a presnosťou detekcie toxického textu.
