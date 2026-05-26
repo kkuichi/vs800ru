@@ -6,32 +6,68 @@ The extension is an assistive tool. Its results are generated automatically by m
 
 ---
 
-## 1. Requirements
+## 1. Location on the CD medium
+
+The user manual is located in:
+
+```text
+doc/USER_MANUAL.md
+```
+
+The prepared extension build is located in:
+
+```text
+dist/
+```
+
+The source code is located in:
+
+```text
+src/
+```
+
+The frontend source code is located in:
+
+```text
+src/frontend/
+```
+
+The backend source code is located in:
+
+```text
+src/backend/
+```
+
+All paths in this manual are written relative to the root of the CD medium.
+
+---
+
+## 2. Requirements
 
 To use the extension, the user needs:
 
 - Google Chrome or a Chromium-based browser,
-- the built extension folder, usually `frontend/dist`,
-- Developer mode enabled in Chrome extensions,
+- access to the prepared extension build in `dist/`, or the private Chrome Web Store project link,
+- Developer mode enabled in Chrome extensions if the extension is loaded manually,
 - optional access to the backend API if Remote mode is used.
 
 For normal Local mode use, the backend API is not required.
 
 ---
 
-## 2. Installation
+## 3. Installation
 
 The extension can be installed in two ways:
 
 - from the Chrome Web Store using the private project link,
-- manually from the prepared `dist` folder.
+- manually from the prepared `dist/` folder on the CD medium.
 
-### 2.1 Installation from Chrome Web Store link
+### 3.1 Installation from Chrome Web Store link
 
 The extension is published in the Chrome Web Store, but it is not publicly searchable. It is distributed for this project through a direct private/unlisted link:
 
 ```text
-https://chromewebstore.google.com/detail/toxic-text-detector-hybri/jankcpfaihpjhecegklglapdokjljkfn?authuser=0&hl=en
+REPLACE_WITH_PRIVATE_CHROME_WEB_STORE_LINK
 ```
 
 To install the extension:
@@ -43,9 +79,9 @@ To install the extension:
 
 This is the recommended installation method for normal users and project evaluation.
 
-### 2.2 Manual installation from ready build
+### 3.2 Manual installation from the CD medium
 
-If the extension is not installed from the Chrome Web Store link, it can be loaded manually from the prepared `dist` folder.
+If the extension is not installed from the Chrome Web Store link, it can be loaded manually from the prepared `dist/` folder.
 
 1. Open Google Chrome.
 2. Open the extensions page:
@@ -56,10 +92,10 @@ chrome://extensions/
 
 3. Enable **Developer mode**.
 4. Click **Load unpacked**.
-5. Select the built extension folder, usually:
+5. Select the prepared extension folder from the CD medium:
 
 ```text
-frontend/dist/
+dist/
 ```
 
 6. The extension will appear in the list of installed extensions.
@@ -69,7 +105,7 @@ Manual installation is mainly intended for testing, demonstration, or developmen
 
 ---
 
-## 3. First use
+## 4. First use
 
 After installation, open a web page containing text, such as a discussion page, forum, comment section, article, or search results page.
 
@@ -86,7 +122,7 @@ The purpose of the extension is not to permanently remove content from a page. I
 
 ---
 
-## 4. Popup window
+## 5. Popup window
 
 The popup window is opened by clicking the extension icon in the browser toolbar.
 
@@ -103,7 +139,7 @@ If protection is disabled, the extension stops actively scanning and marking new
 
 ---
 
-## 5. Settings page
+## 6. Settings page
 
 The Settings page contains the main configuration of the extension.
 
@@ -126,7 +162,7 @@ The exact available options depend on the current build of the extension.
 
 ---
 
-## 6. Sensitivity level
+## 7. Sensitivity level
 
 The sensitivity level controls how strict the detection should be.
 
@@ -142,14 +178,14 @@ Sensitivity changes the decision behavior of the model. It does not guarantee pe
 
 ---
 
-## 7. Processing modes
+## 8. Processing modes
 
 The extension supports two processing modes:
 
 - Local mode,
 - Remote mode.
 
-### 7.1 Local mode
+### 8.1 Local mode
 
 In Local mode, text is processed directly in the browser.
 
@@ -162,7 +198,7 @@ Advantages:
 
 Local mode is recommended for normal browsing. However, local inference may be less accurate than the backend model in more difficult toxicity categories.
 
-### 7.2 Remote mode
+### 8.2 Remote mode
 
 In Remote mode, text is sent to a configured API server for classification.
 
@@ -179,7 +215,7 @@ Remote mode should be used only when the user understands and accepts that analy
 
 ---
 
-## 8. Remote API configuration
+## 9. Remote API configuration
 
 For normal use, the user does not need to run the backend API.
 
@@ -189,15 +225,23 @@ If the user wants to test Remote mode with a local backend, the backend API must
 http://127.0.0.1:8000
 ```
 
-After that, the extension can be configured to use the local API.
+The backend source code is located in:
 
-The technical commands for starting the backend and switching the API URL are described in the system manual in `README.md`.
+```text
+src/backend/
+```
+
+The technical commands for starting the backend and switching the API URL are described in the system manual:
+
+```text
+doc/README.md
+```
 
 If the selected remote API requires authorization, a token must be configured. If the API does not require a token, the token field can stay empty.
 
 ---
 
-## 9. Toxicity categories
+## 10. Toxicity categories
 
 The extension supports several toxicity categories:
 
@@ -219,7 +263,7 @@ Recommended use:
 
 ---
 
-## 10. Automatic blurring
+## 11. Automatic blurring
 
 The Auto-blur option controls whether detected toxic text should be blurred automatically.
 
@@ -230,7 +274,7 @@ This allows the user to choose between stronger visual protection and more visib
 
 ---
 
-## 11. Revealing blurred text
+## 12. Revealing blurred text
 
 If text is blurred by the extension, the user can reveal it when needed.
 
@@ -240,7 +284,7 @@ This is useful when the user needs to understand the full context, for example w
 
 ---
 
-## 12. Confidence scores
+## 13. Confidence scores
 
 The Show confidence scores option controls whether the extension displays confidence values for detected toxic text.
 
@@ -253,7 +297,7 @@ Confidence scores should not be interpreted as absolute truth. They represent th
 
 ---
 
-## 13. Whitelist domains
+## 14. Whitelist domains
 
 The whitelist allows the user to disable detection on selected websites.
 
@@ -276,7 +320,7 @@ This is useful for websites where the user does not want the extension to modify
 
 ---
 
-## 14. Exporting and importing settings
+## 15. Exporting and importing settings
 
 The settings page may include options to export or import the current configuration.
 
@@ -292,9 +336,9 @@ Only import settings from a trusted source.
 
 ---
 
-## 15. Recommended configurations
+## 16. Recommended configurations
 
-### 15.1 Normal browsing
+### 16.1 Normal browsing
 
 Recommended settings for normal use:
 
@@ -305,7 +349,7 @@ Recommended settings for normal use:
 - only relevant toxicity categories enabled,
 - whitelist used for trusted websites where scanning is not needed.
 
-### 15.2 Demonstration or evaluation
+### 16.2 Demonstration or evaluation
 
 Recommended settings for demonstration or testing:
 
@@ -317,7 +361,7 @@ Recommended settings for demonstration or testing:
 
 ---
 
-## 16. Privacy and data processing
+## 17. Privacy and data processing
 
 In Local mode, analyzed text is processed directly in the browser and does not need to be sent to a server.
 
@@ -336,7 +380,7 @@ These settings are used to preserve the selected configuration between browsing 
 
 ---
 
-## 17. Scope and limitations
+## 18. Scope and limitations
 
 Toxic Text Detector uses automated model predictions. The extension can help reduce exposure to toxic text, but it cannot fully understand every context of human communication.
 
@@ -353,14 +397,14 @@ The extension does not replace human moderation or final user judgement. It is d
 
 ---
 
-## 18. Troubleshooting
+## 19. Troubleshooting
 
 ### Extension does not appear in Chrome
 
 Check that:
 
-- Developer mode is enabled,
-- the correct built extension folder was selected,
+- Developer mode is enabled if manual installation is used,
+- the correct `dist/` folder was selected,
 - the selected folder contains `manifest.json`,
 - the extension was not disabled by Chrome.
 
@@ -401,7 +445,11 @@ For a local backend, the expected address is:
 http://127.0.0.1:8000
 ```
 
-Technical commands for changing or testing the API configuration are described in the system manual.
+Technical commands for changing or testing the API configuration are described in the system manual:
+
+```text
+doc/README.md
+```
 
 ### Page becomes slower
 
@@ -416,14 +464,20 @@ Recommended actions:
 
 ---
 
-## 19. Advanced installation from source
+## 20. Advanced installation from source
 
 This section is intended only for users who need to build the extension from source code.
+
+The frontend source code is located in:
+
+```text
+src/frontend/
+```
 
 Go to the frontend folder:
 
 ```bash
-cd frontend
+cd src/frontend
 ```
 
 Install dependencies:
@@ -438,17 +492,21 @@ Build the extension:
 npm run build
 ```
 
-After build, load the generated folder through `chrome://extensions/` using Load unpacked:
+The prepared build used for the CD medium is stored in:
 
 ```text
-frontend/dist/
+dist/
 ```
 
-For backend setup, model files, API configuration, and developer commands, see the system manual in `README.md`.
+For backend setup, model files, API configuration, and developer commands, see the system manual:
+
+```text
+doc/README.md
+```
 
 ---
 
-## 20. Summary
+## 21. Summary
 
 Toxic Text Detector helps users detect and visually reduce exposure to potentially toxic text while browsing the web. It supports Local mode for privacy-preserving use and optional Remote mode through an API. The user can configure detection sensitivity, active categories, automatic blurring, confidence score display, and whitelist domains.
 

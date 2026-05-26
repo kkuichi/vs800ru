@@ -1,4 +1,4 @@
-# Toxic Text Detector
+# Toxic Text Detector – System Manual
 
 Toxic Text Detector is a bachelor thesis project focused on the design, implementation, and evaluation of a browser extension for detecting potentially toxic text on web pages.
 
@@ -13,20 +13,34 @@ The project also evaluates the practical trade-off between privacy-preserving lo
 
 ---
 
-## Project structure
+## CD medium structure
+
+The electronic version of the bachelor thesis is organized as follows:
 
 ```text
-toxic-text-detector/
-├── README.md
-├── USER_MANUAL.md
-├── frontend/
-└── backend/
+CD_ROOT/
+├── doc/
+│   ├── README.md
+│   └── USER_MANUAL.md
+├── tex/
+├── src/
+│   ├── frontend/
+│   └── backend/
+├── dist/
+└── article/
 ```
 
-The `frontend` folder contains the Chrome extension.  
-The `backend` folder contains the optional API server for remote toxicity inference.
+Description of folders:
 
-The generated `dist` folder is not source code. It is created after building the frontend and can be loaded into Chrome as an unpacked extension.
+- `doc/` – final thesis documentation and appendices, including this system manual and the user manual.
+- `tex/` – LaTeX source files of the thesis and scientific article.
+- `src/` – source code of the implemented solution.
+- `src/frontend/` – source code of the Chrome extension.
+- `src/backend/` – source code of the backend API for remote inference.
+- `dist/` – built version of the extension prepared for loading into the browser.
+- `article/` – scientific article created based on the results of the thesis.
+
+All paths in this manual are written relative to the root of the CD medium.
 
 ---
 
@@ -37,7 +51,7 @@ The frontend is implemented using Vite, React, Chrome Manifest V3, and TensorFlo
 Main frontend structure:
 
 ```text
-frontend/
+src/frontend/
 ├── public/
 │   ├── local_char_model/
 │   ├── background.js
@@ -66,15 +80,15 @@ frontend/
 
 ### Important frontend files
 
-- `public/manifest.json` – Chrome Manifest V3 configuration.
-- `public/background.js` – service worker, central extension actions, communication with the active tab, and remote API handling.
-- `public/contentScript.js` – scans page text, runs classification, and marks or blurs detected toxic content.
-- `public/toxicityContract.global.js` – normalizes model outputs, labels, thresholds, strictness settings, and final verdicts.
-- `public/local_char_model/` – local TensorFlow.js model files required for browser inference.
-- `src/state/SettingsContext.jsx` – manages extension settings and stores them in Chrome storage.
-- `src/popupMain.jsx` – entry point for the extension popup.
-- `src/optionsMain.jsx` – entry point for the settings page.
-- `scripts/evaluate-local-model.js` – script for evaluating the optimized local TensorFlow.js model.
+- `src/frontend/public/manifest.json` – Chrome Manifest V3 configuration.
+- `src/frontend/public/background.js` – service worker, central extension actions, communication with the active tab, and remote API handling.
+- `src/frontend/public/contentScript.js` – scans page text, runs classification, and marks or blurs detected toxic content.
+- `src/frontend/public/toxicityContract.global.js` – normalizes model outputs, labels, thresholds, strictness settings, and final verdicts.
+- `src/frontend/public/local_char_model/` – local TensorFlow.js model files required for browser inference.
+- `src/frontend/src/state/SettingsContext.jsx` – manages extension settings and stores them in Chrome storage.
+- `src/frontend/src/popupMain.jsx` – entry point for the extension popup.
+- `src/frontend/src/optionsMain.jsx` – entry point for the settings page.
+- `src/frontend/scripts/evaluate-local-model.js` – script for evaluating the optimized local TensorFlow.js model.
 
 ---
 
@@ -85,7 +99,7 @@ The backend provides an optional API for remote inference. It is used when the e
 Main backend structure:
 
 ```text
-backend/
+src/backend/
 ├── api/
 │   ├── app.py
 │   ├── thresholds.json
@@ -104,13 +118,13 @@ backend/
 
 ### Important backend files
 
-- `api/app.py` – main FastAPI application.
-- `api/thresholds_product_v2_1.json` – product threshold configuration used by the API.
-- `train/` – scripts for dataset preparation, remote model training, evaluation, and threshold tuning.
-- `reports/` – selected experiment outputs and model evaluation results.
-- `models/xlmr-toxic-v2_1/` – trained XLM-R model used by the configured remote API.
-- `requirements.txt` – Python dependencies required to run the backend.
-- `Dockerfile` – optional container configuration for deployment.
+- `src/backend/api/app.py` – main FastAPI application.
+- `src/backend/api/thresholds_product_v2_1.json` – product threshold configuration used by the API.
+- `src/backend/train/` – scripts for dataset preparation, remote model training, evaluation, and threshold tuning.
+- `src/backend/reports/` – selected experiment outputs and model evaluation results.
+- `src/backend/models/xlmr-toxic-v2_1/` – trained XLM-R model used by the configured remote API.
+- `src/backend/requirements.txt` – Python dependencies required to run the backend.
+- `src/backend/Dockerfile` – optional container configuration for deployment.
 
 ---
 
@@ -152,7 +166,7 @@ The project uses two model-related parts:
 The local browser model is expected in:
 
 ```text
-frontend/public/local_char_model/
+src/frontend/public/local_char_model/
 ```
 
 This model is used directly by the Chrome extension. It allows the extension to classify text locally without sending it to a server.
@@ -166,12 +180,12 @@ The local model files must be present before building or running the extension w
 The remote backend model is expected in:
 
 ```text
-backend/models/xlmr-toxic-v2_1/
+src/backend/models/xlmr-toxic-v2_1/
 ```
 
 This model is used by the backend API for remote inference.
 
-The backend model can contain large files and may be tracked using Git LFS. After cloning the repository, make sure Git LFS is installed and run:
+The backend model can contain large files and may be tracked using Git LFS. If the model files are not present after cloning the repository, make sure Git LFS is installed and run:
 
 ```bash
 git lfs pull
@@ -180,7 +194,7 @@ git lfs pull
 Expected backend model structure:
 
 ```text
-backend/models/xlmr-toxic-v2_1/
+src/backend/models/xlmr-toxic-v2_1/
 ├── config.json
 ├── model.safetensors
 ├── tokenizer.json
@@ -191,67 +205,19 @@ backend/models/xlmr-toxic-v2_1/
 
 ---
 
-## Installing Git LFS
-
-Git LFS is required if the backend model files are stored using Git LFS.
-
-Install and initialize Git LFS:
-
-```bash
-git lfs install
-```
-
-After cloning the repository, download LFS files:
-
-```bash
-git lfs pull
-```
-
----
-
-## Frontend installation and build
-
-Go to the frontend folder:
-
-```bash
-cd frontend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Create the production build:
-
-```bash
-npm run build
-```
-
-After a successful build, the generated extension will be available in:
-
-```text
-frontend/dist/
-```
-
-The `dist` folder can be loaded into Chrome as an unpacked extension.
-
----
-
 ## Installing or loading the extension in Chrome
 
 The extension can be used in two ways:
 
 - installed from the Chrome Web Store using the private project link,
-- loaded manually as an unpacked extension from the generated `dist` folder.
+- loaded manually as an unpacked extension from the prepared `dist/` folder.
 
 ### Installation from Chrome Web Store link
 
 The extension is published in the Chrome Web Store, but it is not publicly searchable. It is distributed for this project through a direct private/unlisted link:
 
 ```text
-https://chromewebstore.google.com/detail/toxic-text-detector-hybri/jankcpfaihpjhecegklglapdokjljkfn?authuser=0&hl=en
+REPLACE_WITH_PRIVATE_CHROME_WEB_STORE_LINK
 ```
 
 To install it:
@@ -259,7 +225,7 @@ To install it:
 1. Open the provided Chrome Web Store link.
 2. Click **Add to Chrome**.
 3. Confirm the installation.
-4. Pin the extension to the toolbar if needed.
+4. Pin the extension to the browser toolbar if needed.
 
 This method is recommended for normal use and project evaluation.
 
@@ -276,18 +242,49 @@ chrome://extensions/
 
 3. Enable **Developer mode**.
 4. Click **Load unpacked**.
-5. Select:
+5. Select the prepared extension folder:
 
 ```text
-frontend/dist/
+dist/
 ```
 
 6. The extension will appear in the list of installed extensions.
+7. Pin the extension to the toolbar if needed.
 
-The `frontend/dist/` folder is generated by running:
+The `dist/` folder on the CD medium already contains the built extension prepared for loading into the browser.
+
+---
+
+## Building the frontend from source
+
+The prepared build is already available in:
+
+```text
+dist/
+```
+
+If it is necessary to rebuild the extension from source, go to the frontend source folder:
+
+```bash
+cd src/frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create the production build:
 
 ```bash
 npm run build
+```
+
+The build command creates a build output inside the frontend project. For the CD medium, the final prepared build is stored separately in the root folder:
+
+```text
+dist/
 ```
 
 ---
@@ -297,10 +294,16 @@ npm run build
 The backend API can be started locally when the trained XLM-R model is available in:
 
 ```text
-backend/models/xlmr-toxic-v2_1/
+src/backend/models/xlmr-toxic-v2_1/
 ```
 
-The following commands are intended for Windows Command Prompt and should be executed from the `backend` directory.
+The following commands are intended for Windows Command Prompt and should be executed from the backend directory:
+
+```bash
+cd src/backend
+```
+
+Then run:
 
 ```cmd
 set "HF_MODEL_PATH=.\models\xlmr-toxic-v2_1"
@@ -428,13 +431,14 @@ A normal user does not need to run these commands manually.
 The optimized local browser model can be evaluated using:
 
 ```bash
+cd src/frontend
 node scripts/evaluate-local-model.js
 ```
 
 The backend training and evaluation scripts are located in:
 
 ```text
-backend/train/
+src/backend/train/
 ```
 
 These scripts were used for dataset preparation, remote model training, evaluation, and threshold tuning.
@@ -445,9 +449,9 @@ The evaluation was not designed as one identical benchmark for every model. The 
 
 ## Notes about datasets
 
-The original Jigsaw datasets and large raw archives are not part of the repository. They were used during training and evaluation, but they are not required for normal use of the extension.
+The original Jigsaw datasets and large raw archives are not part of the CD medium. They were used during training and evaluation, but they are not required for normal use of the extension.
 
-The repository contains source code, model configuration, selected reports, the local browser model or its expected location, and the backend model or its expected location required for API startup.
+The CD medium contains the thesis documentation, LaTeX sources, scientific article, source code, selected reports or configurations, the prepared extension build, and model files or expected model locations required for running the system.
 
 ---
 
@@ -488,6 +492,6 @@ Local inference is privacy-preserving and fast because text is processed directl
 
 ---
 
-## Repository purpose
+## Repository and CD medium purpose
 
-This repository serves as the system manual for the bachelor thesis project. It contains the source code of the frontend and backend parts, technical description of the project structure, installation steps, startup commands, model information, developer API configuration commands, evaluation notes, and information required for further development.
+This CD medium serves as the electronic appendix of the bachelor thesis. It contains the thesis documentation, LaTeX sources, scientific article, source code of the implemented solution, prepared browser extension build, and technical documentation required for installation, testing, and further development.
