@@ -47,6 +47,10 @@ Main frontend structure:
 
 ```text
 src/frontend/
+├── artifacts/
+│   └── test_metrics.json
+├── jigsaw/
+│   └── val.csv
 ├── public/
 │   ├── local_char_model/
 │   ├── background.js
@@ -66,6 +70,10 @@ src/frontend/
 │   ├── main.jsx
 │   ├── optionsMain.jsx
 │   └── popupMain.jsx
+├── val/
+│   ├── cpu/
+│   ├── old-tfjs-toxicity/
+│   └── wasm/
 ├── options.html
 ├── popup.html
 ├── package.json
@@ -433,6 +441,12 @@ The optimized local browser model can be evaluated using:
 ```bash
 cd src/frontend
 node scripts/evaluate-local-model.js
+```
+
+Selected local evaluation outputs are stored in:
+
+```text
+src/frontend/val/
 ```
 
 The backend training and evaluation scripts are located in:
