@@ -1,19 +1,19 @@
-frontend/node_modules/
-frontend/dist/
-frontend/dist.zip
-frontend/.vite/
-frontend/.cache/
-frontend/.tmp/
+src/frontend/node_modules/
+src/frontend/dist/
+src/frontend/dist.zip
+src/frontend/.vite/
+src/frontend/.cache/
+src/frontend/.tmp/
 
 .env
 .env.*
-frontend/.env
-frontend/.env.*
-backend/.env
-backend/.env.*
+src/frontend/.env
+src/frontend/.env.*
+src/backend/.env
+src/backend/.env.*
 !.env.example
-!frontend/.env.example
-!backend/.env.example
+!src/frontend/.env.example
+!src/backend/.env.example
 
 .vscode/
 .DS_Store
@@ -24,37 +24,37 @@ npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 
-backend/__pycache__/
-backend/**/__pycache__/
-backend/**/*.pyc
-backend/.venv/
-backend/venv/
+src/backend/__pycache__/
+src/backend/**/__pycache__/
+src/backend/**/*.pyc
+src/backend/.venv/
+src/backend/venv/
 
-backend/data/
-backend/jig/
-backend/archive.zip
-backend/*.zip
+src/backend/data/
+src/backend/jig/
+src/backend/archive.zip
+src/backend/*.zip
 
-backend/models/*
+src/backend/models/*
 
-!backend/models/
-!backend/models/xlmr-toxic-v2_1/
-!backend/models/xlmr-toxic-v2_1/config.json
-!backend/models/xlmr-toxic-v2_1/model.safetensors
-!backend/models/xlmr-toxic-v2_1/tokenizer.json
-!backend/models/xlmr-toxic-v2_1/tokenizer_config.json
-!backend/models/xlmr-toxic-v2_1/training_args.bin
-!backend/models/xlmr-toxic-v2_1/training_meta.json
+!src/backend/models/
+!src/backend/models/xlmr-toxic-v2_1/
+!src/backend/models/xlmr-toxic-v2_1/config.json
+!src/backend/models/xlmr-toxic-v2_1/model.safetensors
+!src/backend/models/xlmr-toxic-v2_1/tokenizer.json
+!src/backend/models/xlmr-toxic-v2_1/tokenizer_config.json
+!src/backend/models/xlmr-toxic-v2_1/training_args.bin
+!src/backend/models/xlmr-toxic-v2_1/training_meta.json
 
-backend/models/**/checkpoint-*/
-backend/models/**/optimizer.pt
-backend/models/**/scheduler.pt
-backend/models/**/trainer_state.json
-backend/models/**/rng_state.pth
+src/backend/models/**/checkpoint-*/
+src/backend/models/**/optimizer.pt
+src/backend/models/**/scheduler.pt
+src/backend/models/**/trainer_state.json
+src/backend/models/**/rng_state.pth
 
-backend/HF_MODEL_PATH
-backend/MODEL_ID
-backend/THRESHOLD_SET
-backend/THRESHOLDS_PATH
-backend/py
-frontend/console.log(r.status)
+src/backend/HF_MODEL_PATH
+src/backend/MODEL_ID
+src/backend/THRESHOLD_SET
+src/backend/THRESHOLDS_PATH
+src/backend/py
+src/frontend/console.log(r.status)
