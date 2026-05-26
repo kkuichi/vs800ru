@@ -49,8 +49,6 @@ Main frontend structure:
 src/frontend/
 ├── artifacts/
 │   └── test_metrics.json
-├── jigsaw/
-│   └── val.csv
 ├── public/
 │   ├── local_char_model/
 │   ├── background.js
