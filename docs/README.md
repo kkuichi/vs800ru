@@ -1,4 +1,4 @@
-# Toxic Text Detector – System Manual
+# Toxic Text Detector
 
 Toxic Text Detector is a bachelor thesis project focused on the design, implementation, and evaluation of a browser extension for detecting potentially toxic text on web pages.
 
@@ -15,10 +15,10 @@ The project also evaluates the practical trade-off between privacy-preserving lo
 
 ## CD medium structure
 
-The electronic version of the bachelor thesis is organized as follows:
+The CD medium is organized as follows:
 
 ```text
-CD_ROOT/
+CD medium/
 ├── doc/
 │   ├── README.md
 │   └── USER_MANUAL.md
@@ -30,17 +30,12 @@ CD_ROOT/
 └── article/
 ```
 
-Description of folders:
-
-- `doc/` – final thesis documentation and appendices, including this system manual and the user manual.
-- `tex/` – LaTeX source files of the thesis and scientific article.
-- `src/` – source code of the implemented solution.
-- `src/frontend/` – source code of the Chrome extension.
-- `src/backend/` – source code of the backend API for remote inference.
-- `dist/` – built version of the extension prepared for loading into the browser.
-- `article/` – scientific article created based on the results of the thesis.
-
-All paths in this manual are written relative to the root of the CD medium.
+The `doc` folder contains the system manual (`README.md`) and user manual (`USER_MANUAL.md`).  
+The `tex` folder contains the source files of the thesis and scientific article.  
+The `src/frontend` folder contains the Chrome extension source code.  
+The `src/backend` folder contains the optional backend API for remote toxicity inference.  
+The `dist` folder contains the built extension ready to be loaded into Chrome.  
+The `article` folder contains the scientific article created from the results of the work.
 
 ---
 
@@ -185,7 +180,7 @@ src/backend/models/xlmr-toxic-v2_1/
 
 This model is used by the backend API for remote inference.
 
-The backend model can contain large files and may be tracked using Git LFS. If the model files are not present after cloning the repository, make sure Git LFS is installed and run:
+The backend model can contain large files and may be tracked using Git LFS. After cloning the repository, make sure Git LFS is installed and run:
 
 ```bash
 git lfs pull
@@ -205,65 +200,27 @@ src/backend/models/xlmr-toxic-v2_1/
 
 ---
 
-## Installing or loading the extension in Chrome
+## Installing Git LFS
 
-The extension can be used in two ways:
+Git LFS is required if the backend model files are stored using Git LFS.
 
-- installed from the Chrome Web Store using the private project link,
-- loaded manually as an unpacked extension from the prepared `dist/` folder.
+Install and initialize Git LFS:
 
-### Installation from Chrome Web Store link
-
-The extension is published in the Chrome Web Store, but it is not publicly searchable. It is distributed for this project through a direct private/unlisted link:
-
-```text
-REPLACE_WITH_PRIVATE_CHROME_WEB_STORE_LINK
+```bash
+git lfs install
 ```
 
-To install it:
+After cloning the repository, download LFS files:
 
-1. Open the provided Chrome Web Store link.
-2. Click **Add to Chrome**.
-3. Confirm the installation.
-4. Pin the extension to the browser toolbar if needed.
-
-This method is recommended for normal use and project evaluation.
-
-### Loading unpacked extension
-
-For development, testing, or thesis demonstration, the extension can also be loaded manually.
-
-1. Open Google Chrome.
-2. Go to:
-
-```text
-chrome://extensions/
+```bash
+git lfs pull
 ```
-
-3. Enable **Developer mode**.
-4. Click **Load unpacked**.
-5. Select the prepared extension folder:
-
-```text
-dist/
-```
-
-6. The extension will appear in the list of installed extensions.
-7. Pin the extension to the toolbar if needed.
-
-The `dist/` folder on the CD medium already contains the built extension prepared for loading into the browser.
 
 ---
 
-## Building the frontend from source
+## Frontend installation and build
 
-The prepared build is already available in:
-
-```text
-dist/
-```
-
-If it is necessary to rebuild the extension from source, go to the frontend source folder:
+Go to the frontend source folder:
 
 ```bash
 cd src/frontend
@@ -281,11 +238,60 @@ Create the production build:
 npm run build
 ```
 
-The build command creates a build output inside the frontend project. For the CD medium, the final prepared build is stored separately in the root folder:
+After a successful build, the generated extension build should be placed in the root `dist` folder of the CD medium:
 
 ```text
 dist/
 ```
+
+If the build output is generated inside `src/frontend/dist/`, copy its content to the root `dist/` folder before loading the extension into Chrome.
+
+---
+
+## Installing or loading the extension in Chrome
+
+The extension can be used in two ways:
+
+- installed from the Chrome Web Store using the private project link,
+- loaded manually as an unpacked extension from the `dist` folder.
+
+### Installation from Chrome Web Store link
+
+The extension is published in the Chrome Web Store, but it is not publicly searchable. It is distributed for this project through a direct private/unlisted link:
+
+```text
+REPLACE_WITH_PRIVATE_CHROME_WEB_STORE_LINK
+```
+
+To install it:
+
+1. Open the provided Chrome Web Store link.
+2. Click **Add to Chrome**.
+3. Confirm the installation.
+4. Pin the extension to the toolbar if needed.
+
+This method is recommended for normal use and project evaluation.
+
+### Loading unpacked extension
+
+For development, testing, or thesis demonstration, the extension can also be loaded manually.
+
+1. Open Google Chrome.
+2. Go to:
+
+```text
+chrome://extensions/
+```
+
+3. Enable **Developer mode**.
+4. Click **Load unpacked**.
+5. Select:
+
+```text
+dist/
+```
+
+6. The extension will appear in the list of installed extensions.
 
 ---
 
@@ -297,13 +303,7 @@ The backend API can be started locally when the trained XLM-R model is available
 src/backend/models/xlmr-toxic-v2_1/
 ```
 
-The following commands are intended for Windows Command Prompt and should be executed from the backend directory:
-
-```bash
-cd src/backend
-```
-
-Then run:
+The following commands are intended for Windows Command Prompt and should be executed from the `src/backend` directory.
 
 ```cmd
 set "HF_MODEL_PATH=.\models\xlmr-toxic-v2_1"
@@ -451,7 +451,7 @@ The evaluation was not designed as one identical benchmark for every model. The 
 
 The original Jigsaw datasets and large raw archives are not part of the CD medium. They were used during training and evaluation, but they are not required for normal use of the extension.
 
-The CD medium contains the thesis documentation, LaTeX sources, scientific article, source code, selected reports or configurations, the prepared extension build, and model files or expected model locations required for running the system.
+The CD medium contains source code, model configuration, selected reports, the local browser model or its expected location, and the backend model or its expected location required for API startup.
 
 ---
 
@@ -492,6 +492,8 @@ Local inference is privacy-preserving and fast because text is processed directl
 
 ---
 
-## Repository and CD medium purpose
+## CD medium purpose
 
-This CD medium serves as the electronic appendix of the bachelor thesis. It contains the thesis documentation, LaTeX sources, scientific article, source code of the implemented solution, prepared browser extension build, and technical documentation required for installation, testing, and further development.
+This CD medium contains the system manual, user manual, source code, built extension, thesis source files, and scientific article related to the bachelor thesis project.
+
+This manual describes the technical structure of the CD medium and the source code of the Toxic Text Detector project.
