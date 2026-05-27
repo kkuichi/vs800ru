@@ -19,7 +19,7 @@ CD médium je organizované nasledovne:
 
 ```text
 CD medium/
-├── doc/
+├── docs/
 │   ├── README.md
 │   ├── USER_MANUAL.md
 │   └── screenshots/
@@ -30,11 +30,11 @@ CD medium/
 └── dist/
 ```
 
-Priečinok `doc` obsahuje systémovú príručku (`README.md`), používateľskú príručku (`USER_MANUAL.md`) a obrázky použité v príručkách.  
+Priečinok `docs` obsahuje systémovú príručku (`README.md`), používateľskú príručku (`USER_MANUAL.md`) a obrázky použité v príručkách.  
 Priečinok `tex` obsahuje zdrojové súbory záverečnej práce.  
 Priečinok `src/frontend` obsahuje zdrojový kód rozšírenia prehliadača Chrome.  
 Priečinok `src/backend` obsahuje voliteľné backendové API pre vzdialenú inferenciu toxicity.  
-Priečinok `dist` obsahuje zostavenú verziu rozšírenia pripravenú na načítanie do prehliadača Chrome.  
+Priečinok `dist` obsahuje zostavenú verziu rozšírenia pripravenú na načítanie do prehliadača Chrome.
 
 ---
 
@@ -333,7 +333,7 @@ Po úspešnom spustení je API dostupné na adrese:
 http://127.0.0.1:8000
 ```
 
-Ak API poskytuje interaktívnu dokumentáciu, je dostupná na adrese:
+Interaktívna dokumentácia FastAPI je po spustení backendu dostupná na adrese:
 
 ```text
 http://127.0.0.1:8000/docs
