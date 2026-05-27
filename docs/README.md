@@ -26,16 +26,14 @@ CD medium/
 ├── src/
 │   ├── frontend/
 │   └── backend/
-├── dist/
-└── article/
+└── dist/
 ```
 
 Priečinok `doc` obsahuje systémovú príručku (`README.md`) a používateľskú príručku (`USER_MANUAL.md`).  
-Priečinok `tex` obsahuje zdrojové súbory záverečnej práce a vedeckého článku.  
+Priečinok `tex` obsahuje zdrojové súbory záverečnej práce.  
 Priečinok `src/frontend` obsahuje zdrojový kód rozšírenia prehliadača Chrome.  
 Priečinok `src/backend` obsahuje voliteľné backendové API pre vzdialenú inferenciu toxicity.  
 Priečinok `dist` obsahuje zostavenú verziu rozšírenia pripravenú na načítanie do prehliadača Chrome.  
-Priečinok `article` obsahuje vedecký článok vytvorený na základe výsledkov práce.
 
 ---
 
@@ -512,6 +510,6 @@ Lokálna inferencia zachováva súkromie a je rýchla, pretože text sa spracúv
 
 ## Účel CD média
 
-Toto CD médium obsahuje systémovú príručku, používateľskú príručku, zdrojový kód, zostavenú verziu rozšírenia, zdrojové súbory záverečnej práce a vedecký článok súvisiaci s projektom záverečnej práce.
+Toto CD médium obsahuje systémovú príručku, používateľskú príručku, zdrojový kód, zostavenú verziu rozšírenia a zdrojové súbory záverečnej práce.
 
 Táto príručka opisuje technickú štruktúru CD média a zdrojový kód projektu Toxic Text Detector.
