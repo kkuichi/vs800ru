@@ -90,6 +90,8 @@ src/frontend/
 - `src/frontend/src/popupMain.jsx` – entry point for the extension popup.
 - `src/frontend/src/optionsMain.jsx` – entry point for the settings page.
 - `src/frontend/scripts/evaluate-local-model.js` – script for evaluating the optimized local TensorFlow.js model.
+- `src/frontend/val/` – selected local evaluation outputs for the local model experiments.
+- `src/frontend/artifacts/test_metrics.json` – selected testing metrics generated during local evaluation.
 
 ---
 
@@ -432,7 +434,7 @@ A normal user does not need to run these commands manually.
 
 ---
 
-## Evaluation scripts
+## Evaluation scripts and outputs
 
 The optimized local browser model can be evaluated using:
 
@@ -446,6 +448,8 @@ Selected local evaluation outputs are stored in:
 ```text
 src/frontend/val/
 ```
+
+The evaluation script expects the required validation data to be available locally when rerunning the evaluation. Dataset files are not included in the CD medium.
 
 The backend training and evaluation scripts are located in:
 
@@ -462,6 +466,8 @@ The evaluation was not designed as one identical benchmark for every model. The 
 ## Notes about datasets
 
 The original Jigsaw datasets and large raw archives are not part of the CD medium. They were used during training and evaluation, but they are not required for normal use of the extension.
+
+Selected local evaluation outputs are included in `src/frontend/val/`, but the raw validation dataset files are not included.
 
 The CD medium contains source code, model configuration, selected reports, the local browser model or its expected location, and the backend model or its expected location required for API startup.
 
