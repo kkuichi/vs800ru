@@ -1,209 +1,209 @@
-# Toxic Text Detector – User Manual
+# Toxic Text Detector – používateľská príručka
 
-Toxic Text Detector is a browser extension designed to help users identify and visually reduce exposure to potentially toxic text on web pages. The extension can analyze text content, mark or blur detected toxic segments, and provide basic information about the detected toxicity category and confidence score.
+Toxic Text Detector je rozšírenie webového prehliadača navrhnuté na pomoc používateľom pri identifikácii a vizuálnom znížení vystavenia potenciálne toxickému textu na webových stránkach. Rozšírenie dokáže analyzovať textový obsah, označiť alebo rozmazať detegované toxické úseky a poskytnúť základné informácie o detegovanej kategórii toxicity a skóre spoľahlivosti.
 
-The extension is an assistive tool. Its results are generated automatically by machine learning models and should be interpreted as predictions, not as final decisions.
-
----
-
-## 1. Requirements
-
-To use the extension, the user needs:
-
-- Google Chrome or a Chromium-based browser,
-- access to the private/unlisted Chrome Web Store link or the built extension folder `dist`,
-- Developer mode enabled in Chrome extensions if manual installation from `dist` is used,
-- optional access to the backend API if Remote mode is used.
-
-For normal Local mode use, the backend API is not required.
+Rozšírenie je pomocný nástroj. Jeho výsledky sú automaticky generované modelmi strojového učenia a majú sa interpretovať ako predikcie, nie ako konečné rozhodnutia.
 
 ---
 
-## 2. Installation
+## 1. Požiadavky
 
-The extension can be installed in two ways:
+Na používanie rozšírenia používateľ potrebuje:
 
-- from the Chrome Web Store using the private project link,
-- manually from the prepared `dist` folder.
+- Google Chrome alebo prehliadač založený na Chromiu,
+- prístup k súkromnému/nezverejnenému odkazu na Chrome Web Store alebo zostavený priečinok rozšírenia `dist`,
+- zapnutý Developer mode v rozšíreniach Chrome, ak sa používa manuálna inštalácia z priečinka `dist`,
+- voliteľný prístup k backendovému API, ak sa používa vzdialený režim.
 
-### 2.1 Installation from Chrome Web Store link
+Pri bežnom používaní v lokálnom režime nie je backendové API potrebné.
 
-The extension is published in the Chrome Web Store, but it is not publicly searchable. It is distributed for this project through a direct private/unlisted link:
+---
+
+## 2. Inštalácia
+
+Rozšírenie je možné nainštalovať dvoma spôsobmi:
+
+- z Chrome Web Store pomocou súkromného projektového odkazu,
+- manuálne z pripraveného priečinka `dist`.
+
+### 2.1 Inštalácia pomocou odkazu z Chrome Web Store
+
+Rozšírenie je publikované v Chrome Web Store, ale nie je verejne vyhľadateľné. Pre potreby tohto projektu je distribuované pomocou priameho súkromného/nezverejneného odkazu:
 
 ```text
-REPLACE_WITH_PRIVATE_CHROME_WEB_STORE_LINK
+https://chromewebstore.google.com/detail/toxic-text-detector-hybri/jankcpfaihpjhecegklglapdokjljkfn?authuser=0&hl=en
 ```
 
-To install the extension:
+Postup inštalácie:
 
-1. Open the provided Chrome Web Store link.
-2. Click **Add to Chrome**.
-3. Confirm the installation.
-4. Pin the extension to the browser toolbar if needed.
+1. Otvorte poskytnutý odkaz na Chrome Web Store.
+2. Kliknite na **Add to Chrome**.
+3. Potvrďte inštaláciu.
+4. V prípade potreby pripnite rozšírenie na panel nástrojov prehliadača.
 
-This is the recommended installation method for normal users and project evaluation.
+Tento spôsob inštalácie je odporúčaný pre bežných používateľov a hodnotenie projektu.
 
-### 2.2 Manual installation from ready build
+### 2.2 Manuálna inštalácia z pripravenej zostavenej verzie
 
-If the extension is not installed from the Chrome Web Store link, it can be loaded manually from the prepared `dist` folder.
+Ak rozšírenie nie je nainštalované pomocou odkazu z Chrome Web Store, je možné ho manuálne načítať z pripraveného priečinka `dist`.
 
-1. Open Google Chrome.
-2. Open the extensions page:
+1. Otvorte Google Chrome.
+2. Otvorte stránku rozšírení:
 
 ```text
 chrome://extensions/
 ```
 
-3. Enable **Developer mode**.
-4. Click **Load unpacked**.
-5. Select the built extension folder:
+3. Zapnite **Developer mode**.
+4. Kliknite na **Load unpacked**.
+5. Vyberte zostavený priečinok rozšírenia:
 
 ```text
 dist/
 ```
 
-6. The extension will appear in the list of installed extensions.
-7. Pin the extension to the browser toolbar if needed.
+6. Rozšírenie sa zobrazí v zozname nainštalovaných rozšírení.
+7. V prípade potreby pripnite rozšírenie na panel nástrojov prehliadača.
 
-Manual installation is mainly intended for testing, demonstration, or development.
-
----
-
-## 3. First use
-
-After installation, open a web page containing text, such as a discussion page, forum, comment section, article, or search results page.
-
-Basic workflow:
-
-1. Click the Toxic Text Detector icon in the browser toolbar.
-2. Check that protection is enabled.
-3. Open Settings if you want to adjust sensitivity, categories, processing mode, confidence scores, automatic blur, or whitelist.
-4. Browse the page normally.
-5. If potentially toxic text is detected, the extension marks or blurs it according to the selected settings.
-6. If text is blurred, reveal it only when you want to view the original content.
-
-The purpose of the extension is not to permanently remove content from a page. It helps the user reduce unwanted exposure while keeping control over what can be shown.
+Manuálna inštalácia je určená najmä na testovanie, demonštráciu alebo vývoj.
 
 ---
 
-## 4. Popup window
+## 3. Prvé použitie
 
-The popup window is opened by clicking the extension icon in the browser toolbar.
+Po inštalácii otvorte webovú stránku obsahujúcu text, napríklad diskusnú stránku, fórum, sekciu komentárov, článok alebo stránku s výsledkami vyhľadávania.
 
-The popup shows:
+Základný postup:
 
-- current protection status,
-- protection on/off switch,
-- number of detected text segments,
-- number of blurred or blocked text segments,
-- button for opening Settings.
+1. Kliknite na ikonu rozšírenia Toxic Text Detector v paneli nástrojov prehliadača.
+2. Skontrolujte, či je ochrana zapnutá.
+3. Otvorte nastavenia, ak chcete upraviť citlivosť, kategórie, režim spracovania, skóre spoľahlivosti, automatické rozmazanie alebo whitelist.
+4. Prehliadajte stránku bežným spôsobom.
+5. Ak je detegovaný potenciálne toxický text, rozšírenie ho označí alebo rozmaže podľa zvolených nastavení.
+6. Ak je text rozmazaný, zobrazte ho iba vtedy, keď si chcete pozrieť pôvodný obsah.
 
-If protection is enabled, the popup shows that the browser is currently protected.  
-If protection is disabled, the extension stops actively scanning and marking new content.
-
----
-
-## 5. Settings page
-
-The Settings page contains the main configuration of the extension.
-
-It can be opened from the popup by clicking the Settings button.
-
-The settings page may contain:
-
-- sensitivity level,
-- processing mode,
-- remote API token field if remote authorization is used,
-- toxicity category toggles,
-- automatic blur toggle,
-- confidence score toggle,
-- whitelist domain management,
-- reset settings button,
-- export settings option,
-- import settings option if enabled.
-
-The exact available options depend on the current build of the extension.
+Účelom rozšírenia nie je trvalo odstraňovať obsah zo stránky. Rozšírenie pomáha používateľovi znížiť nechcené vystavenie toxickému obsahu, pričom mu ponecháva kontrolu nad tým, čo môže byť zobrazené.
 
 ---
 
-## 6. Sensitivity level
+## 4. Popup okno
 
-The sensitivity level controls how strict the detection should be.
+Popup okno sa otvorí kliknutím na ikonu rozšírenia v paneli nástrojov prehliadača.
 
-Higher sensitivity means the extension is more likely to mark text as potentially toxic.  
-Lower sensitivity means the extension behaves more conservatively and marks fewer texts.
+Popup zobrazuje:
 
-Recommended use:
+- aktuálny stav ochrany,
+- prepínač zapnutia/vypnutia ochrany,
+- počet detegovaných textových úsekov,
+- počet rozmazaných alebo blokovaných textových úsekov,
+- tlačidlo na otvorenie nastavení.
 
-- use higher sensitivity for stronger protection,
-- use lower sensitivity if too many harmless texts are being marked.
-
-Sensitivity changes the decision behavior of the model. It does not guarantee perfect detection.
-
----
-
-## 7. Processing modes
-
-The extension supports two processing modes:
-
-- Local mode,
-- Remote mode.
-
-### 7.1 Local mode
-
-In Local mode, text is processed directly in the browser.
-
-Advantages:
-
-- text does not need to be sent to a server,
-- better privacy,
-- fast browser-side response,
-- works without the backend API.
-
-Local mode is recommended for normal browsing. However, local inference may be less accurate than the backend model in more difficult toxicity categories.
-
-### 7.2 Remote mode
-
-In Remote mode, text is sent to a configured API server for classification.
-
-Advantages:
-
-- allows the use of a stronger backend model,
-- can provide more precise results in some cases,
-- useful for evaluation, comparison, or controlled testing,
-- can be connected to a local or cloud API.
-
-The speed of Remote mode depends on the API deployment, hardware, model size, and network latency. In local testing, the API can be run on the same computer, so its response may be close to local inference.
-
-Remote mode should be used only when the user understands and accepts that analyzed text is sent to an API server.
+Ak je ochrana zapnutá, popup zobrazuje, že prehliadač je aktuálne chránený.  
+Ak je ochrana vypnutá, rozšírenie prestane aktívne skenovať a označovať nový obsah.
 
 ---
 
-## 8. Remote API configuration
+## 5. Stránka nastavení
 
-For normal use, the user does not need to run the backend API.
+Stránka nastavení obsahuje hlavnú konfiguráciu rozšírenia.
 
-If the user wants to test Remote mode with a local backend, the backend API must first be started on:
+Dá sa otvoriť z popup okna kliknutím na tlačidlo nastavení.
+
+Stránka nastavení môže obsahovať:
+
+- úroveň citlivosti,
+- režim spracovania,
+- pole pre token vzdialeného API, ak sa používa vzdialená autorizácia,
+- prepínače kategórií toxicity,
+- prepínač automatického rozmazania,
+- prepínač zobrazovania skóre spoľahlivosti,
+- správu whitelistu domén,
+- tlačidlo na reset nastavení,
+- možnosť exportu nastavení,
+- možnosť importu nastavení, ak je dostupná.
+
+Presný zoznam možností závisí od aktuálnej zostavy rozšírenia.
+
+---
+
+## 6. Úroveň citlivosti
+
+Úroveň citlivosti určuje, ako prísne má detekcia fungovať.
+
+Vyššia citlivosť znamená, že rozšírenie s väčšou pravdepodobnosťou označí text ako potenciálne toxický.  
+Nižšia citlivosť znamená konzervatívnejšie správanie a označenie menšieho počtu textov.
+
+Odporúčané použitie:
+
+- vyššiu citlivosť použite pri požiadavke na silnejšiu ochranu,
+- nižšiu citlivosť použite vtedy, keď je označovaných príliš veľa neškodných textov.
+
+Citlivosť mení rozhodovacie správanie modelu. Nezaručuje dokonalú detekciu.
+
+---
+
+## 7. Režimy spracovania
+
+Rozšírenie podporuje dva režimy spracovania:
+
+- lokálny režim,
+- vzdialený režim.
+
+### 7.1 Lokálny režim
+
+V lokálnom režime sa text spracúva priamo v prehliadači.
+
+Výhody:
+
+- text sa nemusí odosielať na server,
+- lepšia ochrana súkromia,
+- rýchla odozva na strane prehliadača,
+- fungovanie bez backendového API.
+
+Lokálny režim je odporúčaný na bežné prehliadanie. Lokálna inferencia však môže byť menej presná ako backendový model pri náročnejších kategóriách toxicity.
+
+### 7.2 Vzdialený režim
+
+Vo vzdialenom režime sa text odosiela na nakonfigurovaný API server, ktorý vykoná klasifikáciu.
+
+Výhody:
+
+- umožňuje použiť výkonnejší backendový model,
+- v niektorých prípadoch môže poskytnúť presnejšie výsledky,
+- je vhodný na vyhodnotenie, porovnanie alebo riadené testovanie,
+- môže byť pripojený k lokálnemu alebo cloudovému API.
+
+Rýchlosť vzdialeného režimu závisí od nasadenia API, hardvéru, veľkosti modelu a sieťovej latencie. Pri lokálnom testovaní môže API bežať na tom istom počítači, a preto môže byť jeho odozva podobná lokálnej inferencii.
+
+Vzdialený režim má používateľ používať iba vtedy, keď rozumie tomu, že analyzovaný text sa odosiela na API server, a súhlasí s týmto správaním.
+
+---
+
+## 8. Konfigurácia vzdialeného API
+
+Pri bežnom používaní používateľ nemusí spúšťať backendové API.
+
+Ak chce používateľ otestovať vzdialený režim s lokálnym backendom, musí byť backendové API najprv spustené na adrese:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-After that, the extension can be configured to use the local API.
+Potom môže byť rozšírenie nakonfigurované tak, aby používalo lokálne API.
 
-The technical commands for starting the backend and switching the API URL are described in the system manual:
+Technické príkazy na spustenie backendu a prepnutie URL adresy API sú opísané v systémovej príručke:
 
 ```text
 doc/README.md
 ```
 
-If the selected remote API requires authorization, a token must be configured. If the API does not require a token, the token field can stay empty.
+Ak vybrané vzdialené API vyžaduje autorizáciu, je potrebné nakonfigurovať token. Ak API token nevyžaduje, pole tokenu môže zostať prázdne.
 
 ---
 
-## 9. Toxicity categories
+## 9. Kategórie toxicity
 
-The extension supports several toxicity categories:
+Rozšírenie podporuje viacero kategórií toxicity:
 
 - Toxicity,
 - Insult,
@@ -211,248 +211,248 @@ The extension supports several toxicity categories:
 - Threat,
 - Identity attack.
 
-Each category can be enabled or disabled separately.
+Každú kategóriu je možné zapnúť alebo vypnúť samostatne.
 
-If a category is disabled, it will not be used for marking or blurring text.
+Ak je kategória vypnutá, nebude sa používať na označovanie alebo rozmazávanie textu.
 
-Recommended use:
+Odporúčané použitie:
 
-- keep only categories that are relevant for the current use case,
-- disable categories that cause too many unwanted detections,
-- remember that category results are model predictions and may be imperfect.
-
----
-
-## 10. Automatic blurring
-
-The Auto-blur option controls whether detected toxic text should be blurred automatically.
-
-If Auto-blur is enabled, detected text is visually blurred on the page.  
-If Auto-blur is disabled, the extension may still mark detected text without hiding it.
-
-This allows the user to choose between stronger visual protection and more visible browsing.
+- ponechajte zapnuté iba kategórie relevantné pre aktuálny spôsob použitia,
+- vypnite kategórie, ktoré spôsobujú príliš veľa neželaných detekcií,
+- nezabúdajte, že výsledky kategórií sú predikcie modelu a môžu byť nepresné.
 
 ---
 
-## 11. Revealing blurred text
+## 10. Automatické rozmazanie
 
-If text is blurred by the extension, the user can reveal it when needed.
+Možnosť Auto-blur určuje, či sa detegovaný toxický text automaticky rozmaže.
 
-The purpose of the blur is not to permanently remove content, but to reduce unwanted exposure to potentially toxic text. The user keeps control and can decide whether to view the text.
+Ak je Auto-blur zapnutý, detegovaný text sa na stránke vizuálne rozmaže.  
+Ak je Auto-blur vypnutý, rozšírenie môže toxický obsah stále označiť bez jeho skrytia.
 
-This is useful when the user needs to understand the full context, for example while moderating comments or checking a discussion.
-
----
-
-## 12. Confidence scores
-
-The Show confidence scores option controls whether the extension displays confidence values for detected toxic text.
-
-If enabled, the user can see a percentage score near the detected category.  
-If disabled, the extension shows a simpler result without numerical details.
-
-This option is useful during evaluation, demonstration, or when the user wants more information about the model result.
-
-Confidence scores should not be interpreted as absolute truth. They represent the model output under the current threshold and sensitivity settings.
+Táto možnosť umožňuje používateľovi zvoliť si medzi silnejšou vizuálnou ochranou a viditeľnejším prehliadaním obsahu.
 
 ---
 
-## 13. Whitelist domains
+## 11. Zobrazenie rozmazaného textu
 
-The whitelist allows the user to disable detection on selected websites.
+Ak rozšírenie rozmaže text, používateľ ho môže podľa potreby zobraziť.
 
-To add a domain to the whitelist:
+Účelom rozmazania nie je trvalo odstrániť obsah, ale znížiť nechcené vystavenie potenciálne toxickému textu. Používateľ si ponecháva kontrolu a môže sa rozhodnúť, či chce text zobraziť.
 
-1. Open Settings.
-2. Find the Whitelist Domains section.
-3. Enter a domain name.
-4. Click Add.
+Táto funkcia je užitočná napríklad vtedy, keď používateľ potrebuje porozumieť celému kontextu, napríklad pri moderovaní komentárov alebo kontrole diskusie.
 
-Example:
+---
+
+## 12. Skóre spoľahlivosti
+
+Možnosť Show confidence scores určuje, či rozšírenie zobrazí hodnoty spoľahlivosti pri detegovanom toxickom texte.
+
+Ak je možnosť zapnutá, používateľ môže vidieť percentuálne skóre pri detegovanej kategórii.  
+Ak je možnosť vypnutá, rozšírenie zobrazí jednoduchší výsledok bez číselných detailov.
+
+Táto možnosť je užitočná počas vyhodnotenia, demonštrácie alebo vtedy, keď používateľ chce získať viac informácií o výsledku modelu.
+
+Skóre spoľahlivosti sa nemá interpretovať ako absolútna pravda. Predstavuje výstup modelu pri aktuálnom nastavení prahov a citlivosti.
+
+---
+
+## 13. Whitelist domén
+
+Whitelist umožňuje používateľovi vypnúť detekciu na vybraných webových stránkach.
+
+Postup pridania domény do whitelistu:
+
+1. Otvorte nastavenia.
+2. Nájdite sekciu Whitelist Domains.
+3. Zadajte názov domény.
+4. Kliknite na Add.
+
+Príklad:
 
 ```text
 example.com
 ```
 
-After adding a domain, the extension will not scan or mark content on that domain.
+Po pridaní domény rozšírenie nebude skenovať ani označovať obsah na tejto doméne.
 
-This is useful for websites where the user does not want the extension to modify the page content.
-
----
-
-## 14. Exporting and importing settings
-
-The settings page may include options to export or import the current configuration.
-
-Exported settings can be used to:
-
-- keep a backup of the extension configuration,
-- document the configuration used during testing,
-- transfer the same configuration to another installation.
-
-If import is available, the user can restore a previously exported configuration file.
-
-Only import settings from a trusted source.
+Táto možnosť je užitočná pre stránky, pri ktorých používateľ nechce, aby rozšírenie upravovalo obsah stránky.
 
 ---
 
-## 15. Recommended configurations
+## 14. Export a import nastavení
 
-### 15.1 Normal browsing
+Stránka nastavení môže obsahovať možnosti exportu alebo importu aktuálnej konfigurácie.
 
-Recommended settings for normal use:
+Exportované nastavenia je možné použiť na:
 
-- protection enabled,
-- Local mode,
-- automatic blur enabled,
-- confidence scores enabled or disabled according to user preference,
-- only relevant toxicity categories enabled,
-- whitelist used for trusted websites where scanning is not needed.
+- zálohovanie konfigurácie rozšírenia,
+- dokumentovanie konfigurácie použitej počas testovania,
+- prenos rovnakej konfigurácie do inej inštalácie.
 
-### 15.2 Demonstration or evaluation
+Ak je import dostupný, používateľ môže obnoviť predtým exportovaný konfiguračný súbor.
 
-Recommended settings for demonstration or testing:
-
-- confidence scores enabled,
-- sensitivity adjusted according to the tested scenario,
-- Remote mode enabled only when the backend API is available,
-- whitelist disabled for pages that should be evaluated,
-- tested pages rescanned after changing important settings.
+Importujte iba nastavenia z dôveryhodného zdroja.
 
 ---
 
-## 16. Privacy and data processing
+## 15. Odporúčané konfigurácie
 
-In Local mode, analyzed text is processed directly in the browser and does not need to be sent to a server.
+### 15.1 Bežné prehliadanie
 
-In Remote mode, analyzed text is sent to a configured API server for classification. The user should use Remote mode only when they understand and accept this behavior.
+Odporúčané nastavenia pre bežné používanie:
 
-The extension stores configuration settings such as:
+- ochrana zapnutá,
+- lokálny režim,
+- automatické rozmazanie zapnuté,
+- skóre spoľahlivosti zapnuté alebo vypnuté podľa preferencie používateľa,
+- zapnuté iba relevantné kategórie toxicity,
+- whitelist použitý pre dôveryhodné stránky, kde skenovanie nie je potrebné.
 
-- sensitivity level,
-- enabled categories,
-- selected processing mode,
-- confidence score display,
-- automatic blur option,
-- whitelist domains.
+### 15.2 Demonštrácia alebo vyhodnotenie
 
-These settings are used to preserve the selected configuration between browsing sessions.
+Odporúčané nastavenia pre demonštráciu alebo testovanie:
 
----
-
-## 17. Scope and limitations
-
-Toxic Text Detector uses automated model predictions. The extension can help reduce exposure to toxic text, but it cannot fully understand every context of human communication.
-
-Known limitations include:
-
-- possible false positives, where harmless text is marked as toxic,
-- possible false negatives, where toxic text is not detected,
-- weaker performance in rare or difficult categories,
-- limited reliability for implicit, sarcastic, contextual, or multilingual toxicity,
-- possible performance impact on very large pages with many text elements,
-- different results depending on sensitivity, enabled categories, thresholds, and selected processing mode.
-
-The extension does not replace human moderation or final user judgement. It is designed as a supportive browsing tool.
+- skóre spoľahlivosti zapnuté,
+- citlivosť upravená podľa testovaného scenára,
+- vzdialený režim zapnutý iba vtedy, keď je dostupné backendové API,
+- whitelist vypnutý pre stránky, ktoré majú byť vyhodnocované,
+- stránka opätovne preskenovaná po zmene dôležitých nastavení.
 
 ---
 
-## 18. Troubleshooting
+## 16. Súkromie a spracovanie údajov
 
-### Extension does not appear in Chrome
+V lokálnom režime sa analyzovaný text spracúva priamo v prehliadači a nemusí sa odosielať na server.
 
-Check that:
+Vo vzdialenom režime sa analyzovaný text odosiela na nakonfigurovaný API server na klasifikáciu. Používateľ má vzdialený režim používať iba vtedy, keď rozumie tomuto správaniu a súhlasí s ním.
 
-- Developer mode is enabled,
-- the correct built extension folder was selected,
-- the selected folder contains `manifest.json`,
-- the extension was not disabled by Chrome.
+Rozšírenie ukladá konfiguračné nastavenia, napríklad:
 
-### Text is not being detected
+- úroveň citlivosti,
+- zapnuté kategórie,
+- zvolený režim spracovania,
+- zobrazovanie skóre spoľahlivosti,
+- automatické rozmazanie,
+- whitelist domén.
 
-Possible causes:
+Tieto nastavenia sa používajú na zachovanie zvolenej konfigurácie medzi reláciami prehliadania.
 
-- protection is disabled,
-- the current domain is in the whitelist,
-- all relevant toxicity categories are disabled,
-- the text is too short,
-- the page has not been rescanned after changing settings,
-- the selected model did not classify the text as toxic under the current threshold.
+---
 
-### Text is detected but not blurred
+## 17. Rozsah a obmedzenia
 
-Check that Auto-blur is enabled in Settings.
+Toxic Text Detector používa automatické predikcie modelov. Rozšírenie môže pomôcť znížiť vystavenie toxickému textu, ale nedokáže úplne pochopiť každý kontext ľudskej komunikácie.
 
-If Auto-blur is disabled, the extension may still mark toxic content without hiding it.
+Medzi známe obmedzenia patria:
 
-### Confidence scores are not visible
+- možné falošne pozitívne výsledky, keď je neškodný text označený ako toxický,
+- možné falošne negatívne výsledky, keď toxický text nie je detegovaný,
+- slabší výkon pri zriedkavých alebo náročných kategóriách,
+- obmedzená spoľahlivosť pri implicitnej, sarkastickej, kontextovej alebo viacjazyčnej toxicite,
+- možný vplyv na výkon pri veľmi veľkých stránkach s veľkým množstvom textových prvkov,
+- rozdielne výsledky v závislosti od citlivosti, zapnutých kategórií, prahov a zvoleného režimu spracovania.
 
-Check that Show confidence scores is enabled in Settings.
+Rozšírenie nenahrádza ľudskú moderáciu ani konečný úsudok používateľa. Je navrhnuté ako podporný nástroj pri prehliadaní webu.
 
-### Remote mode does not work
+---
 
-Check that:
+## 18. Riešenie problémov
 
-- Remote mode is enabled,
-- the API server is running,
-- the API URL is correctly configured,
-- the remote API token is correct if required,
-- the backend API is available at the expected address.
+### Rozšírenie sa nezobrazuje v Chrome
 
-For a local backend, the expected address is:
+Skontrolujte, či:
+
+- je zapnutý Developer mode,
+- bol vybraný správny zostavený priečinok,
+- vybraný priečinok obsahuje súbor `manifest.json`,
+- rozšírenie nebolo vypnuté prehliadačom Chrome.
+
+### Text nie je detegovaný
+
+Možné príčiny:
+
+- ochrana je vypnutá,
+- aktuálna doména je vo whiteliste,
+- všetky relevantné kategórie toxicity sú vypnuté,
+- text je príliš krátky,
+- stránka nebola po zmene nastavení opätovne preskenovaná,
+- zvolený model neklasifikoval text ako toxický pri aktuálnom prahu.
+
+### Text je detegovaný, ale nie je rozmazaný
+
+Skontrolujte, či je v nastaveniach zapnutá možnosť Auto-blur.
+
+Ak je Auto-blur vypnutý, rozšírenie môže toxický obsah stále označiť bez jeho skrytia.
+
+### Skóre spoľahlivosti nie je viditeľné
+
+Skontrolujte, či je zapnutá možnosť Show confidence scores.
+
+### Vzdialený režim nefunguje
+
+Skontrolujte, či:
+
+- je zapnutý vzdialený režim,
+- API server beží,
+- URL adresa API je správne nakonfigurovaná,
+- token vzdialeného API je správny, ak sa vyžaduje,
+- backendové API je dostupné na očakávanej adrese.
+
+Pre lokálny backend je očakávaná adresa:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-Technical commands for changing or testing the API configuration are described in the system manual.
+Technické príkazy na zmenu alebo testovanie konfigurácie API sú opísané v systémovej príručke.
 
-### Page becomes slower
+### Stránka je pomalšia
 
-Large pages with many text elements may require more processing.
+Veľké stránky s veľkým množstvom textových prvkov môžu vyžadovať viac spracovania.
 
-Recommended actions:
+Odporúčané kroky:
 
-- avoid scanning very large pages when not needed,
-- disable unnecessary categories,
-- add trusted pages to the whitelist,
-- use Local mode for normal browsing when Remote mode is not required.
+- neskenovať veľmi veľké stránky, ak to nie je potrebné,
+- vypnúť nepotrebné kategórie,
+- pridať dôveryhodné stránky do whitelistu,
+- používať lokálny režim pri bežnom prehliadaní, ak vzdialený režim nie je potrebný.
 
 ---
 
-## 19. Advanced installation from source
+## 19. Pokročilá inštalácia zo zdrojového kódu
 
-This section is intended only for users who need to build the extension from source code.
+Táto časť je určená iba pre používateľov, ktorí potrebujú zostaviť rozšírenie zo zdrojového kódu.
 
-Go to the frontend source folder:
+Prejdite do priečinka so zdrojovým kódom frontendu:
 
 ```bash
 cd src/frontend
 ```
 
-Install dependencies:
+Nainštalujte závislosti:
 
 ```bash
 npm install
 ```
 
-Build the extension:
+Zostavte rozšírenie:
 
 ```bash
 npm run build
 ```
 
-After building, use the prepared extension build from the CD medium:
+Po zostavení použite pripravený priečinok zostaveného rozšírenia z CD média:
 
 ```text
 dist/
 ```
 
-Load this folder through `chrome://extensions/` using **Load unpacked**.
+Tento priečinok načítajte cez `chrome://extensions/` pomocou možnosti **Load unpacked**.
 
-If the build output is generated inside `src/frontend/dist/`, copy its content to the root `dist/` folder of the CD medium before loading it in Chrome.
+Ak sa výstup zostavenia vytvorí v priečinku `src/frontend/dist/`, skopírujte jeho obsah do koreňového priečinka `dist/` na CD médiu pred načítaním do prehliadača Chrome.
 
-For backend setup, model files, API configuration, and developer commands, see the system manual:
+Pre nastavenie backendu, modelové súbory, konfiguráciu API a vývojárske príkazy pozrite systémovú príručku:
 
 ```text
 doc/README.md
@@ -460,8 +460,8 @@ doc/README.md
 
 ---
 
-## 20. Summary
+## 20. Zhrnutie
 
-Toxic Text Detector helps users detect and visually reduce exposure to potentially toxic text while browsing the web. It supports Local mode for privacy-preserving use and optional Remote mode through an API. The user can configure detection sensitivity, active categories, automatic blurring, confidence score display, and whitelist domains.
+Toxic Text Detector pomáha používateľom detegovať a vizuálne znížiť vystavenie potenciálne toxickému textu počas prehliadania webu. Podporuje lokálny režim na spracovanie so zachovaním súkromia a voliteľný vzdialený režim prostredníctvom API. Používateľ môže nastaviť citlivosť detekcie, aktívne kategórie, automatické rozmazanie, zobrazovanie skóre spoľahlivosti a whitelist domén.
 
-The extension should be used as an assistive tool. Its results are automated predictions and may require human judgement in unclear or sensitive situations.
+Rozšírenie sa má používať ako pomocný nástroj. Jeho výsledky sú automatické predikcie a v nejasných alebo citlivých situáciách môžu vyžadovať ľudský úsudok.

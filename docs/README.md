@@ -1,21 +1,21 @@
 # Toxic Text Detector
 
-Toxic Text Detector is a bachelor thesis project focused on the design, implementation, and evaluation of a browser extension for detecting potentially toxic text on web pages.
+Toxic Text Detector je projekt záverečnej práce zameraný na návrh, implementáciu a vyhodnotenie rozšírenia webového prehliadača na detekciu potenciálne toxického textu na webových stránkach.
 
-The system is implemented as a Chrome Manifest V3 extension and supports two inference modes:
+Systém je implementovaný ako rozšírenie prehliadača podľa Chrome Manifest V3 a podporuje dva režimy inferencie:
 
-- local inference directly in the browser,
-- remote inference through a backend API.
+- lokálnu inferenciu priamo v prehliadači,
+- vzdialenú inferenciu prostredníctvom backendového API.
 
-The goal of the project is to provide a practical browser-based tool that can detect potentially toxic text, visually mark or blur it, and allow the user to configure sensitivity, toxicity categories, processing mode, confidence score display, and whitelist domains.
+Cieľom projektu je poskytnúť praktický nástroj integrovaný do prehliadača, ktorý dokáže detegovať potenciálne toxický text, vizuálne ho označiť alebo rozmazať a umožniť používateľovi nastaviť citlivosť detekcie, kategórie toxicity, režim spracovania, zobrazovanie skóre spoľahlivosti a whitelist domén.
 
-The project also evaluates the practical trade-off between privacy-preserving local inference and more precise or more easily replaceable remote inference.
+Projekt zároveň vyhodnocuje praktický kompromis medzi lokálnou inferenciou zachovávajúcou súkromie a presnejšou alebo jednoduchšie vymeniteľnou vzdialenou inferenciou.
 
 ---
 
-## CD medium structure
+## Štruktúra CD média
 
-The CD medium is organized as follows:
+CD médium je organizované nasledovne:
 
 ```text
 CD medium/
@@ -30,20 +30,20 @@ CD medium/
 └── article/
 ```
 
-The `doc` folder contains the system manual (`README.md`) and user manual (`USER_MANUAL.md`).  
-The `tex` folder contains the source files of the thesis and scientific article.  
-The `src/frontend` folder contains the Chrome extension source code.  
-The `src/backend` folder contains the optional backend API for remote toxicity inference.  
-The `dist` folder contains the built extension ready to be loaded into Chrome.  
-The `article` folder contains the scientific article created from the results of the work.
+Priečinok `doc` obsahuje systémovú príručku (`README.md`) a používateľskú príručku (`USER_MANUAL.md`).  
+Priečinok `tex` obsahuje zdrojové súbory záverečnej práce a vedeckého článku.  
+Priečinok `src/frontend` obsahuje zdrojový kód rozšírenia prehliadača Chrome.  
+Priečinok `src/backend` obsahuje voliteľné backendové API pre vzdialenú inferenciu toxicity.  
+Priečinok `dist` obsahuje zostavenú verziu rozšírenia pripravenú na načítanie do prehliadača Chrome.  
+Priečinok `article` obsahuje vedecký článok vytvorený na základe výsledkov práce.
 
 ---
 
-## Frontend – Chrome extension
+## Frontend – rozšírenie prehliadača Chrome
 
-The frontend is implemented using Vite, React, Chrome Manifest V3, and TensorFlow.js.
+Frontend je implementovaný pomocou technológií Vite, React, Chrome Manifest V3 a TensorFlow.js.
 
-Main frontend structure:
+Hlavná štruktúra frontendu:
 
 ```text
 src/frontend/
@@ -79,27 +79,27 @@ src/frontend/
 └── vite.config.js
 ```
 
-### Important frontend files
+### Dôležité frontendové súbory
 
-- `src/frontend/public/manifest.json` – Chrome Manifest V3 configuration.
-- `src/frontend/public/background.js` – service worker, central extension actions, communication with the active tab, and remote API handling.
-- `src/frontend/public/contentScript.js` – scans page text, runs classification, and marks or blurs detected toxic content.
-- `src/frontend/public/toxicityContract.global.js` – normalizes model outputs, labels, thresholds, strictness settings, and final verdicts.
-- `src/frontend/public/local_char_model/` – local TensorFlow.js model files required for browser inference.
-- `src/frontend/src/state/SettingsContext.jsx` – manages extension settings and stores them in Chrome storage.
-- `src/frontend/src/popupMain.jsx` – entry point for the extension popup.
-- `src/frontend/src/optionsMain.jsx` – entry point for the settings page.
-- `src/frontend/scripts/evaluate-local-model.js` – script for evaluating the optimized local TensorFlow.js model.
-- `src/frontend/val/` – selected local evaluation outputs for the local model experiments.
-- `src/frontend/artifacts/test_metrics.json` – selected testing metrics generated during local evaluation.
+- `src/frontend/public/manifest.json` – konfigurácia rozšírenia podľa Chrome Manifest V3.
+- `src/frontend/public/background.js` – service worker, centrálne akcie rozšírenia, komunikácia s aktívnou kartou a spracovanie vzdialeného API.
+- `src/frontend/public/contentScript.js` – skenuje text stránky, spúšťa klasifikáciu a označuje alebo rozmazáva detegovaný toxický obsah.
+- `src/frontend/public/toxicityContract.global.js` – normalizuje výstupy modelu, štítky, prahy, nastavenia prísnosti a výsledný verdikt.
+- `src/frontend/public/local_char_model/` – súbory lokálneho TensorFlow.js modelu potrebné pre inferenciu v prehliadači.
+- `src/frontend/src/state/SettingsContext.jsx` – spravuje nastavenia rozšírenia a ukladá ich do úložiska prehliadača Chrome.
+- `src/frontend/src/popupMain.jsx` – vstupný bod popup okna rozšírenia.
+- `src/frontend/src/optionsMain.jsx` – vstupný bod stránky nastavení.
+- `src/frontend/scripts/evaluate-local-model.js` – skript na vyhodnotenie optimalizovaného lokálneho TensorFlow.js modelu.
+- `src/frontend/val/` – vybrané výstupy lokálneho vyhodnotenia pre experimenty s lokálnym modelom.
+- `src/frontend/artifacts/test_metrics.json` – vybrané testovacie metriky vygenerované počas lokálneho vyhodnotenia.
 
 ---
 
-## Backend – remote inference API
+## Backend – API pre vzdialenú inferenciu
 
-The backend provides an optional API for remote inference. It is used when the extension is switched to Remote mode.
+Backend poskytuje voliteľné API pre vzdialenú inferenciu. Používa sa vtedy, keď je rozšírenie prepnuté do vzdialeného režimu.
 
-Main backend structure:
+Hlavná štruktúra backendu:
 
 ```text
 src/backend/
@@ -119,19 +119,19 @@ src/backend/
 └── requirements.txt
 ```
 
-### Important backend files
+### Dôležité backendové súbory
 
-- `src/backend/api/app.py` – main FastAPI application.
-- `src/backend/api/thresholds_product_v2_1.json` – product threshold configuration used by the API.
-- `src/backend/train/` – scripts for dataset preparation, remote model training, evaluation, and threshold tuning.
-- `src/backend/reports/` – selected experiment outputs and model evaluation results.
-- `src/backend/models/xlmr-toxic-v2_1/` – trained XLM-R model used by the configured remote API.
-- `src/backend/requirements.txt` – Python dependencies required to run the backend.
-- `src/backend/Dockerfile` – optional container configuration for deployment.
+- `src/backend/api/app.py` – hlavná aplikácia FastAPI.
+- `src/backend/api/thresholds_product_v2_1.json` – produktová konfigurácia prahov používaná API.
+- `src/backend/train/` – skripty na prípravu datasetov, trénovanie vzdialeného modelu, vyhodnotenie a ladenie prahov.
+- `src/backend/reports/` – vybrané výstupy experimentov a výsledky vyhodnotenia modelov.
+- `src/backend/models/xlmr-toxic-v2_1/` – natrénovaný XLM-R model používaný nakonfigurovaným vzdialeným API.
+- `src/backend/requirements.txt` – Python závislosti potrebné na spustenie backendu.
+- `src/backend/Dockerfile` – voliteľná kontajnerová konfigurácia pre nasadenie.
 
 ---
 
-## Used technologies
+## Použité technológie
 
 ### Frontend
 
@@ -157,44 +157,44 @@ src/backend/
 
 ---
 
-## Models
+## Modely
 
-The project uses two model-related parts:
+Projekt používa dve modelové časti:
 
-1. a local browser model,
-2. a remote backend model.
+1. lokálny model v prehliadači,
+2. vzdialený backendový model.
 
-### Local browser model
+### Lokálny model v prehliadači
 
-The local browser model is expected in:
+Lokálny model v prehliadači sa očakáva v priečinku:
 
 ```text
 src/frontend/public/local_char_model/
 ```
 
-This model is used directly by the Chrome extension. It allows the extension to classify text locally without sending it to a server.
+Tento model používa priamo rozšírenie prehliadača Chrome. Umožňuje klasifikovať text lokálne bez odosielania textu na server.
 
-The local model is intended as a privacy-preserving and fast browser-side variant. However, it may be less accurate than the backend model in more difficult or less represented toxicity categories.
+Lokálny model je určený ako rýchly variant spracovania na strane prehliadača so zachovaním súkromia. V náročnejších alebo menej zastúpených kategóriách toxicity však môže byť menej presný ako backendový model.
 
-The local model files must be present before building or running the extension with local inference.
+Súbory lokálneho modelu musia byť dostupné pred zostavením alebo spustením rozšírenia s lokálnou inferenciou.
 
-### Remote backend model
+### Vzdialený backendový model
 
-The remote backend model is expected in:
+Vzdialený backendový model sa očakáva v priečinku:
 
 ```text
 src/backend/models/xlmr-toxic-v2_1/
 ```
 
-This model is used by the backend API for remote inference.
+Tento model používa backendové API pre vzdialenú inferenciu.
 
-The backend model can contain large files and may be tracked using Git LFS. After cloning the repository, make sure Git LFS is installed and run:
+Backendový model môže obsahovať veľké súbory a môže byť spravovaný pomocou Git LFS. Po naklonovaní repozitára je potrebné skontrolovať, či je Git LFS nainštalovaný, a spustiť:
 
 ```bash
 git lfs pull
 ```
 
-Expected backend model structure:
+Očakávaná štruktúra backendového modelu:
 
 ```text
 src/backend/models/xlmr-toxic-v2_1/
@@ -208,17 +208,17 @@ src/backend/models/xlmr-toxic-v2_1/
 
 ---
 
-## Installing Git LFS
+## Inštalácia Git LFS
 
-Git LFS is required if the backend model files are stored using Git LFS.
+Git LFS je potrebný v prípade, že backendové modelové súbory sú uložené pomocou Git LFS.
 
-Install and initialize Git LFS:
+Inštalácia a inicializácia Git LFS:
 
 ```bash
 git lfs install
 ```
 
-After cloning the repository, download LFS files:
+Po naklonovaní repozitára sa LFS súbory stiahnu príkazom:
 
 ```bash
 git lfs pull
@@ -226,92 +226,92 @@ git lfs pull
 
 ---
 
-## Frontend installation and build
+## Inštalácia a zostavenie frontendu
 
-Go to the frontend source folder:
+Prejdite do priečinka so zdrojovým kódom frontendu:
 
 ```bash
 cd src/frontend
 ```
 
-Install dependencies:
+Nainštalujte závislosti:
 
 ```bash
 npm install
 ```
 
-Create the production build:
+Vytvorte produkčné zostavenie:
 
 ```bash
 npm run build
 ```
 
-After a successful build, the generated extension build should be placed in the root `dist` folder of the CD medium:
+Po úspešnom zostavení má byť zostavená verzia rozšírenia umiestnená v koreňovom priečinku `dist` na CD médiu:
 
 ```text
 dist/
 ```
 
-If the build output is generated inside `src/frontend/dist/`, copy its content to the root `dist/` folder before loading the extension into Chrome.
+Ak sa výstup zostavenia vytvorí v priečinku `src/frontend/dist/`, skopírujte jeho obsah do koreňového priečinka `dist/` pred načítaním rozšírenia do prehliadača Chrome.
 
 ---
 
-## Installing or loading the extension in Chrome
+## Inštalácia alebo načítanie rozšírenia v prehliadači Chrome
 
-The extension can be used in two ways:
+Rozšírenie je možné použiť dvoma spôsobmi:
 
-- installed from the Chrome Web Store using the private project link,
-- loaded manually as an unpacked extension from the `dist` folder.
+- nainštalovať z Chrome Web Store pomocou súkromného projektového odkazu,
+- načítať manuálne ako rozbalené rozšírenie z priečinka `dist`.
 
-### Installation from Chrome Web Store link
+### Inštalácia pomocou odkazu z Chrome Web Store
 
-The extension is published in the Chrome Web Store, but it is not publicly searchable. It is distributed for this project through a direct private/unlisted link:
+Rozšírenie je publikované v Chrome Web Store, ale nie je verejne vyhľadateľné. Pre potreby tohto projektu je distribuované pomocou priameho súkromného/nezverejneného odkazu:
 
 ```text
-REPLACE_WITH_PRIVATE_CHROME_WEB_STORE_LINK
+https://chromewebstore.google.com/detail/toxic-text-detector-hybri/jankcpfaihpjhecegklglapdokjljkfn?authuser=0&hl=en
 ```
 
-To install it:
+Postup inštalácie:
 
-1. Open the provided Chrome Web Store link.
-2. Click **Add to Chrome**.
-3. Confirm the installation.
-4. Pin the extension to the toolbar if needed.
+1. Otvorte poskytnutý odkaz na Chrome Web Store.
+2. Kliknite na **Add to Chrome**.
+3. Potvrďte inštaláciu.
+4. V prípade potreby pripnite rozšírenie na panel nástrojov.
 
-This method is recommended for normal use and project evaluation.
+Tento spôsob je odporúčaný pre bežné použitie a hodnotenie projektu.
 
-### Loading unpacked extension
+### Manuálne načítanie rozbaleného rozšírenia
 
-For development, testing, or thesis demonstration, the extension can also be loaded manually.
+Pre vývoj, testovanie alebo demonštráciu záverečnej práce je možné rozšírenie načítať aj manuálne.
 
-1. Open Google Chrome.
-2. Go to:
+1. Otvorte Google Chrome.
+2. Prejdite na adresu:
 
 ```text
 chrome://extensions/
 ```
 
-3. Enable **Developer mode**.
-4. Click **Load unpacked**.
-5. Select:
+3. Zapnite **Developer mode**.
+4. Kliknite na **Load unpacked**.
+5. Vyberte priečinok:
 
 ```text
 dist/
 ```
 
-6. The extension will appear in the list of installed extensions.
+6. Rozšírenie sa zobrazí v zozname nainštalovaných rozšírení.
 
 ---
 
-## Running the backend API locally
+## Spustenie backendového API lokálne
 
-The backend API can be started locally when the trained XLM-R model is available in:
+Backendové API je možné spustiť lokálne, ak je natrénovaný XLM-R model dostupný v priečinku:
 
 ```text
 src/backend/models/xlmr-toxic-v2_1/
 ```
 
-The following commands are intended for Windows Command Prompt and should be executed from the `src/backend` directory.
+Nasledujúce príkazy sú určené pre Windows Command Prompt a majú sa spúšťať z priečinka `src/backend`.
 
 ```cmd
 set "HF_MODEL_PATH=.\models\xlmr-toxic-v2_1"
@@ -329,13 +329,13 @@ set "MKL_NUM_THREADS=4"
 py -m uvicorn api.app:app --host 127.0.0.1 --port 8000
 ```
 
-After successful startup, the API is available at:
+Po úspešnom spustení je API dostupné na adrese:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-If the API exposes interactive documentation, it can be opened at:
+Ak API poskytuje interaktívnu dokumentáciu, je dostupná na adrese:
 
 ```text
 http://127.0.0.1:8000/docs
@@ -343,28 +343,28 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## Backend environment variables
+## Premenné prostredia backendu
 
-| Variable | Meaning |
+| Premenná | Význam |
 |---|---|
-| `HF_MODEL_PATH` | Path to the local trained XLM-R model |
-| `THRESHOLDS_PATH` | Path to the threshold configuration |
-| `MODEL_ID` | Identifier of the model used by the API |
-| `THRESHOLD_SET` | Name of the threshold set used by the API |
-| `MAX_TOKENS` | Maximum number of tokens processed by the model |
-| `MAX_BATCH` | Maximum batch size accepted by the API |
-| `ENABLE_INT8` | Enables INT8 optimization if supported |
-| `TORCH_THREADS` | Number of Torch CPU threads |
-| `OMP_NUM_THREADS` | Number of OpenMP threads |
-| `MKL_NUM_THREADS` | Number of MKL threads |
+| `HF_MODEL_PATH` | Cesta k lokálnemu natrénovanému XLM-R modelu |
+| `THRESHOLDS_PATH` | Cesta ku konfigurácii prahov |
+| `MODEL_ID` | Identifikátor modelu používaného API |
+| `THRESHOLD_SET` | Názov sady prahov používanej API |
+| `MAX_TOKENS` | Maximálny počet tokenov spracovaných modelom |
+| `MAX_BATCH` | Maximálna veľkosť dávky prijatá API |
+| `ENABLE_INT8` | Zapína INT8 optimalizáciu, ak je podporovaná |
+| `TORCH_THREADS` | Počet CPU vlákien pre Torch |
+| `OMP_NUM_THREADS` | Počet OpenMP vlákien |
+| `MKL_NUM_THREADS` | Počet MKL vlákien |
 
 ---
 
-## Switching between cloud API and local API
+## Prepínanie medzi cloud API a lokálnym API
 
-The extension can use a configured cloud API or a locally running API. These commands are intended for development and testing. They should be executed in the browser console from an extension context, for example from the extension options page.
+Rozšírenie môže používať nakonfigurované cloud API alebo lokálne spustené API. Nasledujúce príkazy sú určené pre vývoj a testovanie. Spúšťajú sa v konzole prehliadača z kontextu rozšírenia, napríklad zo stránky nastavení rozšírenia.
 
-### Change to configured cloud API
+### Prepnutie na nakonfigurované cloud API
 
 ```javascript
 chrome.runtime.sendMessage(
@@ -379,7 +379,7 @@ chrome.runtime.sendMessage(
 );
 ```
 
-### Change to local API
+### Prepnutie na lokálne API
 
 ```javascript
 chrome.runtime.sendMessage(
@@ -394,7 +394,7 @@ chrome.runtime.sendMessage(
 );
 ```
 
-### Reset to default API configuration
+### Obnovenie predvolenej konfigurácie API
 
 ```javascript
 chrome.runtime.sendMessage(
@@ -403,7 +403,7 @@ chrome.runtime.sendMessage(
 );
 ```
 
-### Check current API configuration
+### Kontrola aktuálnej konfigurácie API
 
 ```javascript
 chrome.runtime.sendMessage(
@@ -412,7 +412,7 @@ chrome.runtime.sendMessage(
 );
 ```
 
-### Test current API
+### Otestovanie aktuálneho API
 
 ```javascript
 chrome.runtime.sendMessage(
@@ -421,7 +421,7 @@ chrome.runtime.sendMessage(
 );
 ```
 
-### Rescan active tab after changing API
+### Opätovné skenovanie aktívnej karty po zmene API
 
 ```javascript
 chrome.runtime.sendMessage(
@@ -430,88 +430,88 @@ chrome.runtime.sendMessage(
 );
 ```
 
-A normal user does not need to run these commands manually.
+Bežný používateľ tieto príkazy nemusí spúšťať manuálne.
 
 ---
 
-## Evaluation scripts and outputs
+## Evaluačné skripty a výstupy
 
-The optimized local browser model can be evaluated using:
+Optimalizovaný lokálny model v prehliadači je možné vyhodnotiť pomocou:
 
 ```bash
 cd src/frontend
 node scripts/evaluate-local-model.js
 ```
 
-Selected local evaluation outputs are stored in:
+Vybrané výstupy lokálneho vyhodnotenia sú uložené v priečinku:
 
 ```text
 src/frontend/val/
 ```
 
-The evaluation script expects the required validation data to be available locally when rerunning the evaluation. Dataset files are not included in the CD medium.
+Evaluačný skript pri opätovnom spustení očakáva, že potrebné validačné dáta sú dostupné lokálne. Datasetové súbory nie sú súčasťou CD média.
 
-The backend training and evaluation scripts are located in:
+Backendové tréningové a evaluačné skripty sú umiestnené v priečinku:
 
 ```text
 src/backend/train/
 ```
 
-These scripts were used for dataset preparation, remote model training, evaluation, and threshold tuning.
+Tieto skripty boli použité na prípravu datasetov, trénovanie vzdialeného modelu, vyhodnotenie a ladenie prahov.
 
-The evaluation was not designed as one identical benchmark for every model. The remote model was evaluated more extensively from the perspective of classification quality, class imbalance, and decision thresholds. The original local TF.js model was tested as an initial baseline, while the optimized local TensorFlow.js model was evaluated separately as the practical browser-side solution.
-
----
-
-## Notes about datasets
-
-The original Jigsaw datasets and large raw archives are not part of the CD medium. They were used during training and evaluation, but they are not required for normal use of the extension.
-
-Selected local evaluation outputs are included in `src/frontend/val/`, but the raw validation dataset files are not included.
-
-The CD medium contains source code, model configuration, selected reports, the local browser model or its expected location, and the backend model or its expected location required for API startup.
+Vyhodnotenie nebolo navrhnuté ako jeden identický benchmark pre všetky modely. Vzdialený model bol vyhodnotený podrobnejšie z hľadiska klasifikačnej kvality, nerovnováhy tried a rozhodovacích prahov. Pôvodný lokálny TF.js model bol testovaný ako počiatočný baseline, zatiaľ čo optimalizovaný lokálny TensorFlow.js model bol vyhodnotený samostatne ako praktické riešenie na strane prehliadača.
 
 ---
 
-## Main functionality
+## Poznámky k datasetom
 
-The implemented system supports:
+Pôvodné datasety Jigsaw a veľké surové archívy nie sú súčasťou CD média. Boli použité počas trénovania a vyhodnotenia, ale nie sú potrebné na bežné používanie rozšírenia.
 
-- detection of potentially toxic text on web pages,
-- local browser-based inference,
-- optional remote API inference,
-- automatic blurring of detected toxic text,
-- displaying confidence scores,
-- selecting toxicity categories,
-- changing sensitivity level,
-- domain whitelist,
-- popup statistics,
-- export and import of extension settings if enabled in the settings page,
-- developer API testing commands for remote inference configuration.
+Vybrané lokálne výstupy vyhodnotenia sú zahrnuté v priečinku `src/frontend/val/`, ale surové validačné datasetové súbory nie sú súčasťou CD média.
 
-User feedback for incorrect classifications was considered during UX prototyping, but it is not part of the final implemented extension functionality.
+CD médium obsahuje zdrojový kód, konfiguráciu modelov, vybrané reporty, lokálny model v prehliadači alebo jeho očakávané umiestnenie a backendový model alebo jeho očakávané umiestnenie potrebné na spustenie API.
 
 ---
 
-## Scope and limitations
+## Hlavná funkcionalita
 
-Toxic Text Detector is an assistive tool based on automated model predictions. It can help detect and visually reduce exposure to potentially toxic text, but it does not replace human judgement or moderation.
+Implementovaný systém podporuje:
 
-Known limitations include:
+- detekciu potenciálne toxického textu na webových stránkach,
+- lokálnu inferenciu priamo v prehliadači,
+- voliteľnú vzdialenú inferenciu cez API,
+- automatické rozmazanie detegovaného toxického textu,
+- zobrazovanie skóre spoľahlivosti,
+- výber kategórií toxicity,
+- zmenu úrovne citlivosti,
+- whitelist domén,
+- štatistiky v popup okne,
+- export a import nastavení rozšírenia, ak sú dostupné na stránke nastavení,
+- vývojárske príkazy na testovanie konfigurácie vzdialenej inferencie.
 
-- possible false positives, where harmless text is marked as toxic,
-- possible false negatives, where toxic text is not detected,
-- weaker performance in rare or difficult toxicity categories,
-- limited reliability for implicit, sarcastic, contextual, or multilingual toxicity,
-- possible performance impact on very large pages with many text elements,
-- differences between local and remote inference caused by model architecture, deployment environment, and threshold settings.
-
-Local inference is privacy-preserving and fast because text is processed directly in the browser. Remote inference can provide more precise results depending on the backend model, but it requires sending analyzed text to an API server.
+Spätná väzba používateľa pri nesprávnej klasifikácii bola zvažovaná počas UX prototypovania, ale nie je súčasťou finálnej implementovanej funkcionality rozšírenia.
 
 ---
 
-## CD medium purpose
+## Rozsah a obmedzenia
 
-This CD medium contains the system manual, user manual, source code, built extension, thesis source files, and scientific article related to the bachelor thesis project.
+Toxic Text Detector je pomocný nástroj založený na automatických predikciách modelu. Môže pomôcť detegovať a vizuálne znížiť vystavenie používateľa potenciálne toxickému textu, ale nenahrádza ľudský úsudok ani moderovanie.
 
-This manual describes the technical structure of the CD medium and the source code of the Toxic Text Detector project.
+Medzi známe obmedzenia patria:
+
+- možné falošne pozitívne výsledky, keď je neškodný text označený ako toxický,
+- možné falošne negatívne výsledky, keď toxický text nie je detegovaný,
+- slabší výkon pri zriedkavých alebo náročných kategóriách toxicity,
+- obmedzená spoľahlivosť pri implicitnej, sarkastickej, kontextovej alebo viacjazyčnej toxicite,
+- možný vplyv na výkon pri veľmi veľkých stránkach s veľkým množstvom textových prvkov,
+- rozdiely medzi lokálnou a vzdialenou inferenciou spôsobené architektúrou modelu, prostredím nasadenia a nastavením prahov.
+
+Lokálna inferencia zachováva súkromie a je rýchla, pretože text sa spracúva priamo v prehliadači. Vzdialená inferencia môže poskytnúť presnejšie výsledky v závislosti od backendového modelu, ale vyžaduje odoslanie analyzovaného textu na API server.
+
+---
+
+## Účel CD média
+
+Toto CD médium obsahuje systémovú príručku, používateľskú príručku, zdrojový kód, zostavenú verziu rozšírenia, zdrojové súbory záverečnej práce a vedecký článok súvisiaci s projektom záverečnej práce.
+
+Táto príručka opisuje technickú štruktúru CD média a zdrojový kód projektu Toxic Text Detector.
