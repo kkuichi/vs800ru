@@ -129,6 +129,32 @@ src/backend/
 
 ---
 
+## Minimálne systémové požiadavky
+
+Na bežné používanie rozšírenia v lokálnom režime je potrebné:
+
+- Google Chrome alebo iný prehliadač založený na Chromiu s podporou rozšírení podľa Chrome Manifest V3,
+- operačný systém Windows, Linux alebo macOS,
+- moderný procesor s podporou WebAssembly,
+- aspoň 4 GB RAM,
+- odporúčane 8 GB RAM pre plynulejšie používanie,
+- približne 10 MB voľného miesta pre zostavené rozšírenie, lokálny model a súvisiace súbory.
+
+Zostavená verzia rozšírenia v priečinku `dist/` má približne 2.3 MB. Zdrojová frontendová časť v priečinku `src/frontend/` má približne 10 MB.
+
+Lokálny režim nevyžaduje spustenie backendového API ani samostatnú grafickú kartu. Rýchlosť spracovania však môže závisieť od výkonu procesora, dostupnej operačnej pamäte a veľkosti analyzovanej webovej stránky.
+
+Pri použití vzdialeného backendového API s plným modelom je potrebné počítať s vyššími nárokmi:
+
+- približne 1.05 GB voľného miesta pre backendovú časť s modelom,
+- aspoň 8 GB RAM pre spustenie API na bežnom počítači,
+- odporúčane 16 GB RAM pre stabilnejšie spustenie a spracovanie väčších dávok textov,
+- samostatná grafická karta nie je povinná, keďže API môže bežať aj na CPU.
+
+Celý projekt bez veľkých vývojových priečinkov, ako sú `node_modules`, virtuálne prostredia alebo surové datasety, má nízke nároky na úložisko okrem vzdialeného backendového modelu. Najväčšou časťou projektu je súbor backendového modelu `model.safetensors`.
+
+---
+
 ## Použité technológie
 
 ### Frontend
