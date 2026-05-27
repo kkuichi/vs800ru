@@ -184,15 +184,9 @@ Vzdialený backendový model sa očakáva v priečinku:
 src/backend/models/xlmr-toxic-v2_1/
 ```
 
-Tento model používa backendové API pre vzdialenú inferenciu.
+Tento model používa backendové API pre vzdialenú inferenciu. Z dôvodu veľkosti nie je súbor `model.safetensors` súčasťou CD média. Ak má byť backendové API spustené lokálne, tento súbor musí byť doplnený samostatne alebo obnovený pomocou Git LFS.
 
-Backendový model môže obsahovať veľké súbory a môže byť spravovaný pomocou Git LFS. Po naklonovaní repozitára je potrebné skontrolovať, či je Git LFS nainštalovaný, a spustiť:
-
-```bash
-git lfs pull
-```
-
-Očakávaná štruktúra backendového modelu:
+Očakávaná štruktúra backendového modelu po doplnení modelového súboru:
 
 ```text
 src/backend/models/xlmr-toxic-v2_1/
@@ -308,6 +302,8 @@ Backendové API je možné spustiť lokálne, ak je natrénovaný XLM-R model do
 ```text
 src/backend/models/xlmr-toxic-v2_1/
 ```
+
+Na spustenie backendového API je potrebný aj súbor `model.safetensors`. Ak tento súbor nie je prítomný, backendový zdrojový kód a konfigurácia sú dostupné, ale API nebude možné plnohodnotne spustiť.
 
 Nasledujúce príkazy sú určené pre Windows Command Prompt a majú sa spúšťať z priečinka `src/backend`.
 
