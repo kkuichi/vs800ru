@@ -21,7 +21,8 @@ CD médium je organizované nasledovne:
 CD medium/
 ├── doc/
 │   ├── README.md
-│   └── USER_MANUAL.md
+│   ├── USER_MANUAL.md
+│   └── screenshots/
 ├── tex/
 ├── src/
 │   ├── frontend/
@@ -29,7 +30,7 @@ CD medium/
 └── dist/
 ```
 
-Priečinok `doc` obsahuje systémovú príručku (`README.md`) a používateľskú príručku (`USER_MANUAL.md`).  
+Priečinok `doc` obsahuje systémovú príručku (`README.md`), používateľskú príručku (`USER_MANUAL.md`) a obrázky použité v príručkách.  
 Priečinok `tex` obsahuje zdrojové súbory záverečnej práce.  
 Priečinok `src/frontend` obsahuje zdrojový kód rozšírenia prehliadača Chrome.  
 Priečinok `src/backend` obsahuje voliteľné backendové API pre vzdialenú inferenciu toxicity.  
@@ -110,7 +111,6 @@ src/backend/
 │   └── thresholds_v2.json
 ├── train/
 ├── reports/
-├── docs/
 ├── models/
 │   └── xlmr-toxic-v2_1/
 ├── Dockerfile
