@@ -33,6 +33,9 @@ Rozšírenie je publikované v Chrome Web Store, ale nie je verejne vyhľadateľ
 ```text
 https://chromewebstore.google.com/detail/toxic-text-detector-hybri/jankcpfaihpjhecegklglapdokjljkfn?authuser=0&hl=en
 ```
+Obrázok nižšie znázorňuje inštaláciu rozšírenia pomocou odkazu z Chrome Web Store.
+
+![Inštalácia rozšírenia z Chrome Web Store](screenshots/chrome-webstore-install.png)
 
 Postup inštalácie:
 
@@ -101,6 +104,10 @@ Popup zobrazuje:
 Ak je ochrana zapnutá, popup zobrazuje, že prehliadač je aktuálne chránený.  
 Ak je ochrana vypnutá, rozšírenie prestane aktívne skenovať a označovať nový obsah.
 
+Príklad popup okna rozšírenia je znázornený na nasledujúcom obrázku.
+
+![Popup okno rozšírenia](screenshots/popup.png)
+
 ---
 
 ## 5. Stránka nastavení
@@ -123,6 +130,10 @@ Stránka nastavení môže obsahovať:
 - možnosť importu nastavení, ak je dostupná.
 
 Presný zoznam možností závisí od aktuálnej zostavy rozšírenia.
+
+Príklad stránky nastavení je znázornený na nasledujúcom obrázku.
+
+![Stránka nastavení rozšírenia](screenshots/settings-page.png)
 
 ---
 
@@ -241,6 +252,10 @@ Ak rozšírenie rozmaže text, používateľ ho môže podľa potreby zobraziť.
 Účelom rozmazania nie je trvalo odstrániť obsah, ale znížiť nechcené vystavenie potenciálne toxickému textu. Používateľ si ponecháva kontrolu a môže sa rozhodnúť, či chce text zobraziť.
 
 Táto funkcia je užitočná napríklad vtedy, keď používateľ potrebuje porozumieť celému kontextu, napríklad pri moderovaní komentárov alebo kontrole diskusie.
+
+Príklad vizuálneho rozmazania detegovaného textu je znázornený na nasledujúcom obrázku.
+
+![Príklad rozmazaného toxického textu](screenshots/blurred-text-example.png)
 
 ---
 
