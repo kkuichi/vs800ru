@@ -35,6 +35,8 @@ doc/
 ```text
 CD medium/
 ├── README.md
+├── .gitignore
+├── .vscode/
 ├── doc/
 │   ├── thesis.pdf
 │   ├── README.md
@@ -48,8 +50,11 @@ CD medium/
     └── dist/
 ```
 
-Význam hlavných priečinkov:
+Význam hlavných priečinkov a súborov:
 
+- `README.md` – úvodný prehľad repozitára a odkaz na úplnú dokumentáciu,
+- `.gitignore` – pravidlá pre vynechanie dočasných, generovaných a vývojových súborov z repozitára,
+- `.vscode/` – pomocné nastavenia pracovného prostredia Visual Studio Code,
 - `doc/` – záverečná práca, systémová príručka, používateľská príručka a obrázky,
 - `tex/` – zdrojové súbory záverečnej práce,
 - `src/frontend/` – zdrojový kód rozšírenia prehliadača Chrome,

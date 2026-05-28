@@ -19,6 +19,9 @@ CD médium je organizované nasledovne:
 
 ```text
 CD medium/
+├── README.md
+├── .gitignore
+├── .vscode/
 ├── doc/
 │   ├── thesis.pdf
 │   ├── README.md
@@ -32,7 +35,10 @@ CD medium/
     └── dist/
 ```
 
-Priečinok `doc` obsahuje záverečnú prácu vo formáte PDF, systémovú príručku `(README.md)`, používateľskú príručku `(USER_MANUAL.md)` a obrázky použité v príručkách.
+Súbor `README.md` v koreňovom priečinku slúži ako úvodný prehľad repozitára a odkazuje na úplnú dokumentáciu.  
+Súbor `.gitignore` obsahuje pravidlá pre vynechanie dočasných, generovaných a vývojových súborov z repozitára.  
+Priečinok `.vscode` obsahuje pomocné nastavenia pracovného prostredia Visual Studio Code.  
+Priečinok `doc` obsahuje záverečnú prácu vo formáte PDF, systémovú príručku (`README.md`), používateľskú príručku (`USER_MANUAL.md`) a obrázky použité v príručkách.  
 Priečinok `tex` obsahuje zdrojové súbory záverečnej práce.  
 Priečinok `src/frontend` obsahuje zdrojový kód rozšírenia prehliadača Chrome.  
 Priečinok `src/backend` obsahuje voliteľné backendové API pre vzdialenú inferenciu toxicity.  
