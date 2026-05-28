@@ -31,7 +31,7 @@ Postup inštalácie:
 
 ![Inštalácia rozšírenia z Chrome Web Store](screenshots/chrome-webstore-install.png)
 
-Alternatívne je možné rozšírenie načítať manuálne z pripraveného priečinka `dist/` pomocou stránky `chrome://extensions/` a možnosti **Load unpacked**. Tento spôsob je určený najmä na demonštráciu alebo kontrolu projektu.
+Alternatívne je možné rozšírenie načítať manuálne z pripraveného priečinka `/bindist/` pomocou stránky `chrome://extensions/` a možnosti **Load unpacked**. Tento spôsob je určený najmä na demonštráciu alebo kontrolu projektu.
 
 ---
 

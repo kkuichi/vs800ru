@@ -19,7 +19,8 @@ CD médium je organizované nasledovne:
 
 ```text
 CD medium/
-├── docs/
+├── doc/
+│   ├── thesis.pdf
 │   ├── README.md
 │   ├── USER_MANUAL.md
 │   └── screenshots/
@@ -27,14 +28,15 @@ CD medium/
 ├── src/
 │   ├── frontend/
 │   └── backend/
-└── dist/
+└── bin/
+    └── dist/
 ```
 
-Priečinok `docs` obsahuje systémovú príručku (`README.md`), používateľskú príručku (`USER_MANUAL.md`) a obrázky použité v príručkách.  
+Priečinok `doc` obsahuje záverečnú prácu vo formáte PDF, systémovú príručku `(README.md)`, používateľskú príručku `(USER_MANUAL.md)` a obrázky použité v príručkách.
 Priečinok `tex` obsahuje zdrojové súbory záverečnej práce.  
 Priečinok `src/frontend` obsahuje zdrojový kód rozšírenia prehliadača Chrome.  
 Priečinok `src/backend` obsahuje voliteľné backendové API pre vzdialenú inferenciu toxicity.  
-Priečinok `dist` obsahuje zostavenú verziu rozšírenia pripravenú na načítanie do prehliadača Chrome.
+Priečinok `bin/dist` obsahuje zostavenú verziu rozšírenia pripravenú na načítanie do prehliadača Chrome.
 
 ---
 
@@ -140,7 +142,7 @@ Na bežné používanie rozšírenia v lokálnom režime je potrebné:
 - odporúčane 8 GB RAM pre plynulejšie používanie,
 - približne 10 MB voľného miesta pre zostavené rozšírenie, lokálny model a súvisiace súbory.
 
-Zostavená verzia rozšírenia v priečinku `dist/` má približne 2.3 MB. Zdrojová frontendová časť v priečinku `src/frontend/` má približne 10 MB.
+Zostavená verzia rozšírenia v priečinku `bin/dist/` má približne 2.3 MB. Zdrojová frontendová časť v priečinku `src/frontend/` má približne 10 MB.
 
 Lokálny režim nevyžaduje spustenie backendového API ani samostatnú grafickú kartu. Rýchlosť spracovania však môže závisieť od výkonu procesora, dostupnej operačnej pamäte a veľkosti analyzovanej webovej stránky.
 
@@ -244,7 +246,7 @@ git lfs pull
 
 ---
 
-## Inštalácia a zostavenie frontendu
+## Zostavenie rozšírenia zo zdrojového kódu
 
 Prejdite do priečinka so zdrojovým kódom frontendu:
 
@@ -252,25 +254,31 @@ Prejdite do priečinka so zdrojovým kódom frontendu:
 cd src/frontend
 ```
 
-Nainštalujte závislosti:
+Nainštalujte potrebné závislosti:
 
 ```bash
 npm install
 ```
 
-Vytvorte produkčné zostavenie:
+Vytvorte produkčné zostavenie rozšírenia:
 
 ```bash
 npm run build
 ```
 
-Po úspešnom zostavení má byť zostavená verzia rozšírenia umiestnená v koreňovom priečinku `dist` na CD médiu:
+Po úspešnom zostavení sa vytvorí priečinok:
 
 ```text
-dist/
+src/frontend/dist/
 ```
 
-Ak sa výstup zostavenia vytvorí v priečinku `src/frontend/dist/`, skopírujte jeho obsah do koreňového priečinka `dist/` pred načítaním rozšírenia do prehliadača Chrome.
+Ak sa používa už pripravená verzia z CD média, zostavené rozšírenie je umiestnené v priečinku:
+
+```text
+bin/dist/
+```
+
+Na načítanie rozšírenia do prehliadača Chrome sa používa priečinok so zostavenou verziou rozšírenia, teda buď `src/frontend/dist/` po vlastnom zostavení, alebo `bin/dist/` pri použití pripravenej verzie z CD média.
 
 ---
 
@@ -279,7 +287,7 @@ Ak sa výstup zostavenia vytvorí v priečinku `src/frontend/dist/`, skopírujte
 Rozšírenie je možné použiť dvoma spôsobmi:
 
 - nainštalovať z Chrome Web Store pomocou súkromného projektového odkazu,
-- načítať manuálne ako rozbalené rozšírenie z priečinka `dist`.
+- manuálne načítať zostavenú verziu rozšírenia ako rozbalené rozšírenie.
 
 ### Inštalácia pomocou odkazu z Chrome Web Store
 
@@ -311,10 +319,16 @@ chrome://extensions/
 
 3. Zapnite **Developer mode**.
 4. Kliknite na **Load unpacked**.
-5. Vyberte priečinok:
+5. Použite jeden z nasledujúcich priečinkov:
 
 ```text
-dist/
+bin/dist/
+```
+
+alebo po vlastnom zostavení frontendu:
+
+```text
+src/frontend/dist/
 ```
 
 6. Rozšírenie sa zobrazí v zozname nainštalovaných rozšírení.
@@ -527,11 +541,3 @@ Medzi známe obmedzenia patria:
 - rozdiely medzi lokálnou a vzdialenou inferenciou spôsobené architektúrou modelu, prostredím nasadenia a nastavením prahov.
 
 Lokálna inferencia zachováva súkromie a je rýchla, pretože text sa spracúva priamo v prehliadači. Vzdialená inferencia môže poskytnúť presnejšie výsledky v závislosti od backendového modelu, ale vyžaduje odoslanie analyzovaného textu na API server.
-
----
-
-## Účel CD média
-
-Toto CD médium obsahuje systémovú príručku, používateľskú príručku, zdrojový kód, zostavenú verziu rozšírenia a zdrojové súbory záverečnej práce.
-
-Táto príručka opisuje technickú štruktúru CD média a zdrojový kód projektu Toxic Text Detector.
